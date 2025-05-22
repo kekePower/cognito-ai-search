@@ -9,8 +9,8 @@ import '@/app/globals.css'
 
 export const metadata: Metadata = {
   title: {
-    default: 'Cognito Search',
-    template: '%s | Cognito Search',
+    default: 'Cognito AI Search',
+    template: '%s | Cognito AI Search',
   },
   description: 'AI-powered search that understands natural language and finds what you\'re looking for.',
   keywords: [
@@ -33,21 +33,21 @@ export const metadata: Metadata = {
     type: 'website',
     locale: 'en_US',
     url: 'https://cognito-search.vercel.app',
-    title: 'Cognito Search',
+    title: 'Cognito AI Search',
     description: 'AI-powered search that understands natural language and finds what you\'re looking for.',
-    siteName: 'Cognito Search',
+    siteName: 'Cognito AI Search',
     images: [
       {
         url: '/og-image.png',
         width: 1200,
         height: 630,
-        alt: 'Cognito Search - AI-Powered Search',
+        alt: 'Cognito AI Search - AI-Powered Search',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Cognito Search',
+    title: 'Cognito AI Search',
     description: 'AI-powered search that understands natural language and finds what you\'re looking for.',
     creator: '@stigok',
     images: ['/og-image.png'],
