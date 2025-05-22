@@ -38,7 +38,7 @@ export default function SearchResults({ results, query = '' }: SearchResultsProp
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {results.map((result, index) => {
         const displayUrl = result.parsed_url ? 
           `${result.parsed_url[1]?.replace('www.', '')}${result.parsed_url[2] || ''}${result.parsed_url[3] || ''}` : 
@@ -48,15 +48,15 @@ export default function SearchResults({ results, query = '' }: SearchResultsProp
           <div 
             key={index}
             className={cn(
-              "group p-6 rounded-lg border border-border bg-card shadow-sm",
-              "hover:shadow-md transition-shadow duration-200",
-              "hover:ring-1 hover:ring-ring/20"
+              "group p-5 rounded-lg border border-border-60 bg-card",
+              "hover:shadow-md transition-all duration-200",
+              "hover:border-border hover:bg-card-80"
             )}
           >
             <div className="flex flex-col space-y-2">
               {/* URL and source */}
               <div className="flex items-center text-sm text-muted-foreground">
-                <span className="truncate">{displayUrl}</span>
+                <span className="truncate max-w-[200px] sm:max-w-xs">{displayUrl}</span>
                 {result.engine && (
                   <span className="mx-2 text-muted-foreground/50">•</span>
                 )}
@@ -82,20 +82,20 @@ export default function SearchResults({ results, query = '' }: SearchResultsProp
               
               {/* Content snippet */}
               {result.content && (
-                <p className="text-muted-foreground text-sm line-clamp-2">
+                <p className="text-muted-foreground text-sm line-clamp-3">
                   {result.content}
                 </p>
               )}
               
               {/* Additional metadata */}
-              <div className="flex items-center pt-1">
+              <div className="flex items-center pt-2">
                 <a 
                   href={result.url} 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  className="text-sm text-primary hover:underline inline-flex items-center"
+                  className="text-sm text-primary hover:text-primary/80 hover:underline inline-flex items-center transition-colors"
                 >
-                  Read more
+                  Visit website
                   <ExternalLink className="ml-1 h-3.5 w-3.5" />
                 </a>
               </div>

@@ -20,14 +20,18 @@ interface AIResponseCardProps {
 export default function AIResponseCard({ response, isError = false }: AIResponseCardProps) {
 
   return (
-    <Card className="mb-8">
-      <CardHeader className="pb-2">
-        <CardTitle className="text-xl flex items-center gap-2">
+    <Card className="mb-8 border-primary/20 bg-primary/5 shadow-md">
+      <CardHeader className="pb-2 border-b border-primary/10">
+        <CardTitle className="text-xl flex items-center gap-2 text-primary-foreground">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" className="h-5 w-5">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 16.5V14m0-4V8.5M12 4a1 1 0 110 2 1 1 0 010-2zm0 14a1 1 0 110 2 1 1 0 010-2zm7-7a1 1 0 110 2 1 1 0 010-2zM5 11a1 1 0 110 2 1 1 0 010-2z" />
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11c0-4.418-3.582-8-8-8s-8 3.582-8 8 3.582 8 8 8 8-3.582 8-8z" />
+          </svg>
           AI Response
           {isError && <AlertTriangle className="h-4 w-4 text-amber-500" />}
         </CardTitle>
       </CardHeader>
-      <CardContent className={`prose dark:prose-invert max-w-none ${isError ? 'text-amber-600 dark:text-amber-400' : ''}`}>
+      <CardContent className={`prose dark:prose-invert max-w-none pt-4 ${isError ? 'text-amber-600 dark:text-amber-400' : ''}`}>
         <ReactMarkdown
           remarkPlugins={[remarkGfm]}
           components={{

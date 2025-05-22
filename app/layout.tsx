@@ -2,6 +2,8 @@ import type { Metadata, Viewport } from 'next'
 import { Toaster } from 'sonner'
 import { Providers } from '@/components/providers'
 import { cn } from '@/lib/utils'
+import { GeistSans } from 'geist/font/sans'
+import { GeistMono } from 'geist/font/mono'
 import '@/app/globals.css'
 
 export const metadata: Metadata = {
@@ -87,26 +89,15 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        <link
-          rel="preload"
-          href="/fonts/Geist.var.woff2"
-          as="font"
-          type="font/woff2"
-          crossOrigin="anonymous"
-        />
-        <link
-          rel="preload"
-          href="/fonts/GeistMono.var.woff2"
-          as="font"
-          type="font/woff2"
-          crossOrigin="anonymous"
-        />
+        {/* Geist fonts are loaded via the geist package */}
       </head>
       <body
         className={cn(
           'min-h-screen bg-background font-sans text-foreground antialiased',
-          'selection:bg-primary/20 selection:text-foreground',
+          'selection:bg-primary-20 selection:text-foreground',
           'flex flex-col',
+          GeistSans.variable,
+          GeistMono.variable
         )}
       >
         <Providers
