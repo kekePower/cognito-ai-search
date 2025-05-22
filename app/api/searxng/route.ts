@@ -16,7 +16,6 @@ export async function GET(request: Request) {
     const encodedQuery = encodeURIComponent(query)
     const searchUrl = `${SEARXNG_API_URL}/search?format=json&q=${encodedQuery}`
 
-    console.log(`Making request to SearXNG at ${searchUrl}`)
 
     // Add a timeout to the fetch request
     const controller = new AbortController()
@@ -35,7 +34,6 @@ export async function GET(request: Request) {
 
     if (!response.ok) {
       const errorText = await response.text()
-      console.error(`SearXNG API error: ${response.status} - ${errorText}`)
       return NextResponse.json(
         { error: `SearXNG API Error: ${response.status} - ${errorText}` },
         { status: response.status },
@@ -43,7 +41,6 @@ export async function GET(request: Request) {
     }
 
     const data = await response.json()
-    console.log("SearXNG response received successfully")
 
     // Process the SearXNG response
     let results = []
@@ -59,7 +56,6 @@ export async function GET(request: Request) {
 
     return NextResponse.json({ results })
   } catch (error: any) {
-    console.error("Error communicating with SearXNG:", error)
 
     if (error.name === "AbortError") {
       return NextResponse.json(

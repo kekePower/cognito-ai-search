@@ -76,7 +76,7 @@ export default function SearchResults({ results, query = '' }: SearchResultsProp
                   className="hover:underline flex items-start"
                 >
                   {result.title}
-                  <ExternalLink className="ml-1.5 h-3.5 w-3.5 flex-shrink-0 mt-1.5 opacity-70 group-hover:opacity-100 transition-opacity" />
+                  <ExternalLink className="ml-1.5 h-3.5 w-3.5 shrink-0 mt-1.5 opacity-70 group-hover:opacity-100 transition-opacity" />
                 </a>
               </h3>
               

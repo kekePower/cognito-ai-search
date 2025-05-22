@@ -3,11 +3,11 @@
 import type React from "react"
 import { useState, useEffect, useRef, useCallback } from "react"
 import { useRouter } from "next/navigation"
-import { Search, AlertTriangle, Loader2, Sparkles, ExternalLink, Bot, SearchCheck, Clock } from "lucide-react"
+import { Search, Loader2, Sparkles, ExternalLink, Bot, SearchCheck, Clock, X } from "lucide-react"
+import { getRandomSuggestions } from "@/lib/search-suggestions"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -24,24 +24,30 @@ export default function SearchContainer({ initialQuery = "" }: SearchContainerPr
   const router = useRouter()
   const [query, setQuery] = useState("")
   const [isLoading, setIsLoading] = useState(false)
+  const [isAiLoading, setIsAiLoading] = useState(false)
   const [aiResponse, setAiResponse] = useState("")
   const [searchResults, setSearchResults] = useState<any[]>([])
   const [error, setError] = useState<string | null>(null)
-  const [recentSearches, setRecentSearches] = useState<Array<{query: string, timestamp: number}>>([])
+  const [recentSearches, setRecentSearches] = useState<Array<{query: string, timestamp: number}>>([])  
+  const [suggestions, setSuggestions] = useState<string[]>([])
   const searchInputRef = useRef<HTMLInputElement>(null)
 
   // Cache configuration (1 hour in milliseconds)
   const CACHE_DURATION = 60 * 60 * 1000
 
-  // Load recent searches from localStorage on mount
+  // Load recent searches from localStorage and set random suggestions on mount
   useEffect(() => {
     try {
+      // Load recent searches
       const savedSearches = localStorage.getItem('recentSearches')
       if (savedSearches) {
         setRecentSearches(JSON.parse(savedSearches))
       }
+      
+      // Set random search suggestions
+      setSuggestions(getRandomSuggestions(4))
     } catch (error) {
-      console.error('Failed to load recent searches', error)
+      console.error('Failed to load recent searches or set suggestions', error)
     }
   }, [])
 
@@ -65,6 +71,26 @@ export default function SearchContainer({ initialQuery = "" }: SearchContainerPr
     }
     return null
   }, [CACHE_DURATION])
+
+  // Delete a search from cache and recent searches
+  const deleteSearch = useCallback((queryToDelete: string) => {
+    try {
+      // Remove from cache
+      const cacheKey = `search:${queryToDelete.toLowerCase().trim()}`
+      localStorage.removeItem(cacheKey)
+      
+      // Remove from recent searches
+      setRecentSearches(prev => {
+        const newSearches = prev.filter(item => item.query.toLowerCase() !== queryToDelete.toLowerCase())
+        localStorage.setItem('recentSearches', JSON.stringify(newSearches))
+        return newSearches
+      })
+      
+      console.log(`Deleted search: ${queryToDelete}`)
+    } catch (error) {
+      console.error('Error deleting search', error)
+    }
+  }, [])
 
   // Cache search results
   const cacheResults = useCallback((query: string, data: any) => {
@@ -98,6 +124,7 @@ export default function SearchContainer({ initialQuery = "" }: SearchContainerPr
 
   // Handle search when component mounts with URL query
   useEffect(() => {
+    // If there's an initialQuery, process it
     if (initialQuery) {
       const searchQuery = Array.isArray(initialQuery) ? initialQuery[0] || '' : initialQuery
       setQuery(searchQuery)
@@ -111,6 +138,13 @@ export default function SearchContainer({ initialQuery = "" }: SearchContainerPr
           performSearch(searchQuery)
         }
       }
+    } else {
+      // If there's no initialQuery (navigating to home page), clear the search state
+      setQuery('')
+      setAiResponse('')
+      setSearchResults([])
+      setError(null)
+      console.log('Cleared search state - navigated to home page without query')
     }
   }, [initialQuery, getCachedResults])
 
@@ -126,75 +160,151 @@ export default function SearchContainer({ initialQuery = "" }: SearchContainerPr
     // performSearch will be triggered by the useEffect when initialQuery changes
   }
   
-  const performSearch = async (searchQuery: string) => {
+  // No streaming function needed
+  
+  // Function to regenerate the AI response (bypass cache)
+  const regenerateResponse = async () => {
+    if (!query) return;
+    
+    // Clear the current AI response
+    setAiResponse("");
+    
+    // Perform a new search with the bypass cache flag
+    await performSearch(query, true);
+  };
+
+  // Function to perform the search
+  const performSearch = async (searchQuery: string, bypassCache = false) => {
     setIsLoading(true)
+    setIsAiLoading(true)
     setAiResponse("")
     setSearchResults([])
     setError(null)
     
-    console.log("Starting search for query:", searchQuery)
-
     try {
-      // Check cache first
-      const cached = getCachedResults(searchQuery)
-      if (cached) {
-        console.log("Using cached results for query:", searchQuery)
-        setAiResponse(cached.aiResponse || "")
-        setSearchResults(cached.searchResults || [])
-        setIsLoading(false)
-        return
+      // Check cache first (unless bypassCache is true)
+      if (!bypassCache) {
+        const cachedResult = getCachedResults(searchQuery)
+        if (cachedResult) {
+          setAiResponse(cachedResult.aiResponse || "")
+          setSearchResults(cachedResult.searchResults || [])
+          setIsLoading(false)
+          return
+        }
       }
 
-      // Run both searches in parallel
-      const [ollamaPromise, searxngPromise] = [
-        fetch(`/api/ollama?q=${encodeURIComponent(searchQuery)}`),
-        fetch(`/api/searxng?q=${encodeURIComponent(searchQuery)}`),
-      ]
+      // Start both searches in parallel but handle them separately
+      
+      // Create the promises
+      const ollamaPromise = fetch(`/api/ollama`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          prompt: searchQuery,
+          model: process.env.NEXT_PUBLIC_DEFAULT_OLLAMA_MODEL || 'qwen3:30b'
+        })
+      })
+      
+      const searxngPromise = fetch(`/api/searxng?q=${encodeURIComponent(searchQuery)}`)
+      
+      // Handle SearXNG results immediately without waiting for Ollama
+      searxngPromise.then(async (response) => {
+        if (response.ok) {
+          try {
+            const searxngData = await response.json()
+            const results = searxngData.results || []
 
-      const [ollamaSettled, searxngSettled] = await Promise.allSettled([
-        ollamaPromise,
-        searxngPromise,
-      ])
+            setSearchResults(results)
+            
+            // Set loading to false once search results are available
+            // but keep AI loading state active
+            setIsLoading(false)
+            
+            // Cache web search results immediately
+            if (results.length > 0) {
+              const cachedData = getCachedResults(searchQuery) || { aiResponse: "" }
+              cacheResults(searchQuery, { ...cachedData, searchResults: results })
+            }
+          } catch (error) {
 
+            setError(prev => {
+              const errorMsg = `Error parsing SearXNG response: ${error instanceof Error ? error.message : String(error)}`
+              return prev ? `${prev}\n${errorMsg}` : errorMsg
+            })
+          }
+        } else {
+          try {
+            const errorText = await response.text()
+            const errorMsg = `SearXNG API Error: ${response.status} - ${errorText}`
+            setError(prev => prev ? `${prev}\n${errorMsg}` : errorMsg)
+          } catch (e) {
+            const errorMsg = `SearXNG API Error: ${response.status} - Could not read error text`
+            setError(prev => prev ? `${prev}\n${errorMsg}` : errorMsg)
+          }
+        }
+      })
+      
+      // Wait for Ollama response
       let aiResponse = ""
-      let searchResults: any[] = []
-
-      // Handle Ollama response
-      if (ollamaSettled.status === "fulfilled" && ollamaSettled.value.ok) {
-        const ollamaData = await ollamaSettled.value.json()
-        aiResponse = cleanResponse(ollamaData.response || "")
-        setAiResponse(aiResponse)
-      } else if (ollamaSettled.status === 'rejected' || !ollamaSettled.value.ok) {
-        const errorMsg = ollamaSettled.status === 'rejected' 
-          ? ollamaSettled.reason?.message 
-          : `Ollama API Error: ${ollamaSettled.value.status} - ${await ollamaSettled.value.text()}`
-        console.error("Ollama error:", errorMsg)
+      try {
+        const ollamaResponse = await ollamaPromise
+        
+        if (ollamaResponse.ok) {
+          const ollamaData = await ollamaResponse.json()
+          aiResponse = ollamaData.response || ""
+          
+          // Check if the response is empty or too short
+          if (!aiResponse || aiResponse.length < 50) {
+            const errorMsg = "The AI generated an empty or incomplete response. Please try again."
+            setError(errorMsg)
+          } else {
+            setAiResponse(aiResponse)
+            
+            // Set AI loading state to false when AI response is complete
+            setIsAiLoading(false)
+            
+            // Update cache with AI response
+            const cachedData = getCachedResults(searchQuery) || { searchResults: [] }
+            cacheResults(searchQuery, { ...cachedData, aiResponse })
+          }
+        } else {
+          // Handle HTTP error
+          try {
+            const errorText = await ollamaResponse.text()
+            const errorMsg = `Ollama API Error: ${ollamaResponse.status} - ${errorText}`
+            setError(prev => prev ? `${prev}\n${errorMsg}` : errorMsg)
+          } catch (e) {
+            const errorMsg = `Ollama API Error: ${ollamaResponse.status} - Could not read error text`
+            setError(prev => prev ? `${prev}\n${errorMsg}` : errorMsg)
+          }
+        }
+      } catch (error) {
+        // Handle network error
+        const errorMsg = `Ollama API request failed: ${error instanceof Error ? error.message : String(error)}`
         setError(prev => prev ? `${prev}\n${errorMsg}` : errorMsg)
       }
 
-      // Handle SearXNG response
-      if (searxngSettled.status === "fulfilled" && searxngSettled.value.ok) {
-        const searxngData = await searxngSettled.value.json()
-        searchResults = searxngData.results || []
-        console.log("Received SearXNG results:", searchResults.length)
-        setSearchResults(searchResults)
-      } else if (searxngSettled.status === 'rejected' || !searxngSettled.value.ok) {
-        const errorMsg = searxngSettled.status === 'rejected' 
-          ? searxngSettled.reason?.message 
-          : `SearXNG API Error: ${searxngSettled.value.status} - ${await searxngSettled.value.text()}`
-        console.error("SearXNG error:", errorMsg)
-        setError(prev => prev ? `${prev}\n${errorMsg}` : errorMsg)
-      }
-
-      // Cache the results if we got valid responses
-      if (aiResponse || searchResults.length > 0) {
-        cacheResults(searchQuery, { aiResponse, searchResults })
+      // SearXNG response is already handled in the promise chain above
+      
+      // Final cache update for AI response (if needed)
+      if (aiResponse) {
+        // Note: Web search results are already cached in the promise chain
+        const cachedData = getCachedResults(searchQuery) || { searchResults: [] }
+        if (!cachedData.aiResponse) {
+          cacheResults(searchQuery, { ...cachedData, aiResponse })
+        }
       }
     } catch (error: any) {
-      console.error("Search error:", error)
       setError(`An unexpected error occurred: ${error.message}`)
-    } finally {
+      // Set both loading states to false on error
       setIsLoading(false)
+      setIsAiLoading(false)
+    } finally {
+      // In the finally block, we ensure both loading states are properly reset
+      // but we don't set isLoading to false here as it's handled in the SearXNG response
+      setIsAiLoading(false)
     }
   }
 
@@ -237,40 +347,46 @@ export default function SearchContainer({ initialQuery = "" }: SearchContainerPr
 
       {/* Error state */}
       {error && (
-        <Alert variant="destructive" className="mb-8">
-          <AlertTriangle className="h-4 w-4" />
-          <AlertDescription>{error}</AlertDescription>
-        </Alert>
+        <AIResponseCard 
+          response={error} 
+          isError={true} 
+          isStreaming={false} 
+          onRegenerate={regenerateResponse} 
+        />
       )}
 
-      {(isLoading || aiResponse || searchResults.length > 0) && (
+      {(isLoading || isAiLoading || aiResponse || searchResults.length > 0) && (
         <div className="mt-8 space-y-6">
+          {/* AI Response Section */}
+          {isAiLoading ? (
+            /* Show loading state for AI response */
+            <AIResponseCard 
+              response="" 
+              isError={false} 
+              isStreaming={true} 
+            />
+          ) : aiResponse ? (
+            /* Show AI response when available */
+            <AIResponseCard 
+              response={aiResponse} 
+              isError={false} 
+              isStreaming={false} 
+              onRegenerate={regenerateResponse} 
+            />
+          ) : null}
+          
+          {/* Search Results Section */}
           {isLoading ? (
-            <div className="animate-pulse space-y-6">
-              <div className="h-40 bg-muted rounded-lg"></div>
+            /* Show loading state for search results */
+            <div className="animate-pulse space-y-6 mt-8">
               <div className="space-y-4">
                 {[...Array(3)].map((_, i) => (
                   <div key={i} className="h-24 bg-muted rounded-lg"></div>
                 ))}
               </div>
             </div>
-          ) : (
+          ) : searchResults.length > 0 && (
             <>
-              {/* AI Response - Always shown above results */}
-              {aiResponse ? (
-                <AIResponseCard response={aiResponse} />
-              ) : (
-                <Card className="bg-primary/5 border-primary/10 border-dashed mb-6 shadow-sm">
-                  <CardHeader className="text-center py-8">
-                    <Bot className="h-10 w-10 mx-auto mb-4 text-primary/50" />
-                    <CardTitle className="text-primary-foreground text-lg">No AI Response</CardTitle>
-                    <p className="text-muted-foreground text-sm mt-2">
-                      Try asking a question to get an AI-powered answer
-                    </p>
-                  </CardHeader>
-                </Card>
-              )}
-              
               {/* Search stats */}
               <div className="flex items-center justify-between mb-4 mt-8">
                 <h2 className="text-xl font-semibold flex items-center gap-2">
@@ -278,27 +394,13 @@ export default function SearchContainer({ initialQuery = "" }: SearchContainerPr
                   Web Results
                 </h2>
                 
-                {searchResults.length > 0 && (
-                  <Badge variant="outline">
-                    {searchResults.length} results
-                  </Badge>
-                )}
+                <Badge variant="outline">
+                  {searchResults.length} results
+                </Badge>
               </div>
               
               {/* Web Search Results */}
-              {searchResults.length > 0 ? (
-                <SearchResults results={searchResults} query={query} />
-              ) : (
-                <Card className="bg-muted/10 border-border/40 border-dashed">
-                  <CardHeader className="text-center py-8">
-                    <SearchCheck className="h-10 w-10 mx-auto mb-4 text-muted-foreground/50" />
-                    <CardTitle className="text-foreground/80 text-lg">No Web Results</CardTitle>
-                    <p className="text-muted-foreground text-sm mt-2">
-                      No web results found. Try a different search query.
-                    </p>
-                  </CardHeader>
-                </Card>
-              )}
+              <SearchResults results={searchResults} query={query} />
             </>
           )}
         </div>
@@ -319,12 +421,7 @@ export default function SearchContainer({ initialQuery = "" }: SearchContainerPr
           <div className="max-w-2xl mx-auto mb-16">
             <h3 className="text-sm font-medium text-muted-foreground mb-4 uppercase tracking-wider">Try searching for</h3>
             <div className="flex flex-wrap justify-center gap-3">
-              {[
-                "What is artificial intelligence?",
-                "Latest tech news",
-                "How to learn TypeScript",
-                "Best programming practices"
-              ].map((suggestion, index) => (
+              {suggestions.map((suggestion, index) => (
                 <Button
                   key={index}
                   variant="outline"
@@ -351,21 +448,48 @@ export default function SearchContainer({ initialQuery = "" }: SearchContainerPr
               </h3>
               <div className="flex flex-wrap justify-center gap-3">
                 {recentSearches.slice(0, 5).map((item, index) => (
-                  <Button
-                    key={index}
-                    variant="ghost"
-                    size="sm"
-                    className="rounded-full text-sm font-normal h-9 px-4 hover:bg-accent/30 transition-colors"
-                    onClick={() => {
-                      setQuery(item.query)
-                      performSearch(item.query)
-                      router.push(`/?q=${encodeURIComponent(item.query)}`)
-                    }}
-                  >
-                    {item.query.length > 30 ? `${item.query.substring(0, 30)}...` : item.query}
-                  </Button>
+                  <div key={index} className="flex items-center">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="rounded-l-full text-sm font-normal h-9 px-4 hover:bg-accent/30 transition-colors"
+                      onClick={() => {
+                        setQuery(item.query)
+                        performSearch(item.query)
+                        router.push(`/?q=${encodeURIComponent(item.query)}`)
+                      }}
+                    >
+                      {item.query.length > 30 ? `${item.query.substring(0, 30)}...` : item.query}
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="rounded-r-full h-9 px-2 hover:bg-destructive/10 hover:text-destructive transition-colors"
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        deleteSearch(item.query)
+                      }}
+                      title="Delete search"
+                      aria-label={`Delete search: ${item.query}`}
+                    >
+                      <X className="h-4 w-4" />
+                    </Button>
+                  </div>
                 ))}
               </div>
+              {recentSearches.length > 0 && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="mt-4 text-xs text-muted-foreground hover:text-destructive"
+                  onClick={() => {
+                    // Clear all recent searches
+                    recentSearches.forEach(item => deleteSearch(item.query))
+                  }}
+                >
+                  Clear all recent searches
+                </Button>
+              )}
             </div>
           )}
         </div>

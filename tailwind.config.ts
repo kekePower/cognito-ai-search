@@ -93,6 +93,10 @@ const config: Config = {
           "0%, 100%": { opacity: "1" },
           "50%": { opacity: ".6" },
         },
+        "shimmer": {
+          "0%": { backgroundPosition: "200% 0" },
+          "100%": { backgroundPosition: "0% 0" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -100,6 +104,7 @@ const config: Config = {
         "fade-in": "fade-in 0.3s ease-out forwards",
         "slide-up": "slide-up 0.3s ease-out forwards",
         "pulse-slow": "pulse-slow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite",
+        "shimmer": "shimmer 2s ease-in-out infinite",
       },
       boxShadow: {
         glow: "0 0 15px -3px rgba(99, 102, 241, 0.3)",
