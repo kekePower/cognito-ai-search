@@ -1,34 +1,38 @@
 # 🔍 Cognito AI Search
 
-### Your Private, AI-Powered Search Companion
+### Your Private, Self-Hosted Search & AI Companion
 
-Tired of being tracked online? Concerned about your search history being sold? Meet **Cognito AI Search** - a private, self-hosted search solution that puts you back in control of your digital life.
+Tired of being tracked online? Concerned about your search history being sold? **Cognito AI Search** combines two powerful, privacy-focused tools in one interface:
+
+1. **Local AI Assistant**: Get instant answers from AI models running entirely on your machine
+2. **Private Web Search**: Search the web anonymously through your self-hosted SearXNG instance
 
 ![Cognito AI Search Screenshot](https://blog.kekepower.com/images/cognito-ai-search-screenshot.png)
 
 ## ✨ Why Choose Cognito AI Search?
 
 ### 🔒 Complete Privacy
-- **No Tracking**: Your searches stay on your devices
-- **No Logging**: We don't store your queries or personal data
-- **No Ads**: No targeted advertising based on your search history
-- **Self-Hosted**: Your data never touches third-party servers
+- **No Tracking**: Your searches and AI queries stay on your devices
+- **No Logging**: We don't store your queries, history, or personal data
+- **No Ads**: No targeted advertising or data collection
+- **Self-Hosted**: Your data never leaves your infrastructure
 
-### 🤖 Smart, Local AI
-- **Instant Answers**: Get concise, accurate responses without waiting
-- **No Data Leaks**: AI processes everything locally on your machine
-- **Customizable**: Adjust response length to get exactly what you need
-- **Always Learning**: Continuously improves with your feedback
+### 🤖 Local AI Assistant
+- **Private AI**: Run models like LLaMA or Mistral locally with Ollama
+- **No Data Leaks**: AI processes everything on your machine
+- **Customizable**: Choose your preferred AI model and response length
+- **Offline Capable**: Works without an internet connection (AI only)
 
-### ⚡ Blazing Fast
-- **Lightning Quick**: Get search results in milliseconds
-- **Offline Capable**: Works even without an internet connection
-- **Resource Efficient**: Uses minimal system resources
+### 🔍 Private Web Search
+- **Self-Hosted SearXNG**: Search the web without tracking
+- **Multiple Sources**: Aggregate results from multiple search engines
+- **No Search History**: Your queries aren't stored or analyzed
+- **No User Profiling**: Get unbiased search results
 
-### 🎨 Beautiful & Intuitive
-- **Clean Interface**: Focus on what matters - your results
-- **Dark/Light Mode**: Easy on your eyes, day or night
-- **Responsive Design**: Works perfectly on any device
+### ⚡ Fast & Efficient
+- **Lightweight Interface**: Minimal resource usage
+- **Quick Results**: Get AI responses and web searches in seconds
+- **Responsive Design**: Works on any device, any screen size
 
 ## 🚀 Get Started in Minutes
 
