@@ -26,7 +26,7 @@ export default function HomePage() {
               }}
             >
               <Sparkles className="h-6 w-6 text-primary" />
-              <span className="font-bold text-lg hidden sm:inline-block">Cognito Search</span>
+              <span className="font-bold text-lg hidden sm:inline-block">Cognito AI Search</span>
             </Link>
           </div>
           <div className="flex items-center space-x-2">
