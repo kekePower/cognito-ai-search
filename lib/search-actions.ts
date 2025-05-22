@@ -15,7 +15,7 @@ export async function searchOllama(query: string): Promise<string> {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "cogito:14b",
+        model: process.env.DEFAULT_OLLAMA_MODEL || "qwen3:30b",
         prompt: "/no_think " + query,
         stream: false,
       }),

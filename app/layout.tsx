@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next'
 import { Toaster } from 'sonner'
 import { Providers } from '@/components/providers'
+import { Footer } from '@/components/footer'
 import { cn } from '@/lib/utils'
 import { GeistSans } from 'geist/font/sans'
 import { GeistMono } from 'geist/font/mono'
@@ -106,7 +107,12 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          {children}
+          <div className="flex flex-col min-h-screen pb-10">
+            <main className="flex-1">
+              {children}
+            </main>
+          </div>
+          <Footer />
           <Toaster
             position="bottom-right"
             toastOptions={{

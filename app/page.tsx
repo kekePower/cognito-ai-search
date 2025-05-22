@@ -17,7 +17,14 @@ export default function HomePage() {
       <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="container flex h-16 items-center justify-between px-4">
           <div className="flex items-center space-x-6">
-            <Link href="/" className="flex items-center space-x-2">
+            <Link 
+              href="/" 
+              className="flex items-center space-x-2"
+              onClick={() => {
+                // Clear any cached search state when clicking the logo
+                window.history.replaceState({}, '', '/')
+              }}
+            >
               <Sparkles className="h-6 w-6 text-primary" />
               <span className="font-bold text-lg hidden sm:inline-block">Cognito Search</span>
             </Link>
@@ -48,22 +55,7 @@ export default function HomePage() {
         </Suspense>
       </main>
 
-      {/* Footer */}
-      <footer className="py-6 border-t border-border-40">
-        <div className="container flex flex-col items-center justify-between gap-4 md:flex-row md:h-16">
-          <p className="text-sm text-muted-foreground">
-            © {new Date().getFullYear()} Cognito Search.
-            <Link 
-              href="https://github.com/kekePower/cognito-ai-search" 
-              target="_blank"
-              rel="noopener noreferrer"
-              className="ml-2 text-primary hover:text-primary-80 hover:underline transition-colors"
-            >
-              GitHub Repository
-            </Link>
-          </p>
-        </div>
-      </footer>
+      {/* No footer here - using the one from layout */}
     </div>
   )
 }
