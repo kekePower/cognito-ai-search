@@ -27,7 +27,6 @@ export default function SearchContainer({ initialQuery = "" }: SearchContainerPr
   const [aiResponse, setAiResponse] = useState("")
   const [searchResults, setSearchResults] = useState<any[]>([])
   const [error, setError] = useState<string | null>(null)
-  const [activeTab, setActiveTab] = useState<string>("ai") // 'ai' or 'web'
   const [recentSearches, setRecentSearches] = useState<Array<{query: string, timestamp: number}>>([])
   const searchInputRef = useRef<HTMLInputElement>(null)
 
@@ -132,7 +131,6 @@ export default function SearchContainer({ initialQuery = "" }: SearchContainerPr
     setAiResponse("")
     setSearchResults([])
     setError(null)
-    setActiveTab("ai") // Switch to AI tab when performing a new search
     
     console.log("Starting search for query:", searchQuery)
 
@@ -200,159 +198,127 @@ export default function SearchContainer({ initialQuery = "" }: SearchContainerPr
     }
   }
 
-  // Focus the search input on mount
-  useEffect(() => {
-    if (searchInputRef.current) {
-      searchInputRef.current.focus()
-    }
-  }, [])
-
   return (
-    <div className="w-full max-w-4xl mx-auto">
-      <form onSubmit={handleSearch} className="relative w-full mb-8">
-        <div className="relative flex items-center shadow-lg rounded-lg overflow-hidden border border-border/50 bg-card">
-          <Search className="absolute left-4 h-5 w-5 text-muted-foreground" />
+    <div className="w-full max-w-5xl mx-auto px-4 md:px-6">
+      {/* Search Form */}
+      <form
+        onSubmit={handleSearch}
+        className="relative mb-8 flex items-center"
+      >
+        <div className="relative w-full">
+          <Search className="absolute left-3 top-3 h-5 w-5 text-muted-foreground" />
           <Input
             ref={searchInputRef}
             type="text"
+            placeholder="Search the web or ask a question..."
+            className="pl-10 pr-24 h-12 bg-background/80 backdrop-blur-sm shadow-sm border-border/60 focus-visible:ring-primary/30 focus-visible:ring-offset-0 rounded-full"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Ask me anything..."
-            className="pl-12 pr-28 py-7 text-base border-0 focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent"
-            disabled={isLoading}
           />
-          <div className="absolute right-2 flex items-center space-x-2">
-            <Button 
-              type="submit" 
-              className="h-10 px-4 bg-primary/90 hover:bg-primary text-primary-foreground font-medium"
+          <div className="absolute right-1.5 top-1.5">
+            <Button
+              type="submit"
+              size="sm"
+              className="h-9 rounded-full"
               disabled={isLoading || !query.trim()}
             >
               {isLoading ? (
                 <Loader2 className="h-4 w-4 animate-spin" />
               ) : (
-                <Search className="h-4 w-4" />
+                <>
+                  <Sparkles className="h-4 w-4 mr-2" />
+                  Search
+                </>
               )}
-              <span className="ml-2">Search</span>
             </Button>
           </div>
         </div>
       </form>
 
+      {/* Error state */}
       {error && (
-        <Alert variant="destructive" className="mb-6 rounded-lg">
+        <Alert variant="destructive" className="mb-8">
           <AlertTriangle className="h-4 w-4" />
           <AlertDescription>{error}</AlertDescription>
         </Alert>
       )}
 
-      {isLoading && !aiResponse && !searchResults.length && (
-        <div className="space-y-6">
-          <div className="flex flex-col items-center justify-center space-y-4 py-12">
-            <div className="relative">
-              <div className="absolute -inset-1 bg-gradient-to-r from-primary/20 to-primary/10 rounded-full blur opacity-75"></div>
-              <div className="relative bg-background p-4 rounded-full border border-border/50">
-                <Loader2 className="h-8 w-8 text-primary animate-spin" />
+      {(isLoading || aiResponse || searchResults.length > 0) && (
+        <div className="mt-8 space-y-6">
+          {isLoading ? (
+            <div className="animate-pulse space-y-6">
+              <div className="h-40 bg-muted rounded-lg"></div>
+              <div className="space-y-4">
+                {[...Array(3)].map((_, i) => (
+                  <div key={i} className="h-24 bg-muted rounded-lg"></div>
+                ))}
               </div>
             </div>
-            <div className="text-center space-y-1">
-              <p className="font-medium">Searching for the best results</p>
-              <p className="text-sm text-muted-foreground">This may take a moment...</p>
-            </div>
-          </div>
+          ) : (
+            <>
+              {/* AI Response - Always shown above results */}
+              {aiResponse ? (
+                <AIResponseCard response={aiResponse} />
+              ) : (
+                <Card className="bg-primary/5 border-primary/10 border-dashed mb-6 shadow-sm">
+                  <CardHeader className="text-center py-8">
+                    <Bot className="h-10 w-10 mx-auto mb-4 text-primary/50" />
+                    <CardTitle className="text-primary-foreground text-lg">No AI Response</CardTitle>
+                    <p className="text-muted-foreground text-sm mt-2">
+                      Try asking a question to get an AI-powered answer
+                    </p>
+                  </CardHeader>
+                </Card>
+              )}
+              
+              {/* Search stats */}
+              <div className="flex items-center justify-between mb-4 mt-8">
+                <h2 className="text-xl font-semibold flex items-center gap-2">
+                  <Search className="h-5 w-5 text-foreground/80" />
+                  Web Results
+                </h2>
+                
+                {searchResults.length > 0 && (
+                  <Badge variant="outline">
+                    {searchResults.length} results
+                  </Badge>
+                )}
+              </div>
+              
+              {/* Web Search Results */}
+              {searchResults.length > 0 ? (
+                <SearchResults results={searchResults} query={query} />
+              ) : (
+                <Card className="bg-muted/10 border-border/40 border-dashed">
+                  <CardHeader className="text-center py-8">
+                    <SearchCheck className="h-10 w-10 mx-auto mb-4 text-muted-foreground/50" />
+                    <CardTitle className="text-foreground/80 text-lg">No Web Results</CardTitle>
+                    <p className="text-muted-foreground text-sm mt-2">
+                      No web results found. Try a different search query.
+                    </p>
+                  </CardHeader>
+                </Card>
+              )}
+            </>
+          )}
         </div>
-      )}
-
-      {!isLoading && (aiResponse || searchResults.length > 0) && (
-        <Tabs 
-          defaultValue="ai" 
-          className="w-full"
-          value={activeTab}
-          onValueChange={setActiveTab}
-        >
-          <TabsList className="grid w-full grid-cols-2 max-w-xs mx-auto mb-8">
-            <TabsTrigger value="ai" className="flex items-center space-x-2">
-              <Bot className="h-4 w-4" />
-              <span>AI Answer</span>
-            </TabsTrigger>
-            <TabsTrigger value="web" className="flex items-center space-x-2">
-              <SearchCheck className="h-4 w-4" />
-              <span>Web Results</span>
-            </TabsTrigger>
-          </TabsList>
-          
-          <TabsContent value="ai" className="mt-0">
-            {aiResponse ? (
-              <AIResponseCard response={aiResponse} />
-            ) : (
-              <Card className="bg-muted/30 border-dashed">
-                <CardHeader>
-                  <CardTitle className="text-center text-muted-foreground">No AI Response</CardTitle>
-                </CardHeader>
-                <CardContent className="text-center text-muted-foreground text-sm">
-                  Try asking a question to get an AI-powered answer
-                </CardContent>
-              </Card>
-            )}
-          </TabsContent>
-          
-          <TabsContent value="web" className="mt-0">
-            {searchResults.length > 0 ? (
-              <SearchResults results={searchResults} query={query} />
-            ) : (
-              <Card className="bg-muted/30 border-dashed">
-                <CardHeader>
-                  <CardTitle className="text-center text-muted-foreground">No Web Results</CardTitle>
-                </CardHeader>
-                <CardContent className="text-center text-muted-foreground text-sm">
-                  No web results found. Try a different search query.
-                </CardContent>
-              </Card>
-            )}
-          </TabsContent>
-        </Tabs>
       )}
 
       {/* Empty state when no search has been performed */}
       {!isLoading && !aiResponse && searchResults.length === 0 && !query && (
-        <div className="text-center py-12">
-          <div className="mx-auto w-20 h-20 rounded-full bg-primary/5 flex items-center justify-center mb-6">
-            <Search className="h-10 w-10 text-primary" />
+        <div className="text-center py-12 px-4">
+          <div className="mx-auto w-24 h-24 rounded-full bg-primary/5 flex items-center justify-center mb-6">
+            <Search className="h-12 w-12 text-primary/80" />
           </div>
-          <h2 className="text-2xl font-semibold mb-3">What would you like to know?</h2>
-          <p className="text-muted-foreground max-w-md mx-auto mb-8">
+          <h2 className="text-2xl md:text-3xl font-semibold mb-4 text-foreground">What would you like to know?</h2>
+          <p className="text-muted-foreground max-w-md mx-auto text-lg mb-12">
             Ask a question or search the web to get started.
           </p>
           
-          {/* Recent Searches */}
-          {recentSearches.length > 0 && (
-            <div className="mt-8 max-w-2xl mx-auto">
-              <h3 className="text-sm font-medium text-muted-foreground mb-3 flex items-center justify-center">
-                <Clock className="h-4 w-4 mr-2" />
-                Recent Searches
-              </h3>
-              <div className="flex flex-wrap justify-center gap-2">
-                {recentSearches.map((item, index) => (
-                  <Button
-                    key={index}
-                    variant="outline"
-                    size="sm"
-                    className="rounded-full text-sm font-normal h-8 px-4"
-                    onClick={() => {
-                      setQuery(item.query)
-                      router.push(`/?q=${encodeURIComponent(item.query)}`)
-                    }}
-                  >
-                    {item.query}
-                  </Button>
-                ))}
-              </div>
-            </div>
-          )}
-          
           {/* Quick Suggestions */}
-          <div className="mt-12 max-w-2xl mx-auto">
-            <h3 className="text-sm font-medium text-muted-foreground mb-3">Try searching for</h3>
-            <div className="flex flex-wrap justify-center gap-2">
+          <div className="max-w-2xl mx-auto mb-16">
+            <h3 className="text-sm font-medium text-muted-foreground mb-4 uppercase tracking-wider">Try searching for</h3>
+            <div className="flex flex-wrap justify-center gap-3">
               {[
                 "What is artificial intelligence?",
                 "Latest tech news",
@@ -361,11 +327,12 @@ export default function SearchContainer({ initialQuery = "" }: SearchContainerPr
               ].map((suggestion, index) => (
                 <Button
                   key={index}
-                  variant="ghost"
+                  variant="outline"
                   size="sm"
-                  className="rounded-full text-sm font-normal h-8 px-4"
+                  className="rounded-full text-sm font-normal h-9 px-4 hover:bg-accent/50 transition-colors"
                   onClick={() => {
                     setQuery(suggestion)
+                    performSearch(suggestion)
                     router.push(`/?q=${encodeURIComponent(suggestion)}`)
                   }}
                 >
@@ -374,6 +341,33 @@ export default function SearchContainer({ initialQuery = "" }: SearchContainerPr
               ))}
             </div>
           </div>
+          
+          {/* Recent Searches */}
+          {recentSearches.length > 0 && (
+            <div className="max-w-2xl mx-auto">
+              <h3 className="text-sm font-medium text-muted-foreground mb-4 flex items-center justify-center">
+                <Clock className="h-4 w-4 mr-2" />
+                <span className="uppercase tracking-wider">Recent Searches</span>
+              </h3>
+              <div className="flex flex-wrap justify-center gap-3">
+                {recentSearches.slice(0, 5).map((item, index) => (
+                  <Button
+                    key={index}
+                    variant="ghost"
+                    size="sm"
+                    className="rounded-full text-sm font-normal h-9 px-4 hover:bg-accent/30 transition-colors"
+                    onClick={() => {
+                      setQuery(item.query)
+                      performSearch(item.query)
+                      router.push(`/?q=${encodeURIComponent(item.query)}`)
+                    }}
+                  >
+                    {item.query.length > 30 ? `${item.query.substring(0, 30)}...` : item.query}
+                  </Button>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       )}
     </div>

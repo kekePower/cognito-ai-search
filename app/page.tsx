@@ -49,31 +49,19 @@ export default function HomePage() {
       </main>
 
       {/* Footer */}
-      <footer className="py-6 border-t border-border/40">
+      <footer className="py-6 border-t border-border-40">
         <div className="container flex flex-col items-center justify-between gap-4 md:flex-row md:h-16">
           <p className="text-sm text-muted-foreground">
-            © {new Date().getFullYear()} Cognito Search. All rights reserved.
+            © {new Date().getFullYear()} Cognito Search.
+            <Link 
+              href="https://github.com/kekePower/cognito-ai-search" 
+              target="_blank"
+              rel="noopener noreferrer"
+              className="ml-2 text-primary hover:text-primary-80 hover:underline transition-colors"
+            >
+              GitHub Repository
+            </Link>
           </p>
-          <div className="flex items-center space-x-4">
-            <Link 
-              href="#" 
-              className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-            >
-              Privacy
-            </Link>
-            <Link 
-              href="#" 
-              className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-            >
-              Terms
-            </Link>
-            <Link 
-              href="#" 
-              className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-            >
-              Contact
-            </Link>
-          </div>
         </div>
       </footer>
     </div>
