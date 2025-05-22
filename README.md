@@ -4,7 +4,7 @@
 
 Tired of being tracked online? Concerned about your search history being sold? Meet **Cognito AI Search** - a private, self-hosted search solution that puts you back in control of your digital life.
 
-![Cognito AI Search Screenshot](https://via.placeholder.com/1200x600.png?text=Cognito+AI+Search+Screenshot)
+![Cognito AI Search Screenshot](https://blog.kekepower.com/images/cognito-ai-search-screenshot.png)
 
 ## ✨ Why Choose Cognito AI Search?
 
