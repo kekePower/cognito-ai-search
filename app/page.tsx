@@ -39,10 +39,10 @@ export default function HomePage() {
       <main className="flex-1 container max-w-6xl mx-auto px-4 py-8 md:py-12">
         <div className="text-center mb-12">
           <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-primary">
-            Search the Web, Intelligently
+            Private Search & Local AI
           </h1>
           <p className="mt-4 text-lg text-muted-foreground">
-            Powered by AI for smarter, more relevant results.
+            Self-hosted web search and local AI answers in one private interface
           </p>
         </div>
         
@@ -54,8 +54,6 @@ export default function HomePage() {
           <SearchContainer initialQuery={query || undefined} />
         </Suspense>
       </main>
-
-      {/* No footer here - using the one from layout */}
     </div>
   )
 }
