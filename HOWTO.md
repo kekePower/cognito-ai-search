@@ -1,6 +1,6 @@
-# Cognito Search - Technical Documentation
+# Cognito AI Search - Technical Documentation
 
-This document contains detailed technical information about setting up and configuring Cognito Search. For a general overview, please see the [README.md](README.md).
+This document contains detailed technical information about setting up and configuring Cognito AI Search. For a general overview, please see the [README.md](README.md).
 
 ## Table of Contents
 - [Prerequisites](#prerequisites)
@@ -29,6 +29,7 @@ SEARXNG_API_URL=http://your-searxng-instance:port
 # Ollama Configuration
 OLLAMA_API_URL=http://your-ollama-instance:11434
 DEFAULT_OLLAMA_MODEL=your-preferred-model
+AI_RESPONSE_MAX_TOKENS=your-preferred-max-tokens
 
 # Next.js Configuration
 NEXT_PUBLIC_APP_URL=http://localhost:3000
@@ -132,6 +133,8 @@ NEXT_TELEMETRY_DISABLED=1
 # Update these with your production URLs
 SEARXNG_API_URL=your-production-searxng-url
 OLLAMA_API_URL=your-production-ollama-url
+DEFAULT_OLLAMA_MODEL=your-preferred-model
+AI_RESPONSE_MAX_TOKENS=your-preferred-max-tokens
 NEXT_PUBLIC_APP_URL=your-production-url
 ```
 
@@ -146,7 +149,7 @@ For better process management in production, you can use PM2:
 
 2. Start the application with PM2:
    ```bash
-   pm2 start "pnpm start" --name "cognito-search"
+   pm2 start "pnpm start" --name "cognito-ai-search"
    ```
 
 3. Set PM2 to start on system boot:
