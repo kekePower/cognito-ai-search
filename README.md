@@ -1,68 +1,51 @@
-# 🔍 Cognito AI Search
+# 🔍 Cognito AI Search: Your Private Gateway to Information
 
-### Your Private, Self-Hosted Search & AI Companion
+Cognito AI Search offers a secure and private way to find information and get answers. It's designed for individuals who value their privacy and want more control over their digital footprint. This tool brings together the power of a local AI assistant and a private web search engine, all running on your own hardware, ensuring your data stays with you.
 
-Tired of being tracked online? Concerned about your search history being sold? **Cognito AI Search** combines two powerful, privacy-focused tools in one interface:
-
-1. **Local AI Assistant**: Get instant answers from AI models running entirely on your machine
-2. **Private Web Search**: Search the web anonymously through your self-hosted SearXNG instance
+In an online world where tracking is common, Cognito AI Search provides an alternative. It allows you to explore the web and interact with artificial intelligence without concerns about your search history or personal data being collected or analyzed by third parties.
 
 ![Cognito AI Search Screenshot](https://blog.kekepower.com/images/cognito-ai-search-screenshot.png)
 
-## ✨ Why Choose Cognito AI Search?
+## What Can Cognito AI Search Do For You?
 
-### 🔒 Complete Privacy
-- **No Tracking**: Your searches and AI queries stay on your devices
-- **No Logging**: We don't store your queries, history, or personal data
-- **No Ads**: No targeted advertising or data collection
-- **Self-Hosted**: Your data never leaves your infrastructure
+Cognito AI Search is built on two core pillars, designed to work together seamlessly or independently:
 
-### 🤖 Local AI Assistant
-- **Private AI**: Run models like LLaMA or Mistral locally with Ollama
-- **No Data Leaks**: AI processes everything on your machine
-- **Customizable**: Choose your preferred AI model and response length
-- **Offline Capable**: Works without an internet connection (AI only)
+### 🤖 Your Personal AI Assistant, On Your Terms
 
-### 🔍 Private Web Search
-- **Self-Hosted SearXNG**: Search the web without tracking
-- **Multiple Sources**: Aggregate results from multiple search engines
-- **No Search History**: Your queries aren't stored or analyzed
-- **No User Profiling**: Get unbiased search results
+Imagine having an AI assistant that operates entirely on your own computer. Cognito AI Search makes this possible by integrating with local AI models like LLaMA or Mistral (via Ollama). This means:
 
-### ⚡ Fast & Efficient
-- **Lightweight Interface**: Minimal resource usage
-- **Quick Results**: Get AI responses and web searches in seconds
-- **Responsive Design**: Works on any device, any screen size
+*   **True Privacy:** Your conversations with the AI never leave your machine. What you ask and the responses you receive remain confidential.
+*   **Offline Access:** Because the AI runs locally, you can often get answers and assistance even without an active internet connection.
+*   **Customization:** You have the freedom to choose the AI model that best suits your needs and configure how it responds.
 
-## 🚀 Get Started in Minutes
+### 🌐 Private and Unbiased Web Search
 
-1. **Download & Install**
-   ```bash
-   git clone https://github.com/yourusername/cognito-ai-search.git
-   cd cognito-ai-search
-   pnpm install
-   ```
+When you need to search the wider internet, Cognito AI Search uses a self-hosted instance of SearXNG. This is a powerful metasearch engine that fetches results from various sources without compromising your privacy. Key benefits include:
 
-2. **Run with One Command**
-   ```bash
-   pnpm dev
-   ```
+*   **Anonymous Searching:** Your search queries are not logged or tied to your identity. Each search is a fresh start.
+*   **No Tracking or Profiling:** Unlike many commercial search engines, Cognito AI Search doesn't build a profile on you, ensuring the results you see are not influenced by past behavior or targeted advertising.
+*   **Aggregated Results:** Get a broader perspective by seeing results from multiple search engines in one place.
 
-3. **Start Searching**
-   Open your browser and experience private, AI-powered search
+## Key Advantages of Using Cognito AI Search
 
-## 📚 Need Help?
+Choosing Cognito AI Search means prioritizing your digital autonomy. Here’s what sets it apart:
 
-Check out our [comprehensive guide](HOWTO.md) for detailed setup instructions and troubleshooting tips.
+*   **Complete Data Control:** By self-hosting, you are in full command of your data. Nothing is sent to external servers without your explicit action.
+*   **Freedom from Ads and Trackers:** Enjoy a cleaner, more focused experience without targeted advertisements or hidden data collection.
+*   **Efficient and User-Friendly:** The interface is designed to be lightweight and responsive, delivering quick results on any device without unnecessary clutter.
+
+## 🚀 Get Started
+
+For detailed setup instructions, see the [HOWTO](HOWTO.md).
 
 ## 🌟 Join Our Community
 
-We're building Cognito AI Search to give people back control of their digital lives. Join us in creating a more private, open web!
+Cognito AI Search is more than just a tool; it's a step towards a more private and user-controlled internet. We welcome you to join us:
 
-- ⭐ Star us on GitHub
-- 🐛 Report issues
-- 💡 Suggest features
-- 🤝 Contribute code
+*   ⭐ Star us on GitHub
+*   🐛 Report issues if you find any bugs
+*   💡 Suggest features you'd like to see
+*   🤝 Contribute code if you're a developer
 
 ## 📄 License
 
