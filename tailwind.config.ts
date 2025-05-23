@@ -3,16 +3,18 @@ import type { Config } from "tailwindcss"
 const config: Config = {
   darkMode: "class",
   content: [
-    "./pages/**/*.{js,ts,jsx,tsx,mdx}",
-    "./components/**/*.{js,ts,jsx,tsx,mdx}",
-    "./app/**/*.{js,ts,jsx,tsx,mdx}",
+    "./pages/**/*.{ts,tsx}",
+    "./components/**/*.{ts,tsx}",
+    "./app/**/*.{ts,tsx}",
+    "./src/**/*.{ts,tsx}",
   ],
+  prefix: "",
   theme: {
     container: {
       center: true,
-      padding: "1.5rem",
+      padding: "2rem",
       screens: {
-        "2xl": "1440px",
+        "2xl": "1400px",
       },
     },
     extend: {
@@ -21,39 +23,82 @@ const config: Config = {
         mono: ["var(--font-geist-mono)", "monospace"],
       },
       colors: {
-        border: "hsl(var(--border) / <alpha-value>)",
-        input: "hsl(var(--input) / <alpha-value>)",
-        ring: "hsl(var(--ring) / <alpha-value>)",
-        background: "hsl(var(--background) / <alpha-value>)",
-        foreground: "hsl(var(--foreground) / <alpha-value>)",
+        border: {
+          DEFAULT: 'hsl(214.3 31.8% 91.4%)',
+          dark: 'hsl(217.2 32.6% 17.5%)'
+        },
+        input: {
+          DEFAULT: 'hsl(214.3 31.8% 91.4%)',
+          dark: 'hsl(217.2 32.6% 17.5%)'
+        },
+        ring: {
+          DEFAULT: 'hsl(221.2 83.2% 53.3%)',
+          dark: 'hsl(224.3 76.3% 48%)'
+        },
+        background: {
+          DEFAULT: '#FFFFFF',
+          dark: '#0B1120'
+        },
+        foreground: {
+          DEFAULT: '#0B1120',
+          dark: '#F0F0F0'
+        },
         primary: {
-          DEFAULT: "hsl(var(--primary) / <alpha-value>)",
-          foreground: "hsl(var(--primary-foreground) / <alpha-value>)",
+          DEFAULT: 'hsl(221.2 83.2% 53.3%)',
+          foreground: {
+            DEFAULT: 'hsl(210 40% 98%)',
+            dark: 'hsl(222.2 47.4% 11.2%)'
+          },
+          dark: 'hsl(217.2 91.2% 59.8%)'
         },
         secondary: {
-          DEFAULT: "hsl(var(--secondary) / <alpha-value>)",
-          foreground: "hsl(var(--secondary-foreground) / <alpha-value>)",
+          DEFAULT: 'hsl(210 40% 96.1%)',
+          foreground: {
+            DEFAULT: 'hsl(222.2 47.4% 11.2%)',
+            dark: 'hsl(210 40% 98%)'
+          },
+          dark: 'hsl(217.2 32.6% 17.5%)'
         },
         destructive: {
-          DEFAULT: "hsl(var(--destructive) / <alpha-value>)",
-          foreground: "hsl(var(--destructive-foreground) / <alpha-value>)",
+          DEFAULT: 'hsl(0 84.2% 60.2%)',
+          foreground: {
+            DEFAULT: 'hsl(210 40% 98%)',
+            dark: 'hsl(210 40% 98%)' // Assuming same as light, adjust if needed
+          },
+          dark: 'hsl(0 62.8% 30.6%)'
         },
         muted: {
-          DEFAULT: "hsl(var(--muted) / <alpha-value>)",
-          foreground: "hsl(var(--muted-foreground) / <alpha-value>)",
+          DEFAULT: 'hsl(210 40% 96.1%)',
+          foreground: {
+            DEFAULT: 'hsl(215.4 16.3% 46.9%)',
+            dark: 'hsl(215 20.2% 65.1%)'
+          },
+          dark: 'hsl(217.2 32.6% 17.5%)'
         },
         accent: {
-          DEFAULT: "hsl(var(--accent) / <alpha-value>)",
-          foreground: "hsl(var(--accent-foreground) / <alpha-value>)",
+          DEFAULT: 'hsl(210 40% 96.1%)',
+          foreground: {
+            DEFAULT: 'hsl(222.2 47.4% 11.2%)',
+            dark: 'hsl(210 40% 98%)'
+          },
+          dark: 'hsl(217.2 32.6% 17.5%)'
         },
         popover: {
-          DEFAULT: "hsl(var(--popover) / <alpha-value>)",
-          foreground: "hsl(var(--popover-foreground) / <alpha-value>)",
+          DEFAULT: 'hsl(0 0% 100%)',
+          foreground: {
+            DEFAULT: 'hsl(222.2 84% 4.9%)',
+            dark: 'hsl(210 40% 98%)'
+          },
+          dark: 'hsl(222.2 84% 4.9%)'
         },
         card: {
-          DEFAULT: "hsl(var(--card) / <alpha-value>)",
-          foreground: "hsl(var(--card-foreground) / <alpha-value>)",
-        },
+          DEFAULT: 'hsl(0 0% 100%)',
+          foreground: {
+            DEFAULT: 'hsl(222.2 84% 4.9%)',
+            dark: 'hsl(210 40% 98%)'
+          },
+          dark: 'hsl(222.2 84% 4.9%)'
+        }
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -69,134 +114,46 @@ const config: Config = {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: "0" },
         },
-        "fade-in": {
-          from: { opacity: "0" },
-          to: { opacity: "1" },
+        fadeIn: {
+          '0%': { opacity: '0' },
+          '100%': { opacity: '1' },
         },
-        "fade-up": {
-          "0%": { opacity: "0", transform: "translateY(10px)" },
-          "100%": { opacity: "1", transform: "translateY(0)" },
+        fadeOut: {
+          '0%': { opacity: '1' },
+          '100%': { opacity: '0' },
         },
-        "fade-down": {
-          "0%": { opacity: "0", transform: "translateY(-10px)" },
-          "100%": { opacity: "1", transform: "translateY(0)" },
+        slideInFromLeft: {
+          '0%': { transform: 'translateX(-100%)', opacity: '0' },
+          '100%': { transform: 'translateX(0)', opacity: '1' },
         },
-        "fade-left": {
-          "0%": { opacity: "0", transform: "translateX(10px)" },
-          "100%": { opacity: "1", transform: "translateX(0)" },
+        slideOutToLeft: {
+          '0%': { transform: 'translateX(0)', opacity: '1' },
+          '100%': { transform: 'translateX(-100%)', opacity: '0' },
         },
-        "fade-right": {
-          "0%": { opacity: "0", transform: "translateX(-10px)" },
-          "100%": { opacity: "1", transform: "translateX(0)" },
+        'pulse-shadow': {
+          '0%': { boxShadow: '0 0 5px 0px rgba(var(--primary-rgb), 0.3)' },
+          '50%': { boxShadow: '0 0 20px 5px rgba(var(--primary-rgb), 0.5)' },
+          '100%': { boxShadow: '0 0 5px 0px rgba(var(--primary-rgb), 0.3)' },
         },
-        "pulse-slow": {
-          "0%, 100%": { opacity: "1" },
-          "50%": { opacity: ".6" },
-        },
-        "shimmer": {
-          "0%": { backgroundPosition: "200% 0" },
-          "100%": { backgroundPosition: "0% 0" },
-        },
-        "gradient-x": {
-          "0%, 100%": { backgroundPosition: "0% 50%" },
-          "50%": { backgroundPosition: "100% 50%" },
-        },
-        "border-glow": {
-          "0%": { boxShadow: "0 0 0 0 rgba(99, 102, 241, 0)" },
-          "50%": { boxShadow: "0 0 0 4px rgba(99, 102, 241, 0.3)" },
-          "100%": { boxShadow: "0 0 0 0 rgba(99, 102, 241, 0)" },
-        },
-        "color-change": {
-          "0%": { borderColor: "rgba(99, 102, 241, 0.2)" },
-          "50%": { borderColor: "rgba(59, 130, 246, 0.5)" },
-          "100%": { borderColor: "rgba(99, 102, 241, 0.2)" },
+        'pulse-shadow-white': {
+          '0%': { boxShadow: '0 0 5px 0px rgba(255, 255, 255, 0.3)' },
+          '50%': { boxShadow: '0 0 20px 5px rgba(255, 255, 255, 0.5)' },
+          '100%': { boxShadow: '0 0 5px 0px rgba(255, 255, 255, 0.3)' },
         },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
-        "fade-in": "fade-in 0.3s ease-out forwards",
-        "slide-up": "slide-up 0.3s ease-out forwards",
-        "pulse-slow": "pulse-slow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite",
-        "shimmer": "shimmer 2s ease-in-out infinite",
-        "gradient-x": "gradient-x 3s ease-in-out infinite",
-        "border-glow": "border-glow 2s ease-in-out infinite",
-        "color-change": "color-change 3s ease-in-out infinite",
-      },
-      boxShadow: {
-        glow: "0 0 15px -3px rgba(99, 102, 241, 0.3)",
-        "glow-lg": "0 0 30px -5px rgba(99, 102, 241, 0.3)",
-      },
-      transitionTimingFunction: {
-        "in-out": "cubic-bezier(0.4, 0, 0.2, 1)",
-        "out-expo": "cubic-bezier(0.16, 1, 0.3, 1)",
-      },
-      typography: {
-        DEFAULT: {
-          css: {
-            maxWidth: "none",
-            color: "hsl(var(--foreground))",
-            a: {
-              color: "hsl(var(--primary))",
-              textDecoration: "none",
-              fontWeight: "500",
-              "&:hover": {
-                textDecoration: "underline",
-              },
-            },
-            h1: {
-              color: "hsl(var(--foreground))",
-              fontWeight: "800",
-              lineHeight: "1.2",
-              marginBottom: "1rem",
-            },
-            h2: {
-              color: "hsl(var(--foreground))",
-              fontWeight: "700",
-              marginTop: "2rem",
-              marginBottom: "1rem",
-            },
-            h3: {
-              color: "hsl(var(--foreground))",
-              fontWeight: "600",
-              marginTop: "1.5rem",
-              marginBottom: "0.75rem",
-            },
-            code: {
-              color: "hsl(var(--primary))",
-              fontWeight: "500",
-              backgroundColor: "hsl(var(--muted))",
-              padding: "0.2em 0.4em",
-              borderRadius: "0.25rem",
-              fontSize: "0.9em",
-            },
-            pre: {
-              backgroundColor: "hsl(var(--muted))",
-              borderRadius: "0.5rem",
-              padding: "1rem",
-              overflowX: "auto",
-              margin: "1rem 0",
-            },
-            blockquote: {
-              borderLeft: "3px solid hsl(var(--primary))",
-              paddingLeft: "1rem",
-              fontStyle: "italic",
-              color: "hsl(var(--muted-foreground))",
-              margin: "1.5rem 0",
-            },
-          },
-        },
+        fadeIn: 'fadeIn 0.5s ease-in-out',
+        fadeOut: 'fadeOut 0.5s ease-in-out',
+        slideInFromLeft: 'slideInFromLeft 0.5s ease-in-out',
+        slideOutToLeft: 'slideOutToLeft 0.5s ease-in-out',
+        'pulse-shadow': 'pulse-shadow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+        'pulse-shadow-white': 'pulse-shadow-white 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
       },
     },
   },
-  plugins: [
-    require("tailwindcss-animate"),
-    require("@tailwindcss/typography"),
-    require("@tailwindcss/container-queries"),
-  ],
-  future: {
-    hoverOnlyWhenSupported: true,
-  },
+  // plugins: [require("tailwindcss-animate"), require("@tailwindcss/typography")],
 }
 
 export default config

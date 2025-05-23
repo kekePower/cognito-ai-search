@@ -28,3 +28,5 @@ next-env.d.ts
 
 # Other files
 *.backup
+*.bak
+*.log

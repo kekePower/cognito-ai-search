@@ -6,7 +6,7 @@ import { ThemeToggleButton } from "@/components/theme-toggle-button"
 
 export function SiteHeader() {
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header className="sticky top-0 z-50 w-full border-b border-border/40 dark:border-white/10 bg-background/95 dark:bg-[#0B1120]/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 dark:supports-[backdrop-filter]:bg-[#0B1120]/80 shadow-sm">
       <div className="container flex h-16 items-center justify-between px-4">
         <div className="flex items-center">
           <Link 
@@ -15,16 +15,18 @@ export function SiteHeader() {
             onClick={() => {
               // Clear any cached search state when clicking the logo
               window.history.replaceState({}, '', '/')
+              // Clear localStorage cache for the current session
+              localStorage.removeItem('currentSearchQuery')
             }}
           >
-            <Sparkles className="h-6 w-6 text-primary" />
-            <span className="font-bold text-lg hidden sm:inline-block">Cognito AI Search</span>
+            <Sparkles className="h-6 w-6 text-primary dark:text-primary/90" />
+            <span className="font-bold text-lg hidden sm:inline-block dark:text-white/95">Cognito AI Search</span>
           </Link>
         </div>
         <div className="flex items-center space-x-4">
           <Link 
             href="/how-it-works" 
-            className="text-foreground/80 hover:text-foreground transition-colors flex items-center gap-1.5"
+            className="text-foreground/80 dark:text-white/70 hover:text-foreground dark:hover:text-white/95 transition-colors flex items-center gap-1.5"
           >
             <BookOpen className="h-4 w-4" />
             <span>How It Works</span>
@@ -33,7 +35,7 @@ export function SiteHeader() {
             href="https://github.com/kekePower/cognito-ai-search"
             target="_blank"
             rel="noreferrer"
-            className="text-foreground/80 hover:text-foreground transition-colors flex items-center gap-1.5"
+            className="text-foreground/80 dark:text-white/70 hover:text-foreground dark:hover:text-white/95 transition-colors flex items-center gap-1.5"
           >
             <Github className="h-4 w-4" />
             <span>GitHub</span>

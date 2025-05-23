@@ -16,7 +16,7 @@ This document contains detailed technical information about setting up and confi
 - Node.js 18+ and npm/yarn/pnpm
 - Self-hosted SearXNG instance (or public instance URL)
 - Ollama installed and running with desired models
-- (Optional) Redis for caching (recommended for production)
+- (Optional) Redis for caching (recommended for SearXNG)
 
 ## Environment Setup
 

@@ -62,9 +62,9 @@ export default function SearchResults({ results, query = '' }: SearchResultsProp
             <div 
               key={index}
               className={cn(
-                "group p-5 rounded-lg border border-border/50 bg-card/50 backdrop-blur-sm",
+                "group p-5 rounded-lg border border-border/50 bg-white dark:bg-[#0f1729]/90 backdrop-blur-sm",
                 "hover:shadow-lg transition-all duration-300",
-                "hover:border-primary/20 hover:bg-card/80"
+                "hover:border-primary/20 hover:bg-white hover:dark:bg-[#0f1729]/95"
               )}
             >
             <div className="flex flex-col space-y-2">
@@ -82,12 +82,12 @@ export default function SearchResults({ results, query = '' }: SearchResultsProp
               </div>
               
               {/* Title with link */}
-              <h3 className="text-lg font-medium text-foreground group-hover:text-primary transition-colors">
+              <h3 className="text-lg font-medium text-foreground dark:text-gray-200 group-hover:text-primary transition-colors">
                 <a 
                   href={result.url} 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  className="hover:underline flex items-start"
+                  className="hover:underline flex items-start dark:text-blue-300 dark:hover:text-blue-200"
                 >
                   {result.title}
                   <ExternalLink className="ml-1.5 h-3.5 w-3.5 shrink-0 mt-1.5 opacity-0 group-hover:opacity-100 transition-opacity" />
@@ -107,7 +107,7 @@ export default function SearchResults({ results, query = '' }: SearchResultsProp
                   href={result.url} 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  className="text-sm text-primary hover:text-primary/80 hover:underline inline-flex items-center transition-colors px-3 py-1 rounded-full bg-primary/5 hover:bg-primary/10"
+                  className="text-sm text-primary dark:text-blue-300 hover:text-primary/80 dark:hover:text-blue-200 hover:underline inline-flex items-center transition-colors px-3 py-1 rounded-full bg-primary/5 hover:bg-primary/10"
                 >
                   Visit website
                   <ExternalLink className="ml-1 h-3 w-3" />
