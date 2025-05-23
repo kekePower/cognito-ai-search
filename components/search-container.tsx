@@ -28,6 +28,8 @@ export default function SearchContainer({ initialQuery = "" }: SearchContainerPr
   const [aiResponse, setAiResponse] = useState("")
   const [searchResults, setSearchResults] = useState<any[]>([])
   const [error, setError] = useState<string | null>(null)
+  const [displayedOriginalQuery, setDisplayedOriginalQuery] = useState<string | null>(null)
+  const [displayedOptimizedQuery, setDisplayedOptimizedQuery] = useState<string | null>(null)
   const [recentSearches, setRecentSearches] = useState<Array<{query: string, timestamp: number}>>([])  
   const [suggestions, setSuggestions] = useState<string[]>([])
   const searchInputRef = useRef<HTMLInputElement>(null)
@@ -49,7 +51,7 @@ export default function SearchContainer({ initialQuery = "" }: SearchContainerPr
     } catch (error) {
       console.error('Failed to load recent searches or set suggestions', error)
     }
-  }, [])
+  }, [CACHE_DURATION])
 
   // Get cached results for a query
   const getCachedResults = useCallback((query: string) => {
@@ -122,31 +124,123 @@ export default function SearchContainer({ initialQuery = "" }: SearchContainerPr
     }
   }, [])
 
-  // Handle search when component mounts with URL query
-  useEffect(() => {
-    // If there's an initialQuery, process it
-    if (initialQuery) {
-      const searchQuery = Array.isArray(initialQuery) ? initialQuery[0] || '' : initialQuery
-      setQuery(searchQuery)
-      if (searchQuery) {
-        const cached = getCachedResults(searchQuery)
-        if (cached) {
-          setAiResponse(cached.aiResponse || '')
-          setSearchResults(cached.searchResults || [])
-          setError(null)
-        } else {
-          performSearch(searchQuery)
+  // Function to perform the search
+  const performSearch = useCallback(async (searchQuery: string, bypassCache = false) => {
+    if (!searchQuery.trim()) return
+
+    setIsLoading(true)
+    setIsAiLoading(true)
+    setError(null)
+    setAiResponse("")
+    setSearchResults([])
+    setDisplayedOriginalQuery(null) // Clear previous queries
+    setDisplayedOptimizedQuery(null)
+
+    router.push(`/?q=${encodeURIComponent(searchQuery)}`)
+    
+    try {
+      // Check cache first (unless bypassCache is true)
+      if (!bypassCache) {
+        const cachedResult = getCachedResults(searchQuery)
+        if (cachedResult) {
+          setAiResponse(cachedResult.aiResponse || "")
+          setSearchResults(cachedResult.searchResults || [])
+          setDisplayedOriginalQuery(cachedResult.originalQuery || searchQuery)
+          setDisplayedOptimizedQuery(cachedResult.optimizedQuery || searchQuery)
+          setIsLoading(false)
+          // No need to set isAiLoading to false here, as AI response might still be pending or fetched separately
+          return
         }
       }
+
+      // If not in cache or bypassing cache, fetch new results
+      // Fetch SearXNG results
+      try {
+        const searxngResponse = await fetch(`/api/searxng?q=${encodeURIComponent(searchQuery)}`)
+        if (!searxngResponse.ok) {
+          const errorData = await searxngResponse.json()
+          throw new Error(errorData.error || "Failed to fetch web results")
+        }
+        const searxngData = await searxngResponse.json()
+        const results = searxngData.results || []
+        setSearchResults(results)
+
+        const originalFromAPI = searxngData.originalQuery || searchQuery;
+        const optimizedFromAPI = searxngData.optimizedQuery || originalFromAPI; // Fallback to original if optimized is missing
+
+        setDisplayedOriginalQuery(originalFromAPI)
+        setDisplayedOptimizedQuery(optimizedFromAPI)
+            
+        // Cache web search results immediately
+        if (results.length > 0) {
+          const combinedDataToCache = {
+            aiResponse: "", // AI response will be cached separately or fetched fresh
+            searchResults: results,
+            originalQuery: originalFromAPI,
+            optimizedQuery: optimizedFromAPI
+          }
+          cacheResults(searchQuery, combinedDataToCache)
+        }
+      } catch (e: any) {
+        console.error("Error fetching web results:", e)
+        setError(`Failed to fetch web results: ${e.message}`)
+        // Don't set isLoading to false here, AI response might still be coming
+      }
+      
+      // Fetch AI response (Ollama)
+      try {
+        const aiRes = await fetch(`/api/ollama?q=${encodeURIComponent(searchQuery)}${bypassCache ? '&bypassCache=true' : ''}`)
+        if (!aiRes.ok) {
+          const errorData = await aiRes.json()
+          throw new Error(errorData.error || "Failed to fetch AI response")
+        }
+        const aiData = await aiRes.json()
+        const cleanedAiResponse = cleanResponse(aiData.response || "")
+        setAiResponse(cleanedAiResponse)
+
+        // Update cache with AI response
+        const cachedDataForAI = getCachedResults(searchQuery) || { searchResults: [], originalQuery: searchQuery, optimizedQuery: searchQuery }
+        cacheResults(searchQuery, { ...cachedDataForAI, aiResponse: cleanedAiResponse })
+
+      } catch (e: any) {
+        console.error("Error fetching AI response:", e)
+        setError((prevError) => prevError ? `${prevError}, AI response error: ${e.message}` : `AI response error: ${e.message}`)
+      }
+
+    } catch (e: any) {
+      console.error("Search error:", e)
+      setError(e.message)
+    } finally {
+      setIsLoading(false)
+      // but we don't set isLoading to false here as it's handled in the SearXNG response
+      setIsAiLoading(false)
+    }
+  }, [router, getCachedResults, cacheResults, setIsLoading, setIsAiLoading, setError, setAiResponse, setSearchResults, setDisplayedOriginalQuery, setDisplayedOptimizedQuery]) // Added dependencies
+
+  // Effect for handling initial query and query changes from URL
+  useEffect(() => {
+    const q = Array.isArray(initialQuery) ? initialQuery[0] : initialQuery
+    if (q) {
+      setQuery(q)
+      const cachedData = getCachedResults(q)
+      if (cachedData) {
+        setAiResponse(cachedData.aiResponse || '')
+        setSearchResults(cachedData.searchResults || [])
+        setDisplayedOriginalQuery(cachedData.originalQuery || q)
+        setDisplayedOptimizedQuery(cachedData.optimizedQuery || q)
+        setError(null)
+      } else {
+        performSearch(q, false) // Call performSearch
+      }
     } else {
-      // If there's no initialQuery (navigating to home page), clear the search state
       setQuery('')
       setAiResponse('')
       setSearchResults([])
       setError(null)
-      console.log('Cleared search state - navigated to home page without query')
+      setDisplayedOriginalQuery(null)
+      setDisplayedOptimizedQuery(null)
     }
-  }, [initialQuery, getCachedResults])
+  }, [initialQuery, getCachedResults, performSearch]) // Added performSearch
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
@@ -172,141 +266,6 @@ export default function SearchContainer({ initialQuery = "" }: SearchContainerPr
     // Perform a new search with the bypass cache flag
     await performSearch(query, true);
   };
-
-  // Function to perform the search
-  const performSearch = async (searchQuery: string, bypassCache = false) => {
-    setIsLoading(true)
-    setIsAiLoading(true)
-    setAiResponse("")
-    setSearchResults([])
-    setError(null)
-    
-    try {
-      // Check cache first (unless bypassCache is true)
-      if (!bypassCache) {
-        const cachedResult = getCachedResults(searchQuery)
-        if (cachedResult) {
-          setAiResponse(cachedResult.aiResponse || "")
-          setSearchResults(cachedResult.searchResults || [])
-          setIsLoading(false)
-          return
-        }
-      }
-
-      // Start both searches in parallel but handle them separately
-      
-      // Create the promises
-      const ollamaPromise = fetch(`/api/ollama`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          prompt: searchQuery,
-          model: process.env.NEXT_PUBLIC_DEFAULT_OLLAMA_MODEL || 'qwen3:30b'
-        })
-      })
-      
-      const searxngPromise = fetch(`/api/searxng?q=${encodeURIComponent(searchQuery)}`)
-      
-      // Handle SearXNG results immediately without waiting for Ollama
-      searxngPromise.then(async (response) => {
-        if (response.ok) {
-          try {
-            const searxngData = await response.json()
-            const results = searxngData.results || []
-
-            setSearchResults(results)
-            
-            // Set loading to false once search results are available
-            // but keep AI loading state active
-            setIsLoading(false)
-            
-            // Cache web search results immediately
-            if (results.length > 0) {
-              const cachedData = getCachedResults(searchQuery) || { aiResponse: "" }
-              cacheResults(searchQuery, { ...cachedData, searchResults: results })
-            }
-          } catch (error) {
-
-            setError(prev => {
-              const errorMsg = `Error parsing SearXNG response: ${error instanceof Error ? error.message : String(error)}`
-              return prev ? `${prev}\n${errorMsg}` : errorMsg
-            })
-          }
-        } else {
-          try {
-            const errorText = await response.text()
-            const errorMsg = `SearXNG API Error: ${response.status} - ${errorText}`
-            setError(prev => prev ? `${prev}\n${errorMsg}` : errorMsg)
-          } catch (e) {
-            const errorMsg = `SearXNG API Error: ${response.status} - Could not read error text`
-            setError(prev => prev ? `${prev}\n${errorMsg}` : errorMsg)
-          }
-        }
-      })
-      
-      // Wait for Ollama response
-      let aiResponse = ""
-      try {
-        const ollamaResponse = await ollamaPromise
-        
-        if (ollamaResponse.ok) {
-          const ollamaData = await ollamaResponse.json()
-          aiResponse = ollamaData.response || ""
-          
-          // Check if the response is empty or too short
-          if (!aiResponse || aiResponse.length < 50) {
-            const errorMsg = "The AI generated an empty or incomplete response. Please try again."
-            setError(errorMsg)
-          } else {
-            setAiResponse(aiResponse)
-            
-            // Set AI loading state to false when AI response is complete
-            setIsAiLoading(false)
-            
-            // Update cache with AI response
-            const cachedData = getCachedResults(searchQuery) || { searchResults: [] }
-            cacheResults(searchQuery, { ...cachedData, aiResponse })
-          }
-        } else {
-          // Handle HTTP error
-          try {
-            const errorText = await ollamaResponse.text()
-            const errorMsg = `Ollama API Error: ${ollamaResponse.status} - ${errorText}`
-            setError(prev => prev ? `${prev}\n${errorMsg}` : errorMsg)
-          } catch (e) {
-            const errorMsg = `Ollama API Error: ${ollamaResponse.status} - Could not read error text`
-            setError(prev => prev ? `${prev}\n${errorMsg}` : errorMsg)
-          }
-        }
-      } catch (error) {
-        // Handle network error
-        const errorMsg = `Ollama API request failed: ${error instanceof Error ? error.message : String(error)}`
-        setError(prev => prev ? `${prev}\n${errorMsg}` : errorMsg)
-      }
-
-      // SearXNG response is already handled in the promise chain above
-      
-      // Final cache update for AI response (if needed)
-      if (aiResponse) {
-        // Note: Web search results are already cached in the promise chain
-        const cachedData = getCachedResults(searchQuery) || { searchResults: [] }
-        if (!cachedData.aiResponse) {
-          cacheResults(searchQuery, { ...cachedData, aiResponse })
-        }
-      }
-    } catch (error: any) {
-      setError(`An unexpected error occurred: ${error.message}`)
-      // Set both loading states to false on error
-      setIsLoading(false)
-      setIsAiLoading(false)
-    } finally {
-      // In the finally block, we ensure both loading states are properly reset
-      // but we don't set isLoading to false here as it's handled in the SearXNG response
-      setIsAiLoading(false)
-    }
-  }
 
   return (
     <div className="w-full max-w-5xl mx-auto px-4 md:px-6">
@@ -398,6 +357,12 @@ export default function SearchContainer({ initialQuery = "" }: SearchContainerPr
                   {searchResults.length} results
                 </Badge>
               </div>
+              
+              {displayedOptimizedQuery && displayedOriginalQuery && displayedOptimizedQuery.toLowerCase() !== displayedOriginalQuery.toLowerCase() && (
+                <p className="text-xs italic text-muted-foreground mb-2">
+                  Showing results for: "<em>{displayedOptimizedQuery}</em>" (optimized from: "<em>{displayedOriginalQuery}</em>")
+                </p>
+              )}
               
               {/* Web Search Results */}
               <SearchResults results={searchResults} query={query} />
