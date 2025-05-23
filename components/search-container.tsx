@@ -1,488 +1,333 @@
 "use client"
 
-import { useState, useEffect, useRef, useCallback, type FormEvent, Suspense } from "react"
-import { useRouter } from "next/navigation"
-import { Search, Loader2, Sparkles, ExternalLink, Bot, SearchCheck, Clock, X, RefreshCw } from "lucide-react"
-import { getRandomSuggestions } from "@/lib/search-suggestions"
+import { useCallback, useEffect, useState, FormEvent } from "react"
+import { useRouter, usePathname } from "next/navigation"
 
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Skeleton } from "@/components/ui/skeleton"
-import { Badge } from "@/components/ui/badge"
-import AIResponseCard from "@/components/ai-response-card"
-import SearchResults from "@/components/search-results"
+// Import modular components
+import { SearchForm } from "./search/search-form"
+import { RecentSearches } from "./search/recent-searches"
+import { SearchResultsContainer } from "./search/search-results-container"
+
+// Import utility functions
+import { 
+  SearchResult,
+  RecentSearch,
+  getCachedResult,
+  cacheResults,
+  loadRecentSearches,
+  addToRecentSearches,
+  removeRecentSearch,
+  clearRecentSearches
+} from "@/lib/search-utils"
+
+// Import other utilities
 import { cleanResponse } from "@/lib/utils"
+import { getRandomSuggestions } from "@/lib/search-suggestions"
 
 interface SearchContainerProps {
   initialQuery?: string | string[]
 }
 
-type SearchResult = {
-  title: string
-  url: string
-  content: string
-}
-
-type RecentSearch = {
-  query: string
-  timestamp: number
-}
-
 export default function SearchContainer({ initialQuery = "" }: SearchContainerProps) {
   const router = useRouter()
+  const pathname = usePathname()
   const [query, setQuery] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const [isAiLoading, setIsAiLoading] = useState(false)
-  const [isOptimizing, setIsOptimizing] = useState(false)
   const [aiResponse, setAiResponse] = useState("")
   const [searchResults, setSearchResults] = useState<SearchResult[]>([])
-  const [error, setError] = useState<string | null>(null)
-  const [displayedOriginalQuery, setDisplayedOriginalQuery] = useState<string | null>(null)
-  const [displayedOptimizedQuery, setDisplayedOptimizedQuery] = useState<string | null>(null)
-  const [recentSearches, setRecentSearches] = useState<RecentSearch[]>([])  
+  const [recentSearches, setRecentSearches] = useState<RecentSearch[]>([])
   const [suggestions, setSuggestions] = useState<string[]>([])
-  const searchInputRef = useRef<HTMLInputElement>(null)
 
-  // Cache configuration (1 hour in milliseconds)
-  const CACHE_DURATION = 60 * 60 * 1000
-  
-  // Local storage keys
-  const RECENT_SEARCHES_KEY = 'recentSearches'
-
-  // Load recent searches from localStorage and set random suggestions on mount
+  // Load recent searches from localStorage on component mount and handle navigation changes
   useEffect(() => {
-    try {
-      // Load recent searches
-      const savedSearches = localStorage.getItem(RECENT_SEARCHES_KEY)
-      if (savedSearches) {
-        setRecentSearches(JSON.parse(savedSearches))
-      }
-      
-      // Set random search suggestions
-      setSuggestions(getRandomSuggestions(4))
-    } catch (error) {
-      console.error('Failed to load recent searches or set suggestions', error)
-    }
-  }, [])
+    // Load recent searches
+    const savedSearches = loadRecentSearches();
+    console.log('Loaded recent searches:', savedSearches);
+    setRecentSearches(savedSearches);
 
-  // Update URL when search is performed
-  const updateUrl = useCallback((searchQuery: string) => {
-    if (searchQuery.trim()) {
-      router.push(`/?q=${encodeURIComponent(searchQuery)}`, { scroll: false })
-    }
-  }, [router])
+    // Set random suggestions
+    setSuggestions(getRandomSuggestions(3))
 
-  // Get cached results for a query
-  const getCachedResults = useCallback((query: string) => {
-    try {
-      const cacheKey = `search:${query.toLowerCase().trim()}`
-      const cached = localStorage.getItem(cacheKey)
-      if (!cached) return null
-      
-      const { data, timestamp } = JSON.parse(cached)
-      const isExpired = Date.now() - timestamp > CACHE_DURATION
-      
-      if (!isExpired) {
-        return data
-      }
-      // Remove expired cache
-      localStorage.removeItem(cacheKey)
-    } catch (error) {
-      console.error('Error reading cache', error)
-    }
-    return null
-  }, [])
-  
-  // Delete a search from cache and recent searches
-  const deleteSearch = useCallback((queryToDelete: string) => {
-    try {
-      // Remove from cache
-      const cacheKey = `search:${queryToDelete.toLowerCase().trim()}`
-      localStorage.removeItem(cacheKey)
-      
-      // Remove from recent searches
-      setRecentSearches(prev => {
-        const newSearches = prev.filter(item => item.query.toLowerCase() !== queryToDelete.toLowerCase())
-        localStorage.setItem(RECENT_SEARCHES_KEY, JSON.stringify(newSearches))
-        return newSearches
-      })
-    } catch (error) {
-      console.error('Error deleting search', error)
-    }
-  }, [])
-
-  // Cache search results
-  const cacheResults = useCallback((query: string, data: any) => {
-    try {
-      const cacheKey = `search:${query.toLowerCase().trim()}`
-      const cacheData = {
-        data,
-        timestamp: Date.now()
-      }
-      localStorage.setItem(cacheKey, JSON.stringify(cacheData))
-
-      // Update recent searches
-      setRecentSearches(prev => {
-        const newSearches = [
-          { query, timestamp: Date.now() },
-          ...prev.filter(item => item.query.toLowerCase() !== query.toLowerCase())
-        ].slice(0, 10) // Keep only the 10 most recent
-        
-        localStorage.setItem(RECENT_SEARCHES_KEY, JSON.stringify(newSearches))
-        return newSearches
-      })
-    } catch (error) {
-      console.error('Error caching results', error)
-    }
-  }, [])
-
-  // Function to perform the search
-  const performSearch = useCallback(async (searchQuery: string, bypassCache = false) => {
-    if (!searchQuery.trim()) return
-    
-    setIsLoading(true)
-    setIsOptimizing(true) // Set optimizing state to true at the start
-    setError(null)
-    setDisplayedOriginalQuery(null)
-    setDisplayedOptimizedQuery(null)
-    
-    // First check if we have cached results and we're not bypassing cache
-    const cachedResults = !bypassCache ? getCachedResults(searchQuery) : null
-    if (cachedResults) {
-      setSearchResults(cachedResults.results || [])
-      setAiResponse(cachedResults.aiResponse || '')
-      setDisplayedOriginalQuery(cachedResults.originalQuery || searchQuery)
-      setDisplayedOptimizedQuery(cachedResults.optimizedQuery || null)
+    // Reset state when on home page with no query
+    if (pathname === '/' && !initialQuery) {
+      setQuery('')
+      setSearchResults([])
+      setAiResponse('')
       setIsLoading(false)
       setIsAiLoading(false)
       return
     }
-    
-    try {
-      // First, get search results from SearXNG
-      const searchResponse = await fetch(`/api/searxng?q=${encodeURIComponent(searchQuery)}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        cache: 'no-store'
-      })
-      
-      if (!searchResponse.ok) {
-        throw new Error(`Search API error: ${searchResponse.status}`)
-      }
-      
-      const searchData = await searchResponse.json()
-      setSearchResults(searchData.results || [])
-      setDisplayedOriginalQuery(searchData.originalQuery || searchQuery)
-      setDisplayedOptimizedQuery(searchData.optimizedQuery || null)
-      setIsLoading(false)
-      setIsOptimizing(false) // Set optimizing to false after results are received
-      
-      // Then, get AI response
-      setIsAiLoading(true)
-      const aiResponse = await fetch(`/api/ollama?q=${encodeURIComponent(searchQuery)}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        cache: 'no-store'
-      })
-      
-      if (!aiResponse.ok) {
-        throw new Error(`AI API error: ${aiResponse.status}`)
-      }
-      
-      const aiData = await aiResponse.json()
-      const aiResponseText = aiData.response || ''
-      setAiResponse(aiResponseText)
-      setIsAiLoading(false)
-      
-      // Cache both search results and AI response together
-      const dataToCache = {
-        results: searchData.results || [],
-        aiResponse: aiResponseText,
-        originalQuery: searchData.originalQuery || searchQuery,
-        optimizedQuery: searchData.optimizedQuery || null
-      }
-      cacheResults(searchQuery, dataToCache)
-      
-    } catch (error: any) {
-      console.error('Search error:', error)
-      setError(`Search error: ${error.message}`)
-      setIsLoading(false)
-      setIsAiLoading(false)
-      setIsOptimizing(false) // Set optimizing to false on error
-    }
-  }, [getCachedResults, cacheResults])
 
-  // Function to regenerate the AI response (bypass cache)
-  const regenerateResponse = useCallback(async () => {
-    if (!displayedOriginalQuery) return
+    // Set initial query if provided
+    if (initialQuery) {
+      const queryString = Array.isArray(initialQuery) ? initialQuery[0] : initialQuery
+      setQuery(queryString)
+      if (queryString) {
+        handleSearch(queryString)
+      }
+    }
+  }, [initialQuery, pathname])
+
+  // Function to check if we have a cached result for this query
+  const getCachedResult = useCallback((query: string) => {
+    const normalizedQuery = query.trim().toLowerCase()
+    const cachedData = localStorage.getItem(`search_${normalizedQuery}`)
     
-    setIsAiLoading(true)
+    if (cachedData) {
+      try {
+        const { timestamp, results, aiResponse } = JSON.parse(cachedData)
+        // Check if cache is less than 24 hours old
+        if (Date.now() - timestamp < 24 * 60 * 60 * 1000) {
+          return { results, aiResponse }
+        }
+      } catch (error) {
+        console.error("Failed to parse cached search results:", error)
+      }
+    }
+    return null
+  }, [])
+
+  // Function to cache search results
+  const cacheResults = useCallback((query: string, results: SearchResult[], aiResponse: string) => {
+    const normalizedQuery = query.trim().toLowerCase()
+    const cacheData = {
+      timestamp: Date.now(),
+      results,
+      aiResponse
+    }
+    localStorage.setItem(`search_${normalizedQuery}`, JSON.stringify(cacheData))
+  }, [])
+
+  // Function to add a search to recent searches
+  const handleAddToRecentSearches = useCallback((query: string) => {
+    const normalizedQuery = query.trim()
+    if (!normalizedQuery) return
+    
+    // Remove any existing instances of this query
+    const filteredSearches = recentSearches.filter(
+      (search) => search.query.toLowerCase() !== normalizedQuery.toLowerCase()
+    )
+    
+    // Add the new search to the beginning
+    const updatedSearches = [
+      { query: normalizedQuery, timestamp: Date.now() },
+      ...filteredSearches,
+    ].slice(0, 10) // Keep only the 10 most recent
+    
+    // Save to localStorage
     try {
-      const aiResponse = await fetch(`/api/ollama?q=${encodeURIComponent(displayedOriginalQuery)}&nocache=1`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        cache: 'no-store'
-      })
-      
-      const aiData = await aiResponse.json()
-      setAiResponse(aiData.response || '')
+      localStorage.setItem("recentSearches", JSON.stringify(updatedSearches))
     } catch (error) {
-      console.error('Error regenerating AI response:', error)
-    } finally {
-      setIsAiLoading(false)
+      console.error("Error saving recent searches:", error)
     }
-  }, [displayedOriginalQuery])
+    
+    setRecentSearches(updatedSearches)
+  }, [recentSearches])
+  
+  // Function to remove a search from recent searches
+  const handleRemoveRecentSearch = useCallback((index: number) => {
+    const updatedSearches = [...recentSearches]
+    updatedSearches.splice(index, 1)
+    
+    // Save to localStorage
+    try {
+      localStorage.setItem("recentSearches", JSON.stringify(updatedSearches))
+    } catch (error) {
+      console.error("Error saving recent searches:", error)
+    }
+    
+    setRecentSearches(updatedSearches)
+  }, [recentSearches])
+  
+  // Function to clear all recent searches
+  const handleClearRecentSearches = useCallback(() => {
+    localStorage.removeItem("recentSearches")
+    setRecentSearches([])
+  }, [])
 
-  // Effect for handling initial query and query changes from URL
-  useEffect(() => {
-    const q = Array.isArray(initialQuery) ? initialQuery[0] : initialQuery
-    if (q) {
-      setQuery(q)
-      const cachedData = getCachedResults(q)
-      if (cachedData) {
-        setAiResponse(cachedData.aiResponse || '')
-        setSearchResults(cachedData.searchResults || [])
-        setDisplayedOriginalQuery(cachedData.originalQuery || q)
-        setDisplayedOptimizedQuery(cachedData.optimizedQuery || q)
-        setError(null)
-      } else {
-        performSearch(q)
-      }
-    } else {
-      setQuery('')
-      setAiResponse('')
+  // Function to handle search submission
+  const handleSubmit = () => {
+    if (!query.trim()) return
+    
+    // Normalize query
+    const normalizedQuery = query.trim()
+    
+    // Update URL with the search query
+    const searchUrl = `/?q=${encodeURIComponent(normalizedQuery)}`
+    console.log('Updating URL to:', searchUrl)
+    
+    // Perform search first to avoid any navigation issues
+    handleSearch(normalizedQuery)
+    
+    // Then update the URL
+    router.push(searchUrl, { scroll: false })
+  }
+
+  // Function to perform the search
+  const handleSearch = async (searchQuery: string) => {
+    console.log("[SearchContainer] handleSearch called with:", searchQuery); // DEBUG
+    try {
+      // Normalize the query
+      const normalizedQuery = searchQuery.trim()
+      if (!normalizedQuery) return
+
+      // Update UI state
+      setIsLoading(true)
+      setIsAiLoading(true)
       setSearchResults([])
-      setError(null)
-      setDisplayedOriginalQuery(null)
-      setDisplayedOptimizedQuery(null)
-    }
-  }, [initialQuery, getCachedResults, performSearch])
+      setAiResponse("")
 
-  // Handle form submission
-  const handleSearch = (e: FormEvent) => {
-    e.preventDefault()
-    if (query.trim()) {
-      performSearch(query)
-      updateUrl(query)
+      // Check if we have a cached result for this query
+      const cachedResult = getCachedResult(normalizedQuery)
+      if (cachedResult) {
+        console.log("Using cached search results")
+        setSearchResults(cachedResult.results)
+        setAiResponse(cachedResult.aiResponse)
+        setIsLoading(false)
+        setIsAiLoading(false)
+        return
+      }
+
+      // Fetch search results
+      const searchUrl = `/api/searxng?q=${encodeURIComponent(normalizedQuery)}`
+      const response = await fetch(searchUrl, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+
+      if (!response.ok) {
+        throw new Error(`Search request failed with status: ${response.status}`)
+      }
+
+      const data = await response.json()
+      
+      // Extract the optimized query if available
+      const optimizedQuery = data.optimizedQuery || normalizedQuery
+      
+      // Process search results and display them immediately
+      if (data.results && Array.isArray(data.results)) {
+        setSearchResults(data.results)
+        // Mark the main loading as complete since we have web results
+        setIsLoading(false)
+      } else {
+        setSearchResults([])
+        setIsLoading(false)
+      }
+      
+      // Now fetch the AI response in the background
+      try {
+        const aiUrl = `/api/ollama?q=${encodeURIComponent(optimizedQuery)}`
+        const aiResponse = await fetch(aiUrl, {
+          method: "GET",
+          headers: {
+            "Accept": "application/json",
+          },
+        })
+        
+        if (aiResponse.ok) {
+          const aiData = await aiResponse.json()
+          if (aiData.response) {
+            const cleanedResponse = cleanResponse(aiData.response)
+            setAiResponse(cleanedResponse)
+            
+            // Cache the results only after AI response is ready
+            cacheResults(normalizedQuery, data.results || [], cleanedResponse)
+          }
+        } else {
+          console.error(`AI response request failed with status: ${aiResponse.status}`)
+        }
+      } catch (error) {
+        console.error("Error fetching AI response:", error)
+      }
+      
+      // Update AI loading state
+      setIsAiLoading(false)
+      
+      // Add to recent searches
+      const updatedSearches = addToRecentSearches(searchQuery, recentSearches)
+      setRecentSearches(updatedSearches)
+      
+    } catch (error) {
+      console.error("Search error:", error)
+      setIsLoading(false)
+      setIsAiLoading(false)
     }
   }
-  
-  return (
-    <div className="w-full max-w-6xl mx-auto px-4 md:px-6">
-      <div className="text-center">
-        <h2 className="text-2xl md:text-4xl font-bold mb-3 text-foreground">What would you like to know?</h2>
-        <p className="text-muted-foreground max-w-md mx-auto text-base mb-6">
-          Ask anything and get AI-powered answers backed by web search results ✨
-        </p>
-      </div>
-      {/* Search Form */}
-      <form
-        onSubmit={handleSearch}
-        className="relative mb-10 max-w-3xl mx-auto"
-      >
-        <div className="relative w-full group">
-          {/* Light mode animation */}
-          <div className="absolute inset-0 bg-primary/5 filter blur-xl rounded-full opacity-70 -z-10 transform scale-95 group-focus-within:animate-pulse dark:hidden"></div>
-          <div className="absolute inset-0 rounded-full -z-10 opacity-0 group-focus-within:opacity-100 transition-opacity duration-300 bg-gradient-to-r from-blue-500/20 via-primary/20 to-blue-500/20 bg-[length:200%_200%] animate-gradient-x dark:hidden"></div>
-          
-          {/* Dark mode animation */}
-          <div className="absolute inset-0 bg-primary/10 filter blur-xl rounded-full opacity-0 -z-10 transform scale-95 group-focus-within:opacity-50 transition-opacity duration-300 hidden dark:block"></div>
-          <div className="absolute inset-0 rounded-full border border-primary/30 -z-10 opacity-0 group-focus-within:opacity-100 transition-opacity duration-300 hidden dark:block"></div>
-          
-          <div className="absolute left-4 top-4 h-6 w-6 text-primary/70 group-focus-within:text-primary transition-colors duration-200">
-            <Search className="h-6 w-6" />
-          </div>
-          <Input
-            ref={searchInputRef}
-            type="text"
-            placeholder="I'll search the web and use AI to craft the perfect answer just for you."
-            className="pl-14 pr-32 h-16 bg-background/90 backdrop-blur-sm shadow-lg border border-primary/20 focus-visible:border-primary/30 focus-visible:ring-1 focus-visible:ring-primary/30 focus-visible:ring-offset-0 rounded-full transition-all duration-300 hover:shadow-xl text-lg"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-          />
-          <div className="absolute right-2 top-2 z-20">
-            <Button
-              type="submit"
-              size="lg"
-              className="h-12 px-6 rounded-full bg-primary hover:bg-primary/90 transition-all duration-200 shadow-md hover:shadow-lg font-medium"
-              disabled={isLoading || !query.trim()}
-            >
-              {isLoading ? (
-                <Loader2 className="h-5 w-5 animate-spin" />
-              ) : (
-                <>
-                  <Sparkles className="h-5 w-5 mr-2" />
-                  Search
-                </>
-              )}
-            </Button>
-          </div>
-        </div>
-      </form>
 
-      {/* Error state */}
-      {error && (
-        <AIResponseCard 
-          response={error} 
-          isError={true} 
-          isStreaming={false} 
-          onRegenerate={regenerateResponse} 
+  // Function to handle clicking on a recent search
+  const handleRecentSearchClick = (searchQuery: string) => {
+    setQuery(searchQuery)
+    
+    // Perform search first to avoid any navigation issues
+    handleSearch(searchQuery)
+    
+    // Then update the URL
+    const searchUrl = `/?q=${encodeURIComponent(searchQuery)}`
+    console.log('Recent search clicked, updating URL to:', searchUrl)
+    router.push(searchUrl, { scroll: false })
+  }
+
+  // Function to handle clicking on a suggestion
+  const handleSuggestionClick = (suggestion: string) => {
+    console.log('Suggestion click handler called with:', suggestion)
+    setQuery(suggestion)
+    
+    // Perform search first to avoid any navigation issues
+    handleSearch(suggestion)
+    
+    // Then update the URL
+    const searchUrl = `/?q=${encodeURIComponent(suggestion)}`
+    console.log('Suggestion clicked, updating URL to:', searchUrl)
+    setTimeout(() => {
+      router.push(searchUrl, { scroll: false })
+    }, 100) // Small delay to ensure search starts first
+  }
+
+  return (
+    <div className="container max-w-5xl mx-auto px-4 py-8">
+      {/* Search Form */}
+      <SearchForm
+        query={query}
+        setQuery={setQuery}
+        isLoading={isLoading}
+        onSearch={handleSubmit}
+        onSuggestionClick={handleSuggestionClick}
+        suggestions={suggestions}
+        searchResults={searchResults}
+      />
+      
+      {/* Search Results */}
+      {searchResults.length > 0 && (
+        <SearchResultsContainer
+          searchResults={searchResults}
+          aiResponse={aiResponse}
+          isAiLoading={isAiLoading}
         />
       )}
-
-      {(isLoading || isAiLoading || aiResponse || searchResults.length > 0) && (
-        <div className="mt-8 space-y-6">
-          {/* AI Response Section */}
-          {isAiLoading ? (
-            /* Show loading state for AI response */
-            <AIResponseCard 
-              response="" 
-              isError={false} 
-              isStreaming={true} 
-            />
-          ) : aiResponse ? (
-            /* Show AI response when available */
-            <AIResponseCard 
-              response={aiResponse} 
-              isError={false} 
-              isStreaming={false} 
-              onRegenerate={regenerateResponse} 
-            />
-          ) : null}
-          
-          {/* Search Results Section */}
-          {isOptimizing ? (
-            /* Show optimization state */
-            <div className="mt-8">
-              <div className="flex items-center justify-center space-x-2 mb-4">
-                <RefreshCw className="h-5 w-5 text-primary/70 animate-spin" />
-                <p className="text-sm text-muted-foreground">Optimizing your search query...</p>
-              </div>
-              <div className="animate-pulse space-y-6">
-                <div className="space-y-4">
-                  {[...Array(3)].map((_, i) => (
-                    <div key={i} className="h-24 bg-muted/50 rounded-lg"></div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          ) : isLoading ? (
-            /* Show loading state for search results */
-            <div className="animate-pulse space-y-6 mt-8">
-              <div className="space-y-4">
-                {[...Array(3)].map((_, i) => (
-                  <div key={i} className="h-24 bg-muted rounded-lg"></div>
-                ))}
-              </div>
-            </div>
-          ) : searchResults.length > 0 && (
-            <>
-              {/* Spacing for results */}
-              <div className="mt-8 mb-4"></div>
-              
-              {displayedOptimizedQuery && displayedOriginalQuery && displayedOptimizedQuery.toLowerCase() !== displayedOriginalQuery.toLowerCase() && (
-                <p className="text-xs italic text-muted-foreground mb-2">
-                  Showing results for: "<em>{displayedOptimizedQuery}</em>" (optimized from: "<em>{displayedOriginalQuery}</em>")
-                </p>
-              )}
-              
-              {/* Web Search Results */}
-              <SearchResults results={searchResults} query={query} />
-            </>
-          )}
+      
+      {/* Recent Searches */}
+      {!searchResults.length && !isLoading && recentSearches.length > 0 && (
+        <div className="mt-12 mb-8">
+          <RecentSearches
+            searches={recentSearches}
+            onSearchClick={handleRecentSearchClick}
+            onRemoveSearch={handleRemoveRecentSearch}
+            onClearSearches={handleClearRecentSearches}
+          />
         </div>
       )}
-
-      {/* Empty state when no search has been performed */}
-      {!isLoading && !aiResponse && searchResults.length === 0 && !query && (
-        <div className="text-center py-12 px-4">
-          
-          {/* Quick Suggestions */}
-          <div className="max-w-3xl mx-auto mb-16">
-            <h3 className="text-sm font-medium text-muted-foreground mb-4 uppercase tracking-wider flex items-center justify-center">
-              <Sparkles className="h-3.5 w-3.5 mr-2 text-primary/70" />
-              Try searching for
-            </h3>
-            <div className="flex flex-wrap justify-center gap-3">
-              {suggestions.map((suggestion, index) => (
-                <Button
-                  key={index}
-                  variant="outline"
-                  size="sm"
-                  className="rounded-full text-sm font-normal h-9 px-4 hover:bg-primary/10 hover:text-primary hover:border-primary/30 transition-all duration-200"
-                  onClick={() => {
-                    setQuery(suggestion)
-                    performSearch(suggestion)
-                    updateUrl(suggestion)
-                  }}
-                >
-                  {suggestion}
-                </Button>
-              ))}
-            </div>
-          </div>
-          
-          {/* Recent Searches */}
-          {recentSearches.length > 0 && (
-            <div className="max-w-2xl mx-auto">
-              <h3 className="text-sm font-medium text-muted-foreground mb-4 flex items-center justify-center">
-                <Clock className="h-3.5 w-3.5 mr-2 text-primary/70" />
-                <span className="uppercase tracking-wider">Recent Searches</span>
-              </h3>
-              <div className="flex flex-wrap justify-center gap-3">
-                {recentSearches.slice(0, 5).map((item, index) => (
-                  <div key={index} className="flex items-center">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="rounded-l-full text-sm font-normal h-9 px-4 hover:bg-primary/10 hover:text-primary transition-all duration-200"
-                      onClick={() => {
-                        setQuery(item.query)
-                        performSearch(item.query)
-                        updateUrl(item.query)
-                      }}
-                    >
-                      {item.query.length > 30 ? `${item.query.substring(0, 30)}...` : item.query}
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="rounded-r-full h-9 px-2 hover:bg-destructive/10 hover:text-destructive transition-colors"
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        deleteSearch(item.query)
-                      }}
-                      title="Delete search"
-                      aria-label={`Delete search: ${item.query}`}
-                    >
-                      <X className="h-4 w-4" />
-                    </Button>
-                  </div>
-                ))}
-              </div>
-              {recentSearches.length > 0 && (
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="mt-4 text-xs text-muted-foreground hover:text-destructive"
-                  onClick={() => {
-                    // Clear all recent searches
-                    recentSearches.forEach(item => deleteSearch(item.query))
-                  }}
-                >
-                  Clear all recent searches
-                </Button>
-              )}
-            </div>
-          )}
+      
+      {/* Loading State */}
+      {isLoading && (
+        <div className="flex flex-col items-center justify-center py-12">
+          <svg className="animate-spin text-primary mb-4 h-8 w-8" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+          <p className="text-muted-foreground">Searching the web...</p>
         </div>
       )}
     </div>

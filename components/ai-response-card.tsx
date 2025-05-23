@@ -6,7 +6,7 @@ import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
 import { oneDark } from 'react-syntax-highlighter/dist/cjs/styles/prism'
 import { oneLight } from 'react-syntax-highlighter/dist/cjs/styles/prism'
 import { Button } from "@/components/ui/button"
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef } from "react"
 
 type CodeProps = {
   node?: any
@@ -25,6 +25,8 @@ interface AIResponseCardProps {
 export default function AIResponseCard({ response, isError = false, isStreaming = false, onRegenerate }: AIResponseCardProps) {
   // Track dark mode
   const [isDarkMode, setIsDarkMode] = useState(false);
+  // Simple animation approach - just fade in the response
+  const [isVisible, setIsVisible] = useState(false);
   
   // Check for dark mode
   useEffect(() => {
@@ -46,18 +48,38 @@ export default function AIResponseCard({ response, isError = false, isStreaming 
     
     return () => observer.disconnect();
   }, []);
+
+  // Handle response changes with a simple fade-in animation
+  useEffect(() => {
+    // If we have a response and we're not streaming anymore
+    if (response && !isStreaming) {
+      // Briefly hide content to trigger fade-in
+      setIsVisible(false);
+      
+      // Short delay before showing content with fade-in
+      const timer = setTimeout(() => {
+        setIsVisible(true);
+      }, 100);
+      
+      return () => clearTimeout(timer);
+    } else if (isStreaming) {
+      // Always show content while streaming
+      setIsVisible(true);
+    }
+  }, [response, isStreaming]);
+  
   // Static placeholder text for loading state
   const placeholderText = "I'm generating a thoughtful response to your query. This might take a moment as I process your question and create a comprehensive answer...";
 
   return (
-    <Card className="mb-8 border-primary/20 bg-primary/5 shadow-md backdrop-blur-sm rounded-xl overflow-hidden">
-      <CardHeader className="pb-2 border-b border-primary/10 bg-primary/10">
-        <CardTitle className="text-xl flex items-center gap-2 text-primary">
+    <Card className="mb-8 border-primary/20 bg-white dark:bg-[#0f1729]/90 shadow-md backdrop-blur-sm rounded-xl overflow-hidden">
+      <CardHeader className="pb-2 border-b border-primary/10 bg-primary/5 dark:bg-primary/10">
+        <CardTitle className="text-xl flex items-center gap-2 text-primary dark:text-primary/90">
           <Bot className="h-5 w-5" />
           AI Response
         </CardTitle>
       </CardHeader>
-      <CardContent className="pt-4 pb-6">
+      <CardContent className="pt-4 pb-6 text-foreground dark:text-gray-300">
         {isError ? (
           <div className="text-destructive">
             <div className="flex items-start mb-4">
@@ -84,7 +106,7 @@ export default function AIResponseCard({ response, isError = false, isStreaming 
               </ol>
             </div>
           </div>
-        ) : isStreaming && !response ? (
+        ) : isStreaming ? (
           // Enhanced loading animation with typing effect
           <div className="space-y-5">
             {/* Animated typing indicator with spinner */}
@@ -125,12 +147,14 @@ export default function AIResponseCard({ response, isError = false, isStreaming 
             </div>
           </div>
         ) : (
-          <div>
+          <div className={`text-foreground dark:text-gray-300 transition-opacity duration-500 ease-in-out ${isVisible ? 'opacity-100' : 'opacity-0'}`}>
             {/* Show the markdown content */}
             <ReactMarkdown
               remarkPlugins={[remarkGfm]}
               components={{
-                code({node, inline, className, children, ...props}: CodeProps) {
+                // Fix hydration errors by ensuring proper nesting
+                p: ({children}) => <div className="my-2">{children}</div>,
+                code: ({node, inline, className, children, ...props}: CodeProps) => {
                   const match = /language-(\w+)/.exec(className || '')
                   return !inline ? (
                     <div className="my-4 rounded-md overflow-hidden">
@@ -149,31 +173,21 @@ export default function AIResponseCard({ response, isError = false, isStreaming 
                     </code>
                   )
                 },
-                a({node, ...props}) {
-                  return (
-                    <a 
-                      {...props} 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="text-blue-600 hover:underline dark:text-blue-400"
-                    />
-                  )
-                },
-                h1({node, ...props}) {
-                  return <h1 className="text-3xl font-bold my-4" {...props} />
-                },
-                h2({node, ...props}) {
-                  return <h2 className="text-2xl font-bold my-3" {...props} />
-                },
-                h3({node, ...props}) {
-                  return <h3 className="text-xl font-bold my-2" {...props} />
-                },
-                ul({node, ...props}) {
-                  return <ul className="list-disc pl-5 my-2 space-y-1" {...props} />
-                },
-                ol({node, ...props}) {
-                  return <ol className="list-decimal pl-5 my-2 space-y-1" {...props} />
-                }
+                a: ({...props}) => (
+                  <a 
+                    {...props} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="text-blue-600 hover:underline dark:text-blue-400"
+                  />
+                ),
+                h1: ({...props}) => <h1 className="text-3xl font-bold my-4" {...props} />,
+                h2: ({...props}) => <h2 className="text-2xl font-bold my-3" {...props} />,
+                h3: ({...props}) => <h3 className="text-xl font-bold my-2" {...props} />,
+                ul: ({...props}) => <ul className="list-disc pl-5 my-3 space-y-1" {...props} />,
+                ol: ({...props}) => <ol className="list-decimal pl-5 my-3 space-y-1" {...props} />,
+                li: ({...props}) => <li className="my-1" {...props} />,
+                blockquote: ({...props}) => <blockquote className="border-l-4 border-primary/30 pl-4 my-4 italic" {...props} />
               }}
             >
               {response}
