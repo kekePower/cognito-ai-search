@@ -94,7 +94,7 @@ export default function RootLayout({
       </head>
       <body
         className={cn(
-          'h-screen font-sans antialiased overflow-hidden',
+          'min-h-screen font-sans antialiased',
           'selection:bg-primary-20 selection:text-foreground',
           GeistSans.variable,
           GeistMono.variable
@@ -106,8 +106,8 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <div className="flex flex-col h-screen">
-            <main className="flex-1 overflow-auto">
+          <div className="flex flex-col min-h-screen">
+            <main className="flex-1">
               {children}
             </main>
             <Footer />

@@ -108,9 +108,10 @@ function cleanOllamaResponseText(text: string): string {
  * @param originalQuery - The original user query
  * @param ollamaApiUrl - The URL of the Ollama API
  * @param ollamaModel - The model to use for optimization
+ * @param timeoutMs - The timeout in milliseconds for the optimization request
  * @returns The optimized query or the original query if optimization fails
  */
-async function getOptimizedQuery(originalQuery: string, ollamaApiUrl: string, ollamaModel: string): Promise<string> {
+async function getOptimizedQuery(originalQuery: string, ollamaApiUrl: string, ollamaModel: string, timeoutMs: number): Promise<string> {
   const prompt = OPTIMIZATION_PROMPT_TEMPLATE.replace("{USER_QUERY}", originalQuery);
 
   try {
@@ -126,7 +127,7 @@ async function getOptimizedQuery(originalQuery: string, ollamaApiUrl: string, ol
     };
 
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 10000); // 10-second timeout for optimization
+    const timeoutId = setTimeout(() => controller.abort(), timeoutMs); // timeout in milliseconds
 
     const response = await fetch(`${ollamaApiUrl}/api/generate`, {
       method: "POST",
@@ -173,73 +174,80 @@ async function getOptimizedQuery(originalQuery: string, ollamaApiUrl: string, ol
   }
 }
 
-/**
- * GET handler for the SearXNG API route
- * Optimizes the query and fetches search results
- */
+import { getApiConfig, validateApiConfig } from '@/lib/api/config'
+import { fetchSearchResults } from '@/lib/api/searxng'
+import { SearchApiResponse } from '@/lib/api/types'
+
 export async function GET(request: NextRequest) {
   try {
-    // Get the query parameter from the URL
-    const url = new URL(request.url)
-    const query = url.searchParams.get("q")
-
+    // Get and validate configuration
+    const config = getApiConfig()
+    validateApiConfig(config)
+    
+    // Extract query from URL parameters
+    const { searchParams } = new URL(request.url)
+    const query = searchParams.get('q')
+    
     if (!query) {
-      return NextResponse.json({ error: "Query parameter 'q' is required" }, { status: 400 })
+      return NextResponse.json(
+        { error: 'Query parameter "q" is required' },
+        { status: 400 }
+      )
     }
 
-    // Get optimized query (or original if optimization fails)
-    const finalQuery = await getOptimizedQuery(query, OLLAMA_API_URL, DEFAULT_OLLAMA_MODEL);
+    console.log(`[SearXNG API] Processing search query: "${query}"`)
 
-    const encodedQuery = encodeURIComponent(finalQuery)
-    const searchUrl = `${SEARXNG_API_URL}/search?format=json&q=${encodedQuery}`
+    // Optimize the query using Ollama
+    let optimizedQuery = query
+    try {
+      optimizedQuery = await getOptimizedQuery(
+        query,
+        config.ollamaApiUrl,
+        config.defaultOllamaModel,
+        config.ollamaTimeoutMs
+      )
+      console.log(`[SearXNG API] Query optimized: "${query}" -> "${optimizedQuery}"`)
+    } catch (error) {
+      console.warn('[SearXNG API] Query optimization failed, using original query:', error)
+    }
 
-    // Add a timeout to the fetch request
-    const controller = new AbortController()
-    const timeoutId = setTimeout(() => controller.abort(), 30000) // 30 second timeout
+    // Fetch search results from SearXNG
+    const results = await fetchSearchResults(optimizedQuery, config.searxngApiUrl)
+    
+    console.log(`[SearXNG API] Found ${results.length} search results`)
 
-    const response = await fetch(searchUrl, {
-      method: "GET",
+    const response: SearchApiResponse = {
+      results,
+      originalQuery: query,
+      optimizedQuery,
+    }
+
+    return NextResponse.json(response, {
       headers: {
-        Accept: "application/json",
+        'Cache-Control': 'no-store, no-cache, must-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0',
       },
-      signal: controller.signal,
-      cache: "no-store",
-      next: { revalidate: 0 },
     })
 
-    clearTimeout(timeoutId)
-
-    if (!response.ok) {
-      const errorText = await response.text()
-      return NextResponse.json(
-        { error: `SearXNG API Error: ${response.status} - ${errorText}` },
-        { status: response.status },
-      )
-    }
-
-    const data = await response.json()
-
-    // Process the SearXNG response
-    const results = data.results && Array.isArray(data.results)
-      ? data.results
-          .map((result: SearXNGResult) => ({
-            title: result.title || "No title",
-            url: result.url || "#",
-            content: result.content || result.snippet || "No description available",
-          }))
-          .slice(0, 10) // Limit to 10 results
-      : [];
-
-    return NextResponse.json({ results, originalQuery: query, optimizedQuery: finalQuery })
   } catch (error: any) {
-    if (error.name === "AbortError") {
-      return NextResponse.json(
-        { error: "Request to SearXNG timed out. Please check if the server is running and accessible." },
-        { status: 504 },
-      )
+    console.error('[SearXNG API] Error:', error)
+    
+    const response: SearchApiResponse = {
+      results: [],
+      originalQuery: '',
+      optimizedQuery: '',
+      error: error.message || 'An unexpected error occurred',
     }
 
-    return NextResponse.json({ error: `Internal Server Error: ${error.message}` }, { status: 500 })
+    return NextResponse.json(response, { 
+      status: 500,
+      headers: {
+        'Cache-Control': 'no-store, no-cache, must-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0',
+      },
+    })
   }
 }
 

@@ -1,4 +1,3 @@
-import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card"
 import { AlertTriangle, RefreshCw, Bot, Sparkles } from "lucide-react"
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
@@ -25,8 +24,6 @@ interface AIResponseCardProps {
 export default function AIResponseCard({ response, isError = false, isStreaming = false, onRegenerate }: AIResponseCardProps) {
   // Track dark mode
   const [isDarkMode, setIsDarkMode] = useState(false);
-  // Simple animation approach - just fade in the response
-  const [isVisible, setIsVisible] = useState(false);
   
   // Check for dark mode
   useEffect(() => {
@@ -49,37 +46,23 @@ export default function AIResponseCard({ response, isError = false, isStreaming 
     return () => observer.disconnect();
   }, []);
 
-  // Handle response changes with a simple fade-in animation
-  useEffect(() => {
-    // If we have a response and we're not streaming anymore
-    if (response && !isStreaming) {
-      // Briefly hide content to trigger fade-in
-      setIsVisible(false);
-      
-      // Short delay before showing content with fade-in
-      const timer = setTimeout(() => {
-        setIsVisible(true);
-      }, 100);
-      
-      return () => clearTimeout(timer);
-    } else if (isStreaming) {
-      // Always show content while streaming
-      setIsVisible(true);
-    }
-  }, [response, isStreaming]);
-  
   // Static placeholder text for loading state
   const placeholderText = "I'm generating a thoughtful response to your query. This might take a moment as I process your question and create a comprehensive answer...";
 
   return (
-    <Card className="mb-8 border-primary/20 bg-white dark:bg-[#0f1729]/90 shadow-md backdrop-blur-sm rounded-xl overflow-hidden">
-      <CardHeader className="pb-2 border-b border-primary/10 bg-primary/5 dark:bg-primary/10">
-        <CardTitle className="text-xl flex items-center gap-2 text-primary dark:text-primary/90">
-          <Bot className="h-5 w-5" />
-          AI Response
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="pt-4 pb-6 text-foreground dark:text-gray-300">
+    <div className="mb-8 p-5 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 backdrop-blur-sm shadow-lg">
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center">
+          <Bot className="h-4 w-4 text-blue-600 dark:text-blue-400 relative top-[0.075em]" />
+          <span className="text-sm font-medium ml-2 text-gray-900 dark:text-white">AI Response</span>
+        </div>
+        {!isStreaming && response && (
+          <div className="text-xs px-2 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-700">
+            AI Analysis
+          </div>
+        )}
+      </div>
+      <div className="text-gray-600 dark:text-gray-300">
         {isError ? (
           <div className="text-destructive">
             <div className="flex items-start mb-4">
@@ -147,7 +130,7 @@ export default function AIResponseCard({ response, isError = false, isStreaming 
             </div>
           </div>
         ) : (
-          <div className={`text-foreground dark:text-gray-300 transition-opacity duration-500 ease-in-out ${isVisible ? 'opacity-100' : 'opacity-0'}`}>
+          <div className="text-foreground dark:text-gray-300">
             {/* Show the markdown content */}
             <ReactMarkdown
               remarkPlugins={[remarkGfm]}
@@ -199,20 +182,20 @@ export default function AIResponseCard({ response, isError = false, isStreaming 
             )}
           </div>
         )}
-      </CardContent>
+      </div>
       {!isStreaming && onRegenerate && (isError || !response || response.length < 50) && (
-        <CardFooter className="pt-0 pb-4">
+        <div className="pt-4 flex justify-end">
           <Button 
             variant="outline" 
             size="sm" 
             onClick={onRegenerate}
-            className="ml-auto flex items-center gap-1 text-xs hover:bg-primary/10 hover:text-primary hover:border-primary/30 transition-all duration-200"
+            className="flex items-center gap-1 text-xs hover:bg-primary/10 hover:text-primary hover:border-primary/30 transition-all duration-200"
           >
             <RefreshCw className="h-3 w-3" />
             Try Again
           </Button>
-        </CardFooter>
+        </div>
       )}
-    </Card>
+    </div>
   )
 }
