@@ -94,9 +94,8 @@ export default function RootLayout({
       </head>
       <body
         className={cn(
-          'min-h-screen bg-background font-sans text-foreground antialiased',
+          'h-screen font-sans antialiased overflow-hidden',
           'selection:bg-primary-20 selection:text-foreground',
-          'flex flex-col',
           GeistSans.variable,
           GeistMono.variable
         )}
@@ -107,12 +106,12 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <div className="flex flex-col min-h-screen pb-10">
-            <main className="flex-1">
+          <div className="flex flex-col h-screen">
+            <main className="flex-1 overflow-auto">
               {children}
             </main>
+            <Footer />
           </div>
-          <Footer />
           <Toaster
             position="bottom-right"
             toastOptions={{
