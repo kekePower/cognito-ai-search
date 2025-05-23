@@ -7,8 +7,18 @@ const nextConfig = {
     ignoreBuildErrors: true,
   },
   images: {
-    unoptimized: true,
+    // Enable Next.js 15 image optimization features
+    unoptimized: false,
+    // Add domains for remote images if needed
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: '**',
+      },
+    ],
   },
+  // Improved performance with React strict mode
+  reactStrictMode: true,
   // Make environment variables available on the client side
   env: {
     // Explicitly defined environment variables
@@ -21,6 +31,15 @@ const nextConfig = {
         .filter(([key]) => key.startsWith('NEXT_PUBLIC_'))
         .map(([key, value]) => [key, String(value)])
     ),
+  },
+  // Enable experimental features for Next.js 15
+  experimental: {
+    // Enable server actions
+    serverActions: {
+      allowedOrigins: ['localhost:3000'],
+    },
+    // Enable optimized bundle splitting
+    optimizeCss: true,
   },
 }
 

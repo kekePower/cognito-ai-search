@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server"
+import { NextResponse, type NextRequest } from "next/server"
 
 // Get environment variables with defaults
 const OLLAMA_API_URL = process.env.OLLAMA_API_URL || 'http://10.0.0.3:11434';
@@ -30,15 +30,15 @@ interface OllamaResponse {
   eval_duration?: number
 }
 
-interface OllamaStreamChunk {
-  model: string
-  created_at?: string
-  response: string
-  done: boolean
-}
-
-// Function to clean up think tags and other artifacts from Qwen3 responses
+/**
+ * Cleans up the response text by removing think tags and other artifacts
+ * 
+ * @param text - The raw text response from the model
+ * @returns The cleaned text response
+ */
 function cleanResponse(text: string): string {
+  if (!text) return '';
+  
   // Remove <Thinking> and </Thinking> tags
   let cleaned = text.replace(/<Thinking>([\s\S]*?)<\/Thinking>/g, '')
   
@@ -51,9 +51,11 @@ function cleanResponse(text: string): string {
   return cleaned
 }
 
-// No streaming function needed
-
-export async function POST(request: Request) {
+/**
+ * POST handler for the Ollama API route
+ * Generates a response using the Ollama API
+ */
+export async function POST(request: NextRequest) {
   try {
     const requestBody = await request.json()
     
@@ -72,12 +74,18 @@ export async function POST(request: Request) {
   }
 }
 
+/**
+ * Generates a response using the Ollama API
+ * 
+ * @param prompt - The prompt to send to the model
+ * @param model - The model to use for generation
+ * @returns The generated response
+ */
 async function generateResponse(prompt: string, model: string) {
   try {
     if (!prompt) {
       return NextResponse.json({ error: "Prompt is required" }, { status: 400 })
     }
-
 
     const systemPrompt = `/no_think
 You are an advanced AI assistant integrated into a search engine. Your primary goal is to provide the most accurate, comprehensive, and helpful responses to user queries. Follow these guidelines:
@@ -101,19 +109,15 @@ Current query: ${prompt}`
       options: {
         temperature: 0.7,
         top_p: 0.9,
-        num_predict: AI_RESPONSE_MAX_TOKENS // Use the environment variable to control response length
+        num_predict: AI_RESPONSE_MAX_TOKENS
       }
     }
-
-
 
     // Add a timeout to the fetch request
     const controller = new AbortController()
     const timeoutId = setTimeout(() => {
       controller.abort()
     }, 120000) // 120 second timeout (2 minutes)
-
-
     
     // Use fetch with appropriate options
     const response = await fetch(`${OLLAMA_API_URL}/api/generate`, {
@@ -125,39 +129,27 @@ Current query: ${prompt}`
       },
       body: JSON.stringify(ollamaRequestBody),
       signal: controller.signal,
-      // Disable caching
       cache: 'no-store',
-      // Ensure we get a fresh response
       next: { revalidate: 0 },
     })
 
     clearTimeout(timeoutId)
-    console.log(`generateResponse - Received response with status: ${response.status}`)
 
     if (!response.ok) {
       const errorText = await response.text()
-      console.error(`generateResponse - Ollama API error: ${response.status} - ${errorText}`)
       return NextResponse.json(
         { error: `Ollama API Error: ${response.status} - ${errorText}` },
         { status: response.status },
       )
     }
 
-    console.log("generateResponse - Parsing JSON response")
     const data: OllamaResponse = await response.json()
-    console.log("generateResponse - Ollama response received successfully:", {
-      model: data.model,
-      responseLength: data.response?.length || 0,
-      done: data.done,
-      total_duration: data.total_duration
-    })
 
     // Clean the response before returning it
     const cleanedResponse = cleanResponse(data.response)
 
     return NextResponse.json({ response: cleanedResponse })
   } catch (error: any) {
-
     if (error.name === "AbortError") {
       return NextResponse.json(
         { error: "Request to Ollama timed out. Please check if the server is running and accessible." },
@@ -173,14 +165,20 @@ Current query: ${prompt}`
       )
     }
 
-    throw error
+    return NextResponse.json(
+      { error: `Internal Server Error: ${error.message}` },
+      { status: 500 }
+    )
   }
 }
 
-export async function GET(request: Request) {
+/**
+ * GET handler for the Ollama API route
+ * Generates a response using the Ollama API based on query parameters
+ */
+export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url)
   const prompt = searchParams.get('q')
-  
   
   if (!prompt) {
     return NextResponse.json(
