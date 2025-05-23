@@ -1,6 +1,6 @@
 {
   "name": "cognito-ai-search",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -41,6 +41,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "1.1.1",
+    "critters": "^0.0.25",
     "date-fns": "4.1.0",
     "embla-carousel-react": "8.6.0",
     "geist": "^1.4.2",

@@ -1,7 +1,6 @@
 "use client"
 
-import type React from "react"
-import { useState, useEffect, useRef, useCallback } from "react"
+import { useState, useEffect, useRef, useCallback, type FormEvent } from "react"
 import { useRouter } from "next/navigation"
 import { Search, Loader2, Sparkles, ExternalLink, Bot, SearchCheck, Clock, X } from "lucide-react"
 import { getRandomSuggestions } from "@/lib/search-suggestions"
@@ -20,28 +19,42 @@ interface SearchContainerProps {
   initialQuery?: string | string[]
 }
 
+type SearchResult = {
+  title: string
+  url: string
+  content: string
+}
+
+type RecentSearch = {
+  query: string
+  timestamp: number
+}
+
 export default function SearchContainer({ initialQuery = "" }: SearchContainerProps) {
   const router = useRouter()
   const [query, setQuery] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const [isAiLoading, setIsAiLoading] = useState(false)
   const [aiResponse, setAiResponse] = useState("")
-  const [searchResults, setSearchResults] = useState<any[]>([])
+  const [searchResults, setSearchResults] = useState<SearchResult[]>([])
   const [error, setError] = useState<string | null>(null)
   const [displayedOriginalQuery, setDisplayedOriginalQuery] = useState<string | null>(null)
   const [displayedOptimizedQuery, setDisplayedOptimizedQuery] = useState<string | null>(null)
-  const [recentSearches, setRecentSearches] = useState<Array<{query: string, timestamp: number}>>([])  
+  const [recentSearches, setRecentSearches] = useState<RecentSearch[]>([])  
   const [suggestions, setSuggestions] = useState<string[]>([])
   const searchInputRef = useRef<HTMLInputElement>(null)
 
   // Cache configuration (1 hour in milliseconds)
   const CACHE_DURATION = 60 * 60 * 1000
+  
+  // Local storage keys
+  const RECENT_SEARCHES_KEY = 'recentSearches'
 
   // Load recent searches from localStorage and set random suggestions on mount
   useEffect(() => {
     try {
       // Load recent searches
-      const savedSearches = localStorage.getItem('recentSearches')
+      const savedSearches = localStorage.getItem(RECENT_SEARCHES_KEY)
       if (savedSearches) {
         setRecentSearches(JSON.parse(savedSearches))
       }
@@ -51,7 +64,14 @@ export default function SearchContainer({ initialQuery = "" }: SearchContainerPr
     } catch (error) {
       console.error('Failed to load recent searches or set suggestions', error)
     }
-  }, [CACHE_DURATION])
+  }, [])
+
+  // Update URL when search is performed
+  const updateUrl = useCallback((searchQuery: string) => {
+    if (searchQuery.trim()) {
+      router.push(`/?q=${encodeURIComponent(searchQuery)}`, { scroll: false })
+    }
+  }, [router])
 
   // Get cached results for a query
   const getCachedResults = useCallback((query: string) => {
@@ -72,8 +92,8 @@ export default function SearchContainer({ initialQuery = "" }: SearchContainerPr
       console.error('Error reading cache', error)
     }
     return null
-  }, [CACHE_DURATION])
-
+  }, [])
+  
   // Delete a search from cache and recent searches
   const deleteSearch = useCallback((queryToDelete: string) => {
     try {
@@ -84,11 +104,9 @@ export default function SearchContainer({ initialQuery = "" }: SearchContainerPr
       // Remove from recent searches
       setRecentSearches(prev => {
         const newSearches = prev.filter(item => item.query.toLowerCase() !== queryToDelete.toLowerCase())
-        localStorage.setItem('recentSearches', JSON.stringify(newSearches))
+        localStorage.setItem(RECENT_SEARCHES_KEY, JSON.stringify(newSearches))
         return newSearches
       })
-      
-      console.log(`Deleted search: ${queryToDelete}`)
     } catch (error) {
       console.error('Error deleting search', error)
     }
@@ -109,14 +127,9 @@ export default function SearchContainer({ initialQuery = "" }: SearchContainerPr
         const newSearches = [
           { query, timestamp: Date.now() },
           ...prev.filter(item => item.query.toLowerCase() !== query.toLowerCase())
-        ].slice(0, 5) // Keep only 5 most recent searches
+        ].slice(0, 10) // Keep only the 10 most recent
         
-        try {
-          localStorage.setItem('recentSearches', JSON.stringify(newSearches))
-        } catch (error) {
-          console.error('Failed to save recent searches', error)
-        }
-        
+        localStorage.setItem(RECENT_SEARCHES_KEY, JSON.stringify(newSearches))
         return newSearches
       })
     } catch (error) {
@@ -127,95 +140,100 @@ export default function SearchContainer({ initialQuery = "" }: SearchContainerPr
   // Function to perform the search
   const performSearch = useCallback(async (searchQuery: string, bypassCache = false) => {
     if (!searchQuery.trim()) return
-
+    
     setIsLoading(true)
-    setIsAiLoading(true)
     setError(null)
-    setAiResponse("")
-    setSearchResults([])
-    setDisplayedOriginalQuery(null) // Clear previous queries
+    setDisplayedOriginalQuery(null)
     setDisplayedOptimizedQuery(null)
-
-    router.push(`/?q=${encodeURIComponent(searchQuery)}`)
+    
+    // First check if we have cached results and we're not bypassing cache
+    const cachedResults = !bypassCache ? getCachedResults(searchQuery) : null
+    if (cachedResults) {
+      setSearchResults(cachedResults.results || [])
+      setAiResponse(cachedResults.aiResponse || '')
+      setDisplayedOriginalQuery(cachedResults.originalQuery || searchQuery)
+      setDisplayedOptimizedQuery(cachedResults.optimizedQuery || null)
+      setIsLoading(false)
+      setIsAiLoading(false)
+      return
+    }
     
     try {
-      // Check cache first (unless bypassCache is true)
-      if (!bypassCache) {
-        const cachedResult = getCachedResults(searchQuery)
-        if (cachedResult) {
-          setAiResponse(cachedResult.aiResponse || "")
-          setSearchResults(cachedResult.searchResults || [])
-          setDisplayedOriginalQuery(cachedResult.originalQuery || searchQuery)
-          setDisplayedOptimizedQuery(cachedResult.optimizedQuery || searchQuery)
-          setIsLoading(false)
-          // No need to set isAiLoading to false here, as AI response might still be pending or fetched separately
-          return
-        }
-      }
-
-      // If not in cache or bypassing cache, fetch new results
-      // Fetch SearXNG results
-      try {
-        const searxngResponse = await fetch(`/api/searxng?q=${encodeURIComponent(searchQuery)}`)
-        if (!searxngResponse.ok) {
-          const errorData = await searxngResponse.json()
-          throw new Error(errorData.error || "Failed to fetch web results")
-        }
-        const searxngData = await searxngResponse.json()
-        const results = searxngData.results || []
-        setSearchResults(results)
-
-        const originalFromAPI = searxngData.originalQuery || searchQuery;
-        const optimizedFromAPI = searxngData.optimizedQuery || originalFromAPI; // Fallback to original if optimized is missing
-
-        setDisplayedOriginalQuery(originalFromAPI)
-        setDisplayedOptimizedQuery(optimizedFromAPI)
-            
-        // Cache web search results immediately
-        if (results.length > 0) {
-          const combinedDataToCache = {
-            aiResponse: "", // AI response will be cached separately or fetched fresh
-            searchResults: results,
-            originalQuery: originalFromAPI,
-            optimizedQuery: optimizedFromAPI
-          }
-          cacheResults(searchQuery, combinedDataToCache)
-        }
-      } catch (e: any) {
-        console.error("Error fetching web results:", e)
-        setError(`Failed to fetch web results: ${e.message}`)
-        // Don't set isLoading to false here, AI response might still be coming
+      // First, get search results from SearXNG
+      const searchResponse = await fetch(`/api/searxng?q=${encodeURIComponent(searchQuery)}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        cache: 'no-store'
+      })
+      
+      if (!searchResponse.ok) {
+        throw new Error(`Search API error: ${searchResponse.status}`)
       }
       
-      // Fetch AI response (Ollama)
-      try {
-        const aiRes = await fetch(`/api/ollama?q=${encodeURIComponent(searchQuery)}${bypassCache ? '&bypassCache=true' : ''}`)
-        if (!aiRes.ok) {
-          const errorData = await aiRes.json()
-          throw new Error(errorData.error || "Failed to fetch AI response")
-        }
-        const aiData = await aiRes.json()
-        const cleanedAiResponse = cleanResponse(aiData.response || "")
-        setAiResponse(cleanedAiResponse)
-
-        // Update cache with AI response
-        const cachedDataForAI = getCachedResults(searchQuery) || { searchResults: [], originalQuery: searchQuery, optimizedQuery: searchQuery }
-        cacheResults(searchQuery, { ...cachedDataForAI, aiResponse: cleanedAiResponse })
-
-      } catch (e: any) {
-        console.error("Error fetching AI response:", e)
-        setError((prevError) => prevError ? `${prevError}, AI response error: ${e.message}` : `AI response error: ${e.message}`)
-      }
-
-    } catch (e: any) {
-      console.error("Search error:", e)
-      setError(e.message)
-    } finally {
+      const searchData = await searchResponse.json()
+      setSearchResults(searchData.results || [])
+      setDisplayedOriginalQuery(searchData.originalQuery || searchQuery)
+      setDisplayedOptimizedQuery(searchData.optimizedQuery || null)
       setIsLoading(false)
-      // but we don't set isLoading to false here as it's handled in the SearXNG response
+      
+      // Then, get AI response
+      setIsAiLoading(true)
+      const aiResponse = await fetch(`/api/ollama?q=${encodeURIComponent(searchQuery)}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        cache: 'no-store'
+      })
+      
+      if (!aiResponse.ok) {
+        throw new Error(`AI API error: ${aiResponse.status}`)
+      }
+      
+      const aiData = await aiResponse.json()
+      setAiResponse(aiData.response || '')
+      setIsAiLoading(false)
+      
+      // Cache the combined results
+      cacheResults(searchQuery, {
+        results: searchData.results || [],
+        aiResponse: aiData.response || '',
+        originalQuery: searchData.originalQuery || searchQuery,
+        optimizedQuery: searchData.optimizedQuery || null
+      })
+      
+    } catch (error: any) {
+      console.error('Search error:', error)
+      setError(error.message || 'An error occurred during search')
+      setIsLoading(false)
       setIsAiLoading(false)
     }
-  }, [router, getCachedResults, cacheResults, setIsLoading, setIsAiLoading, setError, setAiResponse, setSearchResults, setDisplayedOriginalQuery, setDisplayedOptimizedQuery]) // Added dependencies
+  }, [getCachedResults, cacheResults])
+
+  // Function to regenerate the AI response (bypass cache)
+  const regenerateResponse = useCallback(async () => {
+    if (!displayedOriginalQuery) return
+    
+    setIsAiLoading(true)
+    try {
+      const aiResponse = await fetch(`/api/ollama?q=${encodeURIComponent(displayedOriginalQuery)}&nocache=1`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        cache: 'no-store'
+      })
+      
+      const aiData = await aiResponse.json()
+      setAiResponse(aiData.response || '')
+    } catch (error) {
+      console.error('Error regenerating AI response:', error)
+    } finally {
+      setIsAiLoading(false)
+    }
+  }, [displayedOriginalQuery])
 
   // Effect for handling initial query and query changes from URL
   useEffect(() => {
@@ -230,7 +248,7 @@ export default function SearchContainer({ initialQuery = "" }: SearchContainerPr
         setDisplayedOptimizedQuery(cachedData.optimizedQuery || q)
         setError(null)
       } else {
-        performSearch(q, false) // Call performSearch
+        performSearch(q)
       }
     } else {
       setQuery('')
@@ -240,32 +258,18 @@ export default function SearchContainer({ initialQuery = "" }: SearchContainerPr
       setDisplayedOriginalQuery(null)
       setDisplayedOptimizedQuery(null)
     }
-  }, [initialQuery, getCachedResults, performSearch]) // Added performSearch
+  }, [initialQuery, getCachedResults, performSearch])
 
-  const handleSearch = (e: React.FormEvent) => {
+  // Handle form submission
+  const handleSearch = (e: FormEvent) => {
     e.preventDefault()
-    const trimmedQuery = query.trim()
-    if (!trimmedQuery || isLoading) return
-    
-    // Update URL with search query
-    const searchParams = new URLSearchParams()
-    searchParams.set('q', trimmedQuery)
-    router.push(`/?${searchParams.toString()}`)
-    // performSearch will be triggered by the useEffect when initialQuery changes
+    if (query.trim()) {
+      performSearch(query)
+      updateUrl(query)
+    }
   }
   
   // No streaming function needed
-  
-  // Function to regenerate the AI response (bypass cache)
-  const regenerateResponse = async () => {
-    if (!query) return;
-    
-    // Clear the current AI response
-    setAiResponse("");
-    
-    // Perform a new search with the bypass cache flag
-    await performSearch(query, true);
-  };
 
   return (
     <div className="w-full max-w-5xl mx-auto px-4 md:px-6">
@@ -395,7 +399,7 @@ export default function SearchContainer({ initialQuery = "" }: SearchContainerPr
                   onClick={() => {
                     setQuery(suggestion)
                     performSearch(suggestion)
-                    router.push(`/?q=${encodeURIComponent(suggestion)}`)
+                    updateUrl(suggestion)
                   }}
                 >
                   {suggestion}
@@ -421,7 +425,7 @@ export default function SearchContainer({ initialQuery = "" }: SearchContainerPr
                       onClick={() => {
                         setQuery(item.query)
                         performSearch(item.query)
-                        router.push(`/?q=${encodeURIComponent(item.query)}`)
+                        updateUrl(item.query)
                       }}
                     >
                       {item.query.length > 30 ? `${item.query.substring(0, 30)}...` : item.query}
