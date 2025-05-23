@@ -219,12 +219,14 @@ export default function SearchContainer({ initialQuery = "" }: SearchContainerPr
       
       // Now fetch the AI response in the background
       try {
-        const aiUrl = `/api/ollama?q=${encodeURIComponent(optimizedQuery)}`
-        const aiResponse = await fetch(aiUrl, {
-          method: "GET",
+        const aiResponse = await fetch('/api/ollama', {
+          method: "POST",
           headers: {
+            "Content-Type": "application/json",
             "Accept": "application/json",
           },
+          body: JSON.stringify({ prompt: optimizedQuery }),
+          cache: "no-store"
         })
         
         if (aiResponse.ok) {
