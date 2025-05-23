@@ -1,63 +1,84 @@
-import { Search, Sparkles, Bot, Globe } from "lucide-react"
-
+import { Suspense } from "react"
 import { SiteHeader } from "@/components/layout/site-header"
 import { SearchClientWrapper } from "@/components/search/search-client-wrapper"
-import { Badge } from "@/components/ui/badge"
+import { Sparkles } from "lucide-react"
+
+// Loading skeleton for the search container
+function SearchContainerSkeleton() {
+  return (
+    <div className="w-full max-w-6xl mx-auto bg-white dark:bg-gray-800 backdrop-blur-md rounded-3xl border border-gray-200 dark:border-gray-700 shadow-xl p-4 transition-all duration-300">
+      {/* Header skeleton */}
+      <div className="text-center mb-6">
+        <div className="flex items-center justify-center gap-3 mb-4">
+          <Sparkles className="text-blue-600 dark:text-blue-400 h-8 w-8" />
+          <div className="h-8 w-48 bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse"></div>
+        </div>
+        <div className="h-6 w-96 bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse mx-auto"></div>
+      </div>
+
+      {/* Search form skeleton */}
+      <div className="max-w-6xl mx-auto mb-6">
+        <div className="relative">
+          <div className="h-16 bg-gray-200 dark:bg-gray-700 rounded-2xl animate-pulse"></div>
+        </div>
+      </div>
+
+      {/* Always show suggestions skeleton to maintain layout */}
+      <div className="max-w-6xl mx-auto mb-6">
+        <div className="flex items-center justify-between mb-4">
+          <div className="h-6 w-48 bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse"></div>
+          <div className="h-8 w-20 bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse"></div>
+        </div>
+        <div className="flex flex-wrap gap-2">
+          {[...Array(4)].map((_, i) => (
+            <div 
+              key={i} 
+              className="h-8 bg-gray-200 dark:bg-gray-700 rounded-full animate-pulse"
+              style={{ width: `${120 + (i * 20)}px` }}
+            />
+          ))}
+        </div>
+      </div>
+
+      {/* Feature boxes skeleton */}
+      <div className="max-w-6xl mx-auto mb-8">
+        <div className="text-center mb-6">
+          <div className="h-8 w-80 bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse mx-auto mb-3"></div>
+          <div className="h-6 w-96 bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse mx-auto"></div>
+        </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {[...Array(2)].map((_, i) => (
+            <div key={i} className="flex items-start p-6 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm">
+              <div className="mr-4 mt-1 bg-gray-200 dark:bg-gray-700 p-3 rounded-full w-12 h-12 animate-pulse"></div>
+              <div className="flex-1">
+                <div className="h-6 w-40 bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse mb-2"></div>
+                <div className="space-y-2">
+                  <div className="h-4 w-full bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse"></div>
+                  <div className="h-4 w-3/4 bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse"></div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  )
+}
 
 export default function HomePage() {
   return (
-    <div className="flex flex-col h-full bg-gradient-to-b from-background to-background/95 dark:from-[#0B1120] dark:to-[#0B1120]/95">
+    <div className="flex flex-col transition-colors duration-300">
       {/* Header */}
       <SiteHeader />
 
       {/* Main Content */}
-      <main className="flex-1 container max-w-6xl mx-auto px-4 py-8 md:py-12">
-        <div className="text-center mb-6">
-          <div className="inline-flex items-center justify-center mb-2">
-            <Badge variant="outline" className="px-3 py-1 text-xs font-medium bg-primary/5 dark:bg-primary/10 border-primary/20 dark:border-primary/30 text-primary dark:text-primary/90">
-              <Sparkles className="h-3 w-3 mr-1" />
-              Self-hosted & Private
-            </Badge>
-          </div>
-          
-          <h1 className="text-4xl md:text-5xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-primary to-primary/70 dark:from-primary/90 dark:to-primary/60 mb-2">
-            Search + AI in One Place
-          </h1>
-        </div>
-        
+      <main className="flex-1 container max-w-6xl mx-auto px-4 py-2">
         {/* Search box gets priority placement */}
-        <div className="mb-12">
-          <SearchClientWrapper />
-        </div>
-        
-        {/* Description moved below search */}
-        <div className="text-center mb-8">
-          <p className="text-lg text-muted-foreground dark:text-white/80 max-w-2xl mx-auto">
-            Your private search engine with local AI-powered answers
-          </p>
-        </div>
-        
-        {/* Feature highlights */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-4xl mx-auto">
-          <div className="flex items-start p-4 rounded-lg bg-card/50 dark:bg-[#182338]/80 border border-border/60 dark:border-white/10 backdrop-blur-sm shadow-sm hover:shadow transition-all duration-200">
-            <div className="mr-4 mt-1 bg-primary/10 dark:bg-primary/20 p-2 rounded-full">
-              <Globe className="h-5 w-5 text-primary dark:text-primary/90" />
-            </div>
-            <div>
-              <h3 className="font-medium mb-1 dark:text-white/90">Web Search</h3>
-              <p className="text-sm text-muted-foreground dark:text-white/70">Powered by SearXNG for private, untracked web results</p>
-            </div>
-          </div>
-          
-          <div className="flex items-start p-4 rounded-lg bg-card/50 dark:bg-[#182338]/80 border border-border/60 dark:border-white/10 backdrop-blur-sm shadow-sm hover:shadow transition-all duration-200">
-            <div className="mr-4 mt-1 bg-primary/10 dark:bg-primary/20 p-2 rounded-full">
-              <Bot className="h-5 w-5 text-primary dark:text-primary/90" />
-            </div>
-            <div>
-              <h3 className="font-medium mb-1 dark:text-white/90">Local AI Responses</h3>
-              <p className="text-sm text-muted-foreground dark:text-white/70">Using Ollama to generate answers without sending data to third parties</p>
-            </div>
-          </div>
+        <div>
+          <Suspense fallback={<SearchContainerSkeleton />}>
+            <SearchClientWrapper />
+          </Suspense>
         </div>
       </main>
     </div>

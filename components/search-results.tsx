@@ -1,6 +1,6 @@
-import { ExternalLink, Globe, Search } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Badge } from "@/components/ui/badge"
+import { Globe, Search, ExternalLink } from "lucide-react"
 
 interface SearchResult {
   title: string
@@ -21,8 +21,8 @@ interface SearchResultsProps {
 export default function SearchResults({ results, query = '' }: SearchResultsProps) {
   if (!results || results.length === 0) {
     return (
-      <div className="text-center py-12 text-muted-foreground flex flex-col items-center">
-        <Search className="h-8 w-8 mb-3 text-muted-foreground/50" />
+      <div className="text-center py-12 text-gray-500 dark:text-gray-400 flex flex-col items-center">
+        <Search className="h-8 w-8 mb-3 text-gray-400 dark:text-gray-500" />
         <p>No results found for "{query}"</p>
         <p className="text-sm mt-2">Try using different keywords or simplify your search query</p>
       </div>
@@ -44,10 +44,10 @@ export default function SearchResults({ results, query = '' }: SearchResultsProp
     <div>
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center">
-          <Globe className="h-4 w-4 text-primary/70 relative top-[0.075em]" />
-          <span className="text-sm font-medium ml-2">Web Results</span>
+          <Globe className="h-4 w-4 text-blue-600 dark:text-blue-400 relative top-[0.075em]" />
+          <span className="text-sm font-medium ml-2 text-gray-900 dark:text-white">Web Results</span>
         </div>
-        <Badge variant="outline" className="text-xs bg-primary/5 border-primary/20 text-primary">
+        <Badge variant="outline" className="text-xs bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-700 text-blue-700 dark:text-blue-300">
           {results.length} results
         </Badge>
       </div>
@@ -62,32 +62,32 @@ export default function SearchResults({ results, query = '' }: SearchResultsProp
             <div 
               key={index}
               className={cn(
-                "group p-5 rounded-lg border border-border/50 bg-white dark:bg-[#0f1729]/90 backdrop-blur-sm",
+                "group p-5 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 backdrop-blur-sm",
                 "hover:shadow-lg transition-all duration-300",
-                "hover:border-primary/20 hover:bg-white hover:dark:bg-[#0f1729]/95"
+                "hover:border-blue-300 dark:hover:border-blue-600 hover:bg-gray-50 dark:hover:bg-gray-750"
               )}
             >
             <div className="flex flex-col space-y-2">
               {/* URL and source */}
-              <div className="flex items-center text-sm text-muted-foreground">
+              <div className="flex items-center text-sm text-gray-500 dark:text-gray-400">
                 <span className="truncate max-w-[200px] sm:max-w-xs">{displayUrl}</span>
                 {result.engine && (
-                  <span className="mx-2 text-muted-foreground/50">•</span>
+                  <span className="mx-2 text-gray-400 dark:text-gray-500">•</span>
                 )}
                 {result.engine && (
-                  <span className="text-xs px-2 py-0.5 rounded-full bg-primary/5 text-primary/80 border border-primary/10">
+                  <span className="text-xs px-2 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-700">
                     {result.engine}
                   </span>
                 )}
               </div>
               
               {/* Title with link */}
-              <h3 className="text-lg font-medium text-foreground dark:text-gray-200 group-hover:text-primary transition-colors">
+              <h3 className="text-lg font-medium text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
                 <a 
                   href={result.url} 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  className="hover:underline flex items-start dark:text-blue-300 dark:hover:text-blue-200"
+                  className="hover:underline flex items-start text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300"
                 >
                   {result.title}
                   <ExternalLink className="ml-1.5 h-3.5 w-3.5 shrink-0 mt-1.5 opacity-0 group-hover:opacity-100 transition-opacity" />
@@ -96,7 +96,7 @@ export default function SearchResults({ results, query = '' }: SearchResultsProp
               
               {/* Content snippet */}
               {result.content && (
-                <p className="text-muted-foreground text-sm line-clamp-3 mt-1">
+                <p className="text-gray-600 dark:text-gray-300 text-sm line-clamp-3 mt-1">
                   {result.content}
                 </p>
               )}

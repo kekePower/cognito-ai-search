@@ -44,36 +44,54 @@ export function SearchForm({
       
       <form 
         onSubmit={handleSubmit}
-        className="relative max-w-2xl mx-auto"
+        className="relative"
       >
-        <Input
-          ref={searchInputRef}
-          type="text"
-          placeholder="I'll search the web and use AI to craft the perfect answer just for you."
-          className="h-14 pl-5 pr-32 rounded-full text-base text-black dark:text-white"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          onFocus={() => setIsFocused(true)}
-          onBlur={() => setIsFocused(false)}
-        />
-        
-        <Button 
-          type="submit" 
-          className="absolute right-2 top-1/2 transform -translate-y-1/2 rounded-full h-12"
-          disabled={isLoading || !query.trim()}
-        >
-          {isLoading ? (
-            <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Searching...
-            </>
-          ) : (
-            <>
-              <Sparkles className="mr-2 h-4 w-4" />
-              Search
-            </>
-          )}
-        </Button>
+        <div className="relative">
+          {/* Animated gradient border - Google style */}
+          <div 
+            className={`absolute inset-0 rounded-2xl transition-all duration-300 overflow-hidden ${
+              isFocused ? 'opacity-100' : 'opacity-0'
+            }`}
+          >
+            <div 
+              className={`absolute inset-0 rounded-2xl bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 transition-transform duration-300 ease-out ${
+                isFocused 
+                  ? 'translate-x-0' 
+                  : 'translate-x-full'
+              }`}
+              style={{ padding: '3px' }}
+            >
+              <div className="w-full h-full bg-white dark:bg-gray-800 rounded-xl"></div>
+            </div>
+          </div>
+
+          <Input
+            ref={searchInputRef}
+            type="text"
+            placeholder="Ask AI anything..."
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            className={`relative w-full h-16 px-6 pr-20 text-lg bg-white dark:bg-gray-800 rounded-2xl focus:ring-0 focus:outline-none placeholder:text-gray-400 dark:placeholder:text-gray-500 transition-all duration-300 z-10 ${
+              isFocused 
+                ? 'border-[3px] border-transparent' 
+                : 'border-[3px] border-gray-200 dark:border-gray-700'
+            }`}
+            onFocus={() => setIsFocused(true)}
+            onBlur={() => setIsFocused(false)}
+          />
+          
+          <Button 
+            type="submit" 
+            className="absolute right-2 top-1/2 transform -translate-y-1/2 rounded-xl h-10 px-4 bg-gradient-to-r from-gray-200 to-gray-300 hover:from-gray-300 hover:to-gray-400 dark:from-gray-600 dark:to-gray-700 dark:hover:from-gray-700 dark:hover:to-gray-800 border-0 shadow-md hover:shadow-lg transition-all duration-300 z-20"
+            disabled={isLoading || !query.trim()}
+          >
+            {isLoading ? (
+              <Loader2 className="h-4 w-4 animate-spin text-gray-600 dark:text-white" />
+            ) : (
+              <Sparkles className="h-4 w-4 text-cyan-600 dark:text-cyan-400" />
+            )}
+          </Button>
+        </div>
       </form>
       
       {suggestions.length > 0 && !query && !searchResults.length && (
