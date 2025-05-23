@@ -18,9 +18,9 @@ export function SearchResultsContainer({
   if (searchResults.length === 0) return null
   
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 transition-all duration-500 ease-in-out animate-in fade-in slide-in-from-bottom-3 duration-600">
       {/* AI Response Section - Always at the top */}
-      <div className="mb-8">
+      <div className="mb-8 transition-all duration-300 ease-in-out animate-in fade-in slide-in-from-bottom-2 delay-150">
         {isAiLoading && !aiResponse ? (
           <div className="border border-primary/20 bg-white dark:bg-[#0f1729]/90 shadow-md backdrop-blur-sm rounded-xl overflow-hidden">
             <div className="pb-2 border-b border-primary/10 bg-primary/5 dark:bg-primary/10 p-4">
@@ -49,7 +49,7 @@ export function SearchResultsContainer({
       </div>
       
       {/* Web Results Section */}
-      <div>
+      <div className="animate-in fade-in slide-in-from-bottom-2 delay-300">
         <SearchResults results={searchResults} />
       </div>
     </div>
