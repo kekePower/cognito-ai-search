@@ -97,6 +97,20 @@ const config: Config = {
           "0%": { backgroundPosition: "200% 0" },
           "100%": { backgroundPosition: "0% 0" },
         },
+        "gradient-x": {
+          "0%, 100%": { backgroundPosition: "0% 50%" },
+          "50%": { backgroundPosition: "100% 50%" },
+        },
+        "border-glow": {
+          "0%": { boxShadow: "0 0 0 0 rgba(99, 102, 241, 0)" },
+          "50%": { boxShadow: "0 0 0 4px rgba(99, 102, 241, 0.3)" },
+          "100%": { boxShadow: "0 0 0 0 rgba(99, 102, 241, 0)" },
+        },
+        "color-change": {
+          "0%": { borderColor: "rgba(99, 102, 241, 0.2)" },
+          "50%": { borderColor: "rgba(59, 130, 246, 0.5)" },
+          "100%": { borderColor: "rgba(99, 102, 241, 0.2)" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -105,6 +119,9 @@ const config: Config = {
         "slide-up": "slide-up 0.3s ease-out forwards",
         "pulse-slow": "pulse-slow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite",
         "shimmer": "shimmer 2s ease-in-out infinite",
+        "gradient-x": "gradient-x 3s ease-in-out infinite",
+        "border-glow": "border-glow 2s ease-in-out infinite",
+        "color-change": "color-change 3s ease-in-out infinite",
       },
       boxShadow: {
         glow: "0 0 15px -3px rgba(99, 102, 241, 0.3)",

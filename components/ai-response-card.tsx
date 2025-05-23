@@ -1,9 +1,10 @@
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card"
-import { AlertTriangle, RefreshCw } from "lucide-react"
+import { AlertTriangle, RefreshCw, Bot, Sparkles } from "lucide-react"
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
 import { oneDark } from 'react-syntax-highlighter/dist/cjs/styles/prism'
+import { oneLight } from 'react-syntax-highlighter/dist/cjs/styles/prism'
 import { Button } from "@/components/ui/button"
 import { useEffect, useState } from "react"
 
@@ -22,32 +23,37 @@ interface AIResponseCardProps {
 }
 
 export default function AIResponseCard({ response, isError = false, isStreaming = false, onRegenerate }: AIResponseCardProps) {
-  // For typing effect animation
-  const [typingText, setTypingText] = useState("");
-  const [typingIndex, setTypingIndex] = useState(0);
-  const placeholderText = "I'm generating a thoughtful response to your query. This might take a moment as I process your question and create a comprehensive answer...";
+  // Track dark mode
+  const [isDarkMode, setIsDarkMode] = useState(false);
   
-  // Typing effect animation
+  // Check for dark mode
   useEffect(() => {
-    if (!isStreaming || response || isError) return;
+    // Check initial theme
+    const isDark = document.documentElement.classList.contains('dark');
+    setIsDarkMode(isDark);
     
-    const interval = setInterval(() => {
-      if (typingIndex < placeholderText.length) {
-        setTypingText(prev => prev + placeholderText[typingIndex]);
-        setTypingIndex(prev => prev + 1);
-      } else {
-        // Reset to create a loop effect
-        setTypingText("");
-        setTypingIndex(0);
-      }
-    }, 50); // Speed of typing
+    // Set up observer for theme changes
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (mutation.attributeName === 'class') {
+          const isDark = document.documentElement.classList.contains('dark');
+          setIsDarkMode(isDark);
+        }
+      });
+    });
     
-    return () => clearInterval(interval);
-  }, [isStreaming, response, isError, typingIndex, placeholderText]);
+    observer.observe(document.documentElement, { attributes: true });
+    
+    return () => observer.disconnect();
+  }, []);
+  // Static placeholder text for loading state
+  const placeholderText = "I'm generating a thoughtful response to your query. This might take a moment as I process your question and create a comprehensive answer...";
+
   return (
-    <Card className="mb-8 border-primary/20 bg-primary/5 shadow-md">
-      <CardHeader className="pb-2 border-b border-primary/10">
-        <CardTitle className="text-xl flex items-center gap-2 text-primary-foreground">
+    <Card className="mb-8 border-primary/20 bg-primary/5 shadow-md backdrop-blur-sm rounded-xl overflow-hidden">
+      <CardHeader className="pb-2 border-b border-primary/10 bg-primary/10">
+        <CardTitle className="text-xl flex items-center gap-2 text-primary">
+          <Bot className="h-5 w-5" />
           AI Response
         </CardTitle>
       </CardHeader>
@@ -81,23 +87,19 @@ export default function AIResponseCard({ response, isError = false, isStreaming 
         ) : isStreaming && !response ? (
           // Enhanced loading animation with typing effect
           <div className="space-y-5">
-            {/* Animated typing indicator */}
-            <div className="flex items-center gap-1 mb-4">
-              <div className="flex space-x-1">
-                <div className="w-2 h-2 rounded-full bg-primary/60 animate-bounce" style={{ animationDelay: '0ms' }} />
-                <div className="w-2 h-2 rounded-full bg-primary/60 animate-bounce" style={{ animationDelay: '150ms' }} />
-                <div className="w-2 h-2 rounded-full bg-primary/60 animate-bounce" style={{ animationDelay: '300ms' }} />
+            {/* Animated typing indicator with spinner */}
+            <div className="flex items-center gap-2 mb-4">
+              <div className="animate-spin text-primary">
+                <RefreshCw className="h-4 w-4" />
               </div>
               <span className="text-sm text-muted-foreground">AI is generating...</span>
             </div>
             
-            {/* Typing effect animation */}
-            {typingText && (
-              <div className="text-sm text-foreground/80 leading-relaxed mb-4">
-                {typingText}
-                <span className="inline-block h-4 w-1.5 bg-primary ml-0.5 animate-pulse" />
-              </div>
-            )}
+            {/* Static loading message with animated cursor */}
+            <div className="text-sm text-foreground/80 leading-relaxed mb-4">
+              {placeholderText}
+              <span className="inline-block h-4 w-1.5 bg-primary ml-0.5 animate-pulse" />
+            </div>
             
             {/* Simulated text lines with gradient loading effect */}
             <div className="space-y-4">
@@ -113,12 +115,12 @@ export default function AIResponseCard({ response, isError = false, isStreaming 
               ))}
             </div>
             
-            {/* Code block simulation */}
-            <div className="bg-gray-800 rounded-md p-3 mt-4">
+            {/* Code block simulation with theme support */}
+            <div className={`rounded-md p-3 mt-4 border ${isDarkMode ? 'bg-gray-800 border-gray-700' : 'bg-gray-100 border-gray-200'}`}>
               <div className="space-y-2">
-                <div className="h-3 bg-gray-700 rounded w-1/2 animate-pulse" />
-                <div className="h-3 bg-gray-700 rounded w-3/4 animate-pulse" />
-                <div className="h-3 bg-gray-700 rounded w-2/3 animate-pulse" />
+                <div className={`h-3 rounded w-1/2 animate-pulse ${isDarkMode ? 'bg-gray-700' : 'bg-gray-300'}`} />
+                <div className={`h-3 rounded w-3/4 animate-pulse ${isDarkMode ? 'bg-gray-700' : 'bg-gray-300'}`} />
+                <div className={`h-3 rounded w-2/3 animate-pulse ${isDarkMode ? 'bg-gray-700' : 'bg-gray-300'}`} />
               </div>
             </div>
           </div>
@@ -133,7 +135,7 @@ export default function AIResponseCard({ response, isError = false, isStreaming 
                   return !inline ? (
                     <div className="my-4 rounded-md overflow-hidden">
                       <SyntaxHighlighter
-                        style={oneDark}
+                        style={isDarkMode ? oneDark : oneLight}
                         language={match ? match[1] : 'text'}
                         PreTag="div"
                         {...props}
@@ -190,7 +192,7 @@ export default function AIResponseCard({ response, isError = false, isStreaming 
             variant="outline" 
             size="sm" 
             onClick={onRegenerate}
-            className="ml-auto flex items-center gap-1 text-xs"
+            className="ml-auto flex items-center gap-1 text-xs hover:bg-primary/10 hover:text-primary hover:border-primary/30 transition-all duration-200"
           >
             <RefreshCw className="h-3 w-3" />
             Try Again
