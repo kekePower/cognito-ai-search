@@ -1,8 +1,8 @@
 "use client"
 
-import { useState, useEffect, useRef, useCallback, type FormEvent } from "react"
+import { useState, useEffect, useRef, useCallback, type FormEvent, Suspense } from "react"
 import { useRouter } from "next/navigation"
-import { Search, Loader2, Sparkles, ExternalLink, Bot, SearchCheck, Clock, X } from "lucide-react"
+import { Search, Loader2, Sparkles, ExternalLink, Bot, SearchCheck, Clock, X, RefreshCw } from "lucide-react"
 import { getRandomSuggestions } from "@/lib/search-suggestions"
 
 import { Button } from "@/components/ui/button"
@@ -35,6 +35,7 @@ export default function SearchContainer({ initialQuery = "" }: SearchContainerPr
   const [query, setQuery] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const [isAiLoading, setIsAiLoading] = useState(false)
+  const [isOptimizing, setIsOptimizing] = useState(false)
   const [aiResponse, setAiResponse] = useState("")
   const [searchResults, setSearchResults] = useState<SearchResult[]>([])
   const [error, setError] = useState<string | null>(null)
@@ -142,6 +143,7 @@ export default function SearchContainer({ initialQuery = "" }: SearchContainerPr
     if (!searchQuery.trim()) return
     
     setIsLoading(true)
+    setIsOptimizing(true) // Set optimizing state to true at the start
     setError(null)
     setDisplayedOriginalQuery(null)
     setDisplayedOptimizedQuery(null)
@@ -177,6 +179,7 @@ export default function SearchContainer({ initialQuery = "" }: SearchContainerPr
       setDisplayedOriginalQuery(searchData.originalQuery || searchQuery)
       setDisplayedOptimizedQuery(searchData.optimizedQuery || null)
       setIsLoading(false)
+      setIsOptimizing(false) // Set optimizing to false after results are received
       
       // Then, get AI response
       setIsAiLoading(true)
@@ -193,22 +196,25 @@ export default function SearchContainer({ initialQuery = "" }: SearchContainerPr
       }
       
       const aiData = await aiResponse.json()
-      setAiResponse(aiData.response || '')
+      const aiResponseText = aiData.response || ''
+      setAiResponse(aiResponseText)
       setIsAiLoading(false)
       
-      // Cache the combined results
-      cacheResults(searchQuery, {
+      // Cache both search results and AI response together
+      const dataToCache = {
         results: searchData.results || [],
-        aiResponse: aiData.response || '',
+        aiResponse: aiResponseText,
         originalQuery: searchData.originalQuery || searchQuery,
         optimizedQuery: searchData.optimizedQuery || null
-      })
+      }
+      cacheResults(searchQuery, dataToCache)
       
     } catch (error: any) {
       console.error('Search error:', error)
-      setError(error.message || 'An error occurred during search')
+      setError(`Search error: ${error.message}`)
       setIsLoading(false)
       setIsAiLoading(false)
+      setIsOptimizing(false) // Set optimizing to false on error
     }
   }, [getCachedResults, cacheResults])
 
@@ -269,37 +275,51 @@ export default function SearchContainer({ initialQuery = "" }: SearchContainerPr
     }
   }
   
-  // No streaming function needed
-
   return (
-    <div className="w-full max-w-5xl mx-auto px-4 md:px-6">
+    <div className="w-full max-w-6xl mx-auto px-4 md:px-6">
+      <div className="text-center">
+        <h2 className="text-2xl md:text-4xl font-bold mb-3 text-foreground">What would you like to know?</h2>
+        <p className="text-muted-foreground max-w-md mx-auto text-base mb-6">
+          Ask anything and get AI-powered answers backed by web search results ✨
+        </p>
+      </div>
       {/* Search Form */}
       <form
         onSubmit={handleSearch}
-        className="relative mb-8 flex items-center"
+        className="relative mb-10 max-w-3xl mx-auto"
       >
-        <div className="relative w-full">
-          <Search className="absolute left-3 top-3 h-5 w-5 text-muted-foreground" />
+        <div className="relative w-full group">
+          {/* Light mode animation */}
+          <div className="absolute inset-0 bg-primary/5 filter blur-xl rounded-full opacity-70 -z-10 transform scale-95 group-focus-within:animate-pulse dark:hidden"></div>
+          <div className="absolute inset-0 rounded-full -z-10 opacity-0 group-focus-within:opacity-100 transition-opacity duration-300 bg-gradient-to-r from-blue-500/20 via-primary/20 to-blue-500/20 bg-[length:200%_200%] animate-gradient-x dark:hidden"></div>
+          
+          {/* Dark mode animation */}
+          <div className="absolute inset-0 bg-primary/10 filter blur-xl rounded-full opacity-0 -z-10 transform scale-95 group-focus-within:opacity-50 transition-opacity duration-300 hidden dark:block"></div>
+          <div className="absolute inset-0 rounded-full border border-primary/30 -z-10 opacity-0 group-focus-within:opacity-100 transition-opacity duration-300 hidden dark:block"></div>
+          
+          <div className="absolute left-4 top-4 h-6 w-6 text-primary/70 group-focus-within:text-primary transition-colors duration-200">
+            <Search className="h-6 w-6" />
+          </div>
           <Input
             ref={searchInputRef}
             type="text"
-            placeholder="Search the web or ask a question..."
-            className="pl-10 pr-24 h-12 bg-background/80 backdrop-blur-sm shadow-sm border-border/60 focus-visible:ring-primary/30 focus-visible:ring-offset-0 rounded-full"
+            placeholder="I'll search the web and use AI to craft the perfect answer just for you."
+            className="pl-14 pr-32 h-16 bg-background/90 backdrop-blur-sm shadow-lg border border-primary/20 focus-visible:border-primary/30 focus-visible:ring-1 focus-visible:ring-primary/30 focus-visible:ring-offset-0 rounded-full transition-all duration-300 hover:shadow-xl text-lg"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
           />
-          <div className="absolute right-1.5 top-1.5">
+          <div className="absolute right-2 top-2 z-20">
             <Button
               type="submit"
-              size="sm"
-              className="h-9 rounded-full"
+              size="lg"
+              className="h-12 px-6 rounded-full bg-primary hover:bg-primary/90 transition-all duration-200 shadow-md hover:shadow-lg font-medium"
               disabled={isLoading || !query.trim()}
             >
               {isLoading ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
+                <Loader2 className="h-5 w-5 animate-spin" />
               ) : (
                 <>
-                  <Sparkles className="h-4 w-4 mr-2" />
+                  <Sparkles className="h-5 w-5 mr-2" />
                   Search
                 </>
               )}
@@ -339,7 +359,22 @@ export default function SearchContainer({ initialQuery = "" }: SearchContainerPr
           ) : null}
           
           {/* Search Results Section */}
-          {isLoading ? (
+          {isOptimizing ? (
+            /* Show optimization state */
+            <div className="mt-8">
+              <div className="flex items-center justify-center space-x-2 mb-4">
+                <RefreshCw className="h-5 w-5 text-primary/70 animate-spin" />
+                <p className="text-sm text-muted-foreground">Optimizing your search query...</p>
+              </div>
+              <div className="animate-pulse space-y-6">
+                <div className="space-y-4">
+                  {[...Array(3)].map((_, i) => (
+                    <div key={i} className="h-24 bg-muted/50 rounded-lg"></div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          ) : isLoading ? (
             /* Show loading state for search results */
             <div className="animate-pulse space-y-6 mt-8">
               <div className="space-y-4">
@@ -350,17 +385,8 @@ export default function SearchContainer({ initialQuery = "" }: SearchContainerPr
             </div>
           ) : searchResults.length > 0 && (
             <>
-              {/* Search stats */}
-              <div className="flex items-center justify-between mb-4 mt-8">
-                <h2 className="text-xl font-semibold flex items-center gap-2">
-                  <Search className="h-5 w-5 text-foreground/80" />
-                  Web Results
-                </h2>
-                
-                <Badge variant="outline">
-                  {searchResults.length} results
-                </Badge>
-              </div>
+              {/* Spacing for results */}
+              <div className="mt-8 mb-4"></div>
               
               {displayedOptimizedQuery && displayedOriginalQuery && displayedOptimizedQuery.toLowerCase() !== displayedOriginalQuery.toLowerCase() && (
                 <p className="text-xs italic text-muted-foreground mb-2">
@@ -378,24 +404,20 @@ export default function SearchContainer({ initialQuery = "" }: SearchContainerPr
       {/* Empty state when no search has been performed */}
       {!isLoading && !aiResponse && searchResults.length === 0 && !query && (
         <div className="text-center py-12 px-4">
-          <div className="mx-auto w-24 h-24 rounded-full bg-primary/5 flex items-center justify-center mb-6">
-            <Search className="h-12 w-12 text-primary/80" />
-          </div>
-          <h2 className="text-2xl md:text-3xl font-semibold mb-4 text-foreground">What would you like to know?</h2>
-          <p className="text-muted-foreground max-w-md mx-auto text-lg mb-12">
-            Ask a question or search the web to get started.
-          </p>
           
           {/* Quick Suggestions */}
-          <div className="max-w-2xl mx-auto mb-16">
-            <h3 className="text-sm font-medium text-muted-foreground mb-4 uppercase tracking-wider">Try searching for</h3>
+          <div className="max-w-3xl mx-auto mb-16">
+            <h3 className="text-sm font-medium text-muted-foreground mb-4 uppercase tracking-wider flex items-center justify-center">
+              <Sparkles className="h-3.5 w-3.5 mr-2 text-primary/70" />
+              Try searching for
+            </h3>
             <div className="flex flex-wrap justify-center gap-3">
               {suggestions.map((suggestion, index) => (
                 <Button
                   key={index}
                   variant="outline"
                   size="sm"
-                  className="rounded-full text-sm font-normal h-9 px-4 hover:bg-accent/50 transition-colors"
+                  className="rounded-full text-sm font-normal h-9 px-4 hover:bg-primary/10 hover:text-primary hover:border-primary/30 transition-all duration-200"
                   onClick={() => {
                     setQuery(suggestion)
                     performSearch(suggestion)
@@ -412,7 +434,7 @@ export default function SearchContainer({ initialQuery = "" }: SearchContainerPr
           {recentSearches.length > 0 && (
             <div className="max-w-2xl mx-auto">
               <h3 className="text-sm font-medium text-muted-foreground mb-4 flex items-center justify-center">
-                <Clock className="h-4 w-4 mr-2" />
+                <Clock className="h-3.5 w-3.5 mr-2 text-primary/70" />
                 <span className="uppercase tracking-wider">Recent Searches</span>
               </h3>
               <div className="flex flex-wrap justify-center gap-3">
@@ -421,7 +443,7 @@ export default function SearchContainer({ initialQuery = "" }: SearchContainerPr
                     <Button
                       variant="ghost"
                       size="sm"
-                      className="rounded-l-full text-sm font-normal h-9 px-4 hover:bg-accent/30 transition-colors"
+                      className="rounded-l-full text-sm font-normal h-9 px-4 hover:bg-primary/10 hover:text-primary transition-all duration-200"
                       onClick={() => {
                         setQuery(item.query)
                         performSearch(item.query)
