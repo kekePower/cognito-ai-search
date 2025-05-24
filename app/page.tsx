@@ -18,8 +18,9 @@ function SearchContainerSkeleton() {
 
       {/* Search form skeleton */}
       <div className="max-w-6xl mx-auto mb-6">
-        <div className="relative">
-          <div className="h-16 bg-gray-200 dark:bg-gray-700 rounded-2xl animate-pulse"></div>
+        <div className="relative flex items-center gap-2">
+          <div className="h-16 flex-grow bg-gray-200 dark:bg-gray-700 rounded-2xl animate-pulse"></div>
+          <div className="h-16 w-16 bg-gray-200 dark:bg-gray-700 rounded-2xl animate-pulse"></div>
         </div>
       </div>
 

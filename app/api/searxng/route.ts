@@ -1,10 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server"
 
-// Get environment variables with defaults
-const SEARXNG_API_URL = process.env.SEARXNG_API_URL || 'http://10.0.0.3:8888';
-const OLLAMA_API_URL = process.env.OLLAMA_API_URL || 'http://10.0.0.3:11434';
-const DEFAULT_OLLAMA_MODEL = process.env.DEFAULT_OLLAMA_MODEL || 'qwen3:8b';
-
 // Define types for API responses
 type SearXNGResult = {
   title: string;
@@ -256,8 +251,12 @@ export async function GET(request: NextRequest) {
  */
 export async function HEAD() {
   try {
+    // Get and validate configuration
+    const config = getApiConfig()
+    validateApiConfig(config) // It's good practice to validate here too
+
     // Simple health check
-    const response = await fetch(`${SEARXNG_API_URL}/healthz`, {
+    const response = await fetch(`${config.searxngApiUrl}/healthz`, {
       method: "GET",
       cache: "no-store",
       next: { revalidate: 0 },
@@ -266,12 +265,22 @@ export async function HEAD() {
     return NextResponse.json({
       status: response.ok ? "ok" : "error",
       message: response.ok ? "SearXNG server is reachable" : "SearXNG server not reachable",
+      apiUrlUsed: config.searxngApiUrl, // Optional: for debugging which URL was used
     })
   } catch (error: any) {
     console.error("Error checking SearXNG status:", error)
+    // Attempt to get config even in error to report which URL might have failed
+    let apiUrlReport = 'unknown (config could not be loaded)';
+    try {
+      const config = getApiConfig();
+      apiUrlReport = config.searxngApiUrl || 'undefined (config loaded but URL empty)';
+    } catch (configError) {
+      // Config loading failed, stick with initial message
+    }
     return NextResponse.json({
       status: "error",
       message: `Failed to connect to SearXNG: ${error.message}`,
+      apiUrlAttempted: apiUrlReport, // Optional: for debugging
     })
   }
 }
