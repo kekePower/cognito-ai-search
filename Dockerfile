@@ -33,6 +33,9 @@ ENV OLLAMA_API_URL=${OLLAMA_API_URL}
 ENV SEARXNG_API_URL=${SEARXNG_API_URL}
 ENV DEFAULT_OLLAMA_MODEL=${DEFAULT_OLLAMA_MODEL}
 
+# Set Node.js options to increase memory for the build process
+ENV NODE_OPTIONS=--max-old-space-size=4096
+
 # Build the Next.js application
 # The `output: 'standalone'` in next.config.mjs ensures this creates a minimal server.
 RUN pnpm build
