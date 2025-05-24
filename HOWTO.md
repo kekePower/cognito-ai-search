@@ -1,6 +1,6 @@
-# Cognito AI Search - Technical Documentation
+# Cognito AI Search v1.0.0 - Technical Documentation
 
-This document contains detailed technical information about setting up and configuring Cognito AI Search. For a general overview, please see the [README.md](README.md).
+This document contains detailed technical information about setting up and configuring Cognito AI Search v1.0.0. For a general overview, please see the [README.md](README.md).
 
 ## Table of Contents
 - [Prerequisites](#prerequisites)
@@ -9,6 +9,7 @@ This document contains detailed technical information about setting up and confi
 - [Ollama Setup](#ollama-setup)
 - [Development](#development)
 - [Production Deployment](#production-deployment)
+- [New Features in v1.0.0](#new-features-in-v100)
 - [Troubleshooting](#troubleshooting)
 
 ## Prerequisites
@@ -26,14 +27,21 @@ Create a `.env.local` file in the root directory with the following variables:
 # SearXNG Configuration
 SEARXNG_API_URL=http://your-searxng-instance:port
 
-# Ollama Configuration
+# Ollama Configuration  
 OLLAMA_API_URL=http://your-ollama-instance:11434
-DEFAULT_OLLAMA_MODEL=your-preferred-model
-AI_RESPONSE_MAX_TOKENS=your-preferred-max-tokens
+DEFAULT_OLLAMA_MODEL=phi4-mini:3.8b-q8_0
+AI_RESPONSE_MAX_TOKENS=100
 
 # Next.js Configuration
 NEXT_PUBLIC_APP_URL=http://localhost:3000
 ```
+
+### Recommended Model Configuration
+
+For optimal performance in v1.0.0, we recommend:
+- **Model**: `phi4-mini:3.8b-q8_0` (fast and efficient)
+- **Max Tokens**: `100` (quick responses)
+- **Alternative**: `mistral` or `llama3` for more detailed responses
 
 ## SearXNG Configuration
 
@@ -163,6 +171,38 @@ For better process management in production, you can use PM2:
    pm2 monit
    ```
 
+## New Features in v1.0.0
+
+### 🎨 Modern UI/UX
+- **Dark/Light Theme**: Automatic theme detection with manual toggle
+- **Gradient Animations**: Beautiful input field animations (single run, not looping)
+- **Glass Morphism**: Modern backdrop blur effects throughout the interface
+- **Responsive Design**: Optimized for all device sizes
+
+### 🚀 Enhanced Performance
+- **Smart Caching**: Search results cached locally for 24 hours
+- **Query Optimization**: AI-powered search query enhancement
+- **Async Loading**: Search results display immediately, AI responses load in background
+- **Health Checks**: Automatic service availability verification
+
+### 🔍 Intelligent Search Features
+- **Search Suggestions**: Dynamic suggestions with refresh capability
+- **Recent Searches**: Persistent search history with individual removal
+- **Optimized Queries**: AI enhances search terms for better results
+- **Fallback Mechanisms**: Graceful degradation when services are unavailable
+
+### 🛠️ Technical Improvements
+- **Custom Hooks**: `useSearch` and `useSearchSuggestions` for state management
+- **Modular API**: Separated concerns with dedicated API utilities
+- **TypeScript**: Full type safety throughout the application
+- **Error Handling**: Comprehensive error management with user-friendly messages
+
+### 📱 User Experience
+- **Loading States**: Clear visual feedback during operations
+- **Smooth Transitions**: Polished animations and micro-interactions
+- **Accessibility**: Improved keyboard navigation and screen reader support
+- **Mobile Optimized**: Touch-friendly interface with responsive design
+
 ## Troubleshooting
 
 ### Common Issues
@@ -182,4 +222,4 @@ For better process management in production, you can use PM2:
    - Check Node.js version compatibility
    - Clear Next.js cache if needed: `rm -rf .next`
 
-For additional help, please [open an issue](https://github.com/yourusername/cognito-ai-search/issues).
+For additional help, please [open an issue](https://github.com/kekePower/cognito-ai-search/issues).
