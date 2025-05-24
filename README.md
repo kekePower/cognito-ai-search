@@ -4,7 +4,7 @@ Cognito AI Search offers a secure and private way to find information and get an
 
 In an online world where tracking is common, Cognito AI Search provides an alternative. It allows you to explore the web and interact with artificial intelligence without concerns about your search history or personal data being collected or analyzed by third parties.
 
-![Cognito AI Search Screenshot](https://kekepower.com/images/cognito-ai-search-screenshot-new.png)
+![Cognito AI Search Screenshot](https://kekepower.com/images/cognito-ai-search-screenshot-inner.jpg "Cognito AI Search Screenshot")
 
 ## ✨ What's New in v1.0.0
 
