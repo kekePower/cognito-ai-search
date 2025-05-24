@@ -106,8 +106,8 @@ This document summarizes the comprehensive redesign and optimization work comple
 
 ### Environment Variables
 ```bash
-SEARXNG_API_URL=http://10.0.0.3:8888
-OLLAMA_API_URL=http://10.0.0.3:11434
+SEARXNG_API_URL=http://localhost:8888
+OLLAMA_API_URL=http://localhost:11434
 DEFAULT_OLLAMA_MODEL=phi4-mini:3.8b-q8_0
 AI_RESPONSE_MAX_TOKENS=100
 ```
