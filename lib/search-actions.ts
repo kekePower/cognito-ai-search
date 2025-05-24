@@ -165,28 +165,3 @@ export async function testConnections(): Promise<{ ollama: boolean; searxng: boo
 
   return results
 }
-
-// Function to check if Ollama is running and which models are available
-export async function checkOllamaModels(): Promise<string[]> {
-  try {
-    const response = await fetch("http://10.0.0.3:11434/api/tags", {
-      method: "GET",
-      cache: "no-store",
-      next: { revalidate: 0 },
-    })
-
-    if (!response.ok) {
-      return []
-    }
-
-    const data = await response.json()
-    if (data.models && Array.isArray(data.models)) {
-      return data.models.map((model: any) => model.name || "")
-    }
-
-    return []
-  } catch (error) {
-    console.error("Error checking Ollama models:", error)
-    return []
-  }
-}
