@@ -1,0 +1,31 @@
+# .github/dependabot.yml
+version: 2
+updates:
+  # Maintain dependencies for npm (pnpm)
+  - package-ecosystem: "npm"
+    directory: "/" # Location of package.json and pnpm-lock.yaml
+    schedule:
+      interval: "weekly" # Check for updates weekly
+    commit-message:
+      prefix: "chore(deps)" # Optional: Prefix for commit messages
+      include: "scope"
+    reviewers:
+      - "kekePower" # Optional: Add your GitHub username or team to review PRs
+    labels:
+      - "dependencies" # Optional: Add labels to Dependabot PRs
+    open-pull-requests-limit: 10 # Optional: Limit the number of open PRs
+
+  # Maintain dependencies for Docker
+  - package-ecosystem: "docker"
+    directory: "/" # Location of your Dockerfile
+    schedule:
+      interval: "weekly" # Check for updates weekly
+    commit-message:
+      prefix: "chore(deps)" # Optional: Prefix for commit messages
+      include: "scope"
+    reviewers:
+      - "kekePower" # Optional: Add your GitHub username or team
+    labels:
+      - "dependencies"
+      - "docker"
+    open-pull-requests-limit: 5 # Optional: Limit for Docker PRs
