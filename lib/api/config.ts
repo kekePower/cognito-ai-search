@@ -5,8 +5,8 @@ import { ApiConfig } from './types'
  */
 export function getApiConfig(): ApiConfig {
   return {
-    searxngApiUrl: process.env.SEARXNG_API_URL || 'http://10.0.0.3:8888',
-    ollamaApiUrl: process.env.OLLAMA_API_URL || 'http://10.0.0.3:11434',
+    searxngApiUrl: process.env.SEARXNG_API_URL || 'http://127.0.0.1:8888',
+    ollamaApiUrl: process.env.OLLAMA_API_URL || 'http://127.0.0.1:11434',
     defaultOllamaModel: process.env.DEFAULT_OLLAMA_MODEL || 'qwen3:30b', // Fallback to qwen3:30b
     aiResponseMaxTokens: parseInt(process.env.AI_RESPONSE_MAX_TOKENS || '1200', 10), // Default to 1200 tokens
     ollamaTimeoutMs: parseInt(process.env.OLLAMA_TIMEOUT_MS || '120000', 10), // 120 seconds
