@@ -1,11 +1,11 @@
 {
   "name": "cognito-ai-search",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
+    "start": "HOSTNAME=0.0.0.0 node .next/standalone/server.js",
     "lint": "next lint",
     "type-check": "tsc --noEmit"
   },
