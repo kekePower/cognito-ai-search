@@ -211,8 +211,8 @@ export async function GET(request: NextRequest) {
       console.warn('[SearXNG API] Query optimization failed, using original query:', error)
     }
 
-    // Fetch search results from SearXNG
-    const results = await fetchSearchResults(optimizedQuery, config.searxngApiUrl)
+    // Fetch search results from SearXNG using the original query
+    const results = await fetchSearchResults(query, config.searxngApiUrl)
     
     console.log(`[SearXNG API] Found ${results.length} search results`)
 
