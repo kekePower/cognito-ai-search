@@ -224,10 +224,10 @@ export function HowItWorksContent() {
               <div>
                 <h4 className="font-semibold text-lg mb-2">⚡ Technology Stack</h4>
                 <ul className="text-sm space-y-1 ml-4">
-                  <li>• <strong>Frontend:</strong> Next.js 14, TypeScript, Tailwind CSS</li>
+                  <li>• <strong>Frontend:</strong> Next.js 15, TypeScript, Tailwind CSS</li>
                   <li>• <strong>Search:</strong> SearXNG metasearch engine</li>
                   <li>• <strong>AI:</strong> Ollama with local language models</li>
-                  <li>• <strong>Deployment:</strong> Docker, Node.js, or static hosting</li>
+                  <li>• <strong>Deployment:</strong>Node.js or static hosting</li>
                 </ul>
               </div>
               
@@ -237,7 +237,6 @@ export function HowItWorksContent() {
                   <li>• <strong>Home Server:</strong> Run on a spare computer or NAS</li>
                   <li>• <strong>VPS/Cloud:</strong> Deploy on any Linux server</li>
                   <li>• <strong>Raspberry Pi:</strong> Works great on Pi 4 with 8GB RAM</li>
-                  <li>• <strong>Docker:</strong> Easy setup with docker-compose</li>
                 </ul>
               </div>
 

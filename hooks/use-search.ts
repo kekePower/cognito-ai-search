@@ -121,7 +121,7 @@ export function useSearch({ initialQuery = '' }: UseSearchOptions = {}): UseSear
             "Content-Type": "application/json",
             "Accept": "application/json",
           },
-          body: JSON.stringify({ prompt: data.optimizedQuery || normalizedQuery }),
+          body: JSON.stringify({ prompt: normalizedQuery }), // Always use the original query for AI response
           cache: "no-store"
         })
         
