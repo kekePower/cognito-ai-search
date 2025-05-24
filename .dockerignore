@@ -1,0 +1,14 @@
+Dockerfile
+.dockerignore
+node_modules
+.next
+.git
+README.md
+OPTIMIZATION_SUMMARY.md
+HOWTO.md
+.env
+.env*.local
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.DS_Store
