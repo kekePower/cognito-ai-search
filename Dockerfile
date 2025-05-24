@@ -1,6 +1,6 @@
 # ---- Base Node Image ----
 # Use a specific version of Node.js. Alpine Linux is used for a smaller image size.
-FROM node:20-alpine AS base
+FROM node:24-alpine AS base
 WORKDIR /app
 
 # ---- Builder Stage ----
@@ -42,7 +42,7 @@ RUN pnpm build
 
 # ---- Runner Stage ----
 # This stage creates the final, minimal image for running the application.
-FROM node:20-alpine AS runner
+FROM node:24-alpine AS runner
 WORKDIR /app
 
 ENV NODE_ENV production
