@@ -1,6 +1,6 @@
 # ---- Base Node Image ----
 # Use a specific version of Node.js. Alpine Linux is used for a smaller image size.
-FROM node:24-alpine AS base
+FROM node:24-alpine AS builder
 WORKDIR /app
 
 # Install pnpm globally
