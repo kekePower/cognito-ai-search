@@ -1,19 +1,15 @@
-# ---- Base Node Image ----
-# Use a specific version of Node.js. Alpine Linux is used for a smaller image size.
-FROM node:20-alpine AS base
+# ---- Builder Stage ----
+# Use an official Node.js runtime as a parent image.
+# Using Alpine Linux for a smaller image size.
+FROM node:20-alpine AS builder
+# Set the working directory in the container
 WORKDIR /app
 
-# ---- Builder Stage ----
-# This stage builds the Next.js application.
-FROM base AS builder
-
-# Install pnpm
+# Install pnpm globally
 RUN npm install -g pnpm
 
-# Copy package manager files
-# If you use pnpm workspaces, uncomment the next line and ensure pnpm-workspace.yaml is in your .dockerignore
+# Copy package.json and pnpm-lock.yaml
 COPY package.json pnpm-lock.yaml ./
-# COPY pnpm-workspace.yaml ./
 
 # Install dependencies
 # Using --frozen-lockfile ensures that pnpm doesn't generate a new lockfile or update dependencies.
@@ -27,17 +23,18 @@ COPY . .
 ARG OLLAMA_API_URL
 ARG SEARXNG_API_URL
 ARG DEFAULT_OLLAMA_MODEL
+ARG AI_RESPONSE_MAX_TOKENS
 
 # Set environment variables for the build process
 ENV OLLAMA_API_URL=${OLLAMA_API_URL}
 ENV SEARXNG_API_URL=${SEARXNG_API_URL}
 ENV DEFAULT_OLLAMA_MODEL=${DEFAULT_OLLAMA_MODEL}
+ENV AI_RESPONSE_MAX_TOKENS=${AI_RESPONSE_MAX_TOKENS}
 
 # Set Node.js options to increase memory for the build process
 ENV NODE_OPTIONS=--max-old-space-size=4096
 
 # Build the Next.js application
-# The `output: 'standalone'` in next.config.mjs ensures this creates a minimal server.
 RUN pnpm build
 
 # ---- Runner Stage ----
@@ -46,22 +43,34 @@ FROM node:20-alpine AS runner
 WORKDIR /app
 
 ENV NODE_ENV production
-# Set default values for environment variables.
-# These can be overridden when running the container (e.g., with `docker run -e VAR=value` or in docker-compose.yml).
+# Install pnpm globally for the runner stage to use `pnpm start`
+RUN npm install -g pnpm
+
+# Set default values for runtime environment variables.
+# These can be overridden when running the container.
 ENV OLLAMA_API_URL="http://localhost:11434"
 ENV SEARXNG_API_URL="http://localhost:8080"
-# Or your preferred default
 ENV DEFAULT_OLLAMA_MODEL="phi3:mini"
-ENV PORT=3000
+ENV AI_RESPONSE_MAX_TOKENS="512"
+ENV PORT="3000"
 
-# Copy the standalone output from the builder stage.
-# This includes the Next.js server, necessary node_modules, public assets, and static files.
-COPY --from=builder /app/.next/standalone ./
+# Copy necessary files from the builder stage
+COPY --from=builder /app/package.json ./package.json
+COPY --from=builder /app/pnpm-lock.yaml ./pnpm-lock.yaml
+COPY --from=builder /app/next.config.mjs ./next.config.mjs
+COPY --from=builder /app/.next ./.next
+COPY --from=builder /app/public ./public
+
+# Install production dependencies only
+# Using --frozen-lockfile ensures we use the exact versions from the lockfile
+RUN pnpm install --prod --frozen-lockfile
+
+USER node
 
 # Expose the port the app runs on.
-# This should match the PORT environment variable and the port your Next.js app listens on.
-EXPOSE 3000
+# This should match the PORT environment variable.
+EXPOSE ${PORT}
 
-# The command to run the application.
-# The standalone output includes a server.js file.
-CMD ["node", "server.js"]
+# The command to run the application using the start script from package.json
+# `pnpm start` will execute `next start`
+CMD ["pnpm", "start"]
