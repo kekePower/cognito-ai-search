@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  cognito-ai-search:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      # You can pass build arguments here if needed, for example:
+      # args:
+      #   OLLAMA_API_URL: "http://host.docker.internal:11434"
+      #   SEARXNG_API_URL: "http://host.docker.internal:8080"
+    image: cognito-ai-search # You can tag the image if you like
+    container_name: cognito-ai-search
+    ports:
+      - "[::]:${APP_PORT:-3000}:3000" # Exposes on host's IPv6 & IPv4, maps to container's port 3000
+    environment:
+      # These will override the defaults set in the Dockerfile if uncommented or set in an .env file
+      # Ensure these are accessible from within the Docker container network.
+      # If Ollama/SearXNG are running on the host, use host.docker.internal (on Docker Desktop) or gateway IP.
+      # If they are other Docker containers, use their service names.
+      - OLLAMA_API_URL=${OLLAMA_API_URL:-http://localhost:11434} # Default if not set in .env
+      - SEARXNG_API_URL=${SEARXNG_API_URL:-http://localhost:8080} # Default if not set in .env
+      - DEFAULT_OLLAMA_MODEL=${DEFAULT_OLLAMA_MODEL:-phi4:mini}
+      - AI_RESPONSE_MAX_TOKENS=${AI_RESPONSE_MAX_TOKENS:-1200}
+      - NODE_ENV=production
+      # The PORT env var for Next.js is implicitly handled by `next start` listening on 3000 by default
+      # and the `EXPOSE` in Dockerfile. The `package.json` start script `-H ::` makes it listen on IPv6.
+    networks:
+      - cognito_network
+    restart: unless-stopped
+
+networks:
+  cognito_network:
+    driver: bridge
+    enable_ipv6: true
+    ipam:
+      driver: default
+      config:
+        # You can define specific subnets if needed, otherwise Docker assigns them.
+        # Example IPv4 subnet:
+        # - subnet: 172.25.0.0/16
+        # Example IPv6 subnet (ensure this is a unique ULA if you have other IPv6 networks):
+        - subnet: "fd00:db8:cognito::/64"

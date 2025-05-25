@@ -48,8 +48,8 @@ RUN npm install -g pnpm
 # These can be overridden when running the container.
 ENV OLLAMA_API_URL="http://localhost:11434"
 ENV SEARXNG_API_URL="http://localhost:8080"
-ENV DEFAULT_OLLAMA_MODEL="phi3:mini"
-ENV AI_RESPONSE_MAX_TOKENS="512"
+ENV DEFAULT_OLLAMA_MODEL="phi4-mini:3.8b-q8_0"
+ENV AI_RESPONSE_MAX_TOKENS="1200"
 ENV PORT="3000"
 
 # Copy necessary files from the builder stage
