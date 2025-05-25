@@ -30,3 +30,5 @@ next-env.d.ts
 *.backup
 *.bak
 *.log
+#unused-files-analysis.md
+/unused-files-backup/

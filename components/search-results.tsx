@@ -1,6 +1,5 @@
 import { cn } from "@/lib/utils"
-import { Badge } from "@/components/ui/badge"
-import { Globe, Search, ExternalLink } from "lucide-react"
+import { Search, ExternalLink } from "lucide-react"
 
 interface SearchResult {
   title: string
@@ -41,32 +40,21 @@ export default function SearchResults({ results, query = '' }: SearchResultsProp
   }
 
   return (
-    <div>
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center">
-          <Globe className="h-4 w-4 text-blue-600 dark:text-blue-400 relative top-[0.075em]" />
-          <span className="text-sm font-medium ml-2 text-gray-900 dark:text-white">Web Results</span>
-        </div>
-        <Badge variant="outline" className="text-xs bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-700 text-blue-700 dark:text-blue-300">
-          {results.length} results
-        </Badge>
-      </div>
-      
-      <div className="space-y-4">
-        {results.map((result, index) => {
-          const displayUrl = result.parsed_url ? 
-            `${result.parsed_url[1]?.replace('www.', '')}${result.parsed_url[2] || ''}${result.parsed_url[3] || ''}` : 
-            formatUrl(result.url || '')
-          
-          return (
-            <div 
-              key={index}
-              className={cn(
-                "group p-5 rounded-lg border border-gray-200 dark:border-gray-700 bg-card dark:bg-card backdrop-blur-sm",
-                "hover:shadow-lg transition-all duration-300",
-                "hover:border-blue-300 dark:hover:border-blue-600 hover:bg-gray-50 dark:hover:bg-gray-750"
-              )}
-            >
+    <div className="space-y-4">
+      {results.map((result, index) => {
+        const displayUrl = result.parsed_url ? 
+          `${result.parsed_url[1]?.replace('www.', '')}${result.parsed_url[2] || ''}${result.parsed_url[3] || ''}` : 
+          formatUrl(result.url || '')
+        
+        return (
+          <div 
+            key={index}
+            className={cn(
+              "group p-5 rounded-lg border border-gray-200 dark:border-gray-700 bg-card dark:bg-card backdrop-blur-sm",
+              "hover:shadow-lg transition-all duration-300",
+              "hover:border-blue-300 dark:hover:border-blue-600 hover:bg-gray-50 dark:hover:bg-gray-750"
+            )}
+          >
             <div className="flex flex-col space-y-2">
               {/* URL and source */}
               <div className="flex items-center text-sm text-gray-500 dark:text-gray-400">
@@ -114,10 +102,9 @@ export default function SearchResults({ results, query = '' }: SearchResultsProp
                 </a>
               </div>
             </div>
-            </div>
-          )
-        })}
-      </div>
+          </div>
+        )
+      })}
     </div>
   )
 }

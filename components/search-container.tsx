@@ -25,6 +25,7 @@ export default function SearchContainer() {
     aiResponse,
     searchResults,
     recentSearches,
+    hasSearched,
     setQuery,
     handleSearch,
     handleRecentSearchClick,
@@ -34,7 +35,7 @@ export default function SearchContainer() {
 
   const [isFocused, setIsFocused] = useState(false)
   const [isAnimatingOut, setIsAnimatingOut] = useState(false)
-
+  
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!query?.trim()) return
@@ -62,10 +63,14 @@ export default function SearchContainer() {
     setTimeout(() => setIsAnimatingOut(false), 3000)
   }
 
-  // Show loading state only when we're actively searching and don't have results yet
-  const showLoading = (isLoading || isOptimizing) && searchResults.length === 0;
-  const showResults = isOptimizing === false && searchResults.length > 0;
-  const showNoResults = isOptimizing === false && searchResults.length === 0 && query;
+  // Show loading state when we're actively searching
+  const showLoading = isLoading && searchResults.length === 0;
+  
+  // Show results when optimization is complete and we have search results (don't wait for AI)
+  const showResults = hasSearched && !isOptimizing && searchResults.length > 0;
+  
+  // Show no results message when search is complete, no results were found, and a search has been performed
+  const showNoResults = hasSearched && !isLoading && !isOptimizing && searchResults.length === 0 && query;
 
   return (
     <div className="min-h-screen">
@@ -73,10 +78,13 @@ export default function SearchContainer() {
         <div className="w-full max-w-6xl mx-auto bg-card rounded-3xl border border-gray-200 dark:border-gray-700 shadow-xl p-6 transition-all duration-300">
           {/* Header with logo */}
           <div className="text-center mb-6">
-            <div className="flex items-center justify-center gap-3 mb-4">
+            <button 
+              onClick={() => router.push('/', { scroll: false })}
+              className="flex items-center justify-center gap-3 mb-4 mx-auto hover:opacity-80 transition-opacity cursor-pointer"
+            >
               <Sparkles className="text-blue-600 dark:text-blue-400 h-8 w-8" />
               <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Cognito AI Search</h1>
-            </div>
+            </button>
             <p className="text-gray-600 dark:text-gray-300 text-lg max-w-2xl mx-auto">
               AI-optimized search queries with comprehensive web results. Ollama enhances your searches and provides detailed answers.
             </p>
@@ -153,7 +161,8 @@ export default function SearchContainer() {
                 ? 'animate-in fade-in slide-in-from-top-2 duration-300' 
                 : 'animate-out fade-out slide-out-to-top-2 duration-500'
             }`}>
-              <div className="relative flex items-center justify-center p-6 bg-blue-50 dark:bg-blue-900/20 rounded-2xl animate-border-pulse">
+              <div className="relative flex items-center justify-center p-6 bg-card border border-gray-200 dark:border-gray-700 rounded-2xl">
+                <div className="absolute inset-0 rounded-2xl border-2 border-blue-400/50 dark:border-blue-500/50 animate-pulse"></div>
                 <div className="flex items-center gap-3 text-blue-700 dark:text-blue-300 relative z-10">
                   <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-600 dark:border-blue-400" />
                   <span className="text-sm font-medium">Optimizing your search query with AI...</span>
@@ -174,7 +183,7 @@ export default function SearchContainer() {
                 <CardContent className="p-4">
                   <div className="flex items-baseline justify-between mb-4">
                     <div className="flex items-baseline gap-2">
-                      <Clock className="h-5 w-5 text-muted-foreground flex-shrink-0 relative -top-[0.0625rem]" />
+                      <Clock className="h-5 w-5 text-muted-foreground flex-shrink-0 relative top-[0.125rem]" />
                       <h3 className="text-lg font-semibold">Recent Searches</h3>
                     </div>
                     <Button

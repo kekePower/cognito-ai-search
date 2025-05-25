@@ -26,7 +26,7 @@ export function RecentSearches({
   if (searches.length === 0) return null
   
   return (
-    <div className="bg-card dark:bg-[#182338]/80 rounded-xl shadow-sm border border-border/60 dark:border-white/10 overflow-hidden">
+    <div className="card-bg-primary rounded-xl shadow-sm border border-border/60 dark:border-white/10 overflow-hidden">
       <div className="flex items-center p-4 border-b border-border/60 dark:border-white/10 bg-muted/30 dark:bg-white/5">
         <Clock className="h-5 w-5 mr-2 text-muted-foreground dark:text-white/70" />
         <h3 className="font-medium text-foreground dark:text-white">Recent Searches</h3>

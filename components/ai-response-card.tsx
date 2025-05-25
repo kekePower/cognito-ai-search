@@ -50,7 +50,7 @@ export default function AIResponseCard({ response, isError = false, isStreaming 
   const placeholderText = "I'm generating a thoughtful response to your query. This might take a moment as I process your question and create a comprehensive answer...";
 
   return (
-    <div className="mb-8 p-5 rounded-lg border border-gray-200 dark:border-gray-700 bg-card dark:bg-card backdrop-blur-sm shadow-lg">
+    <div className="mb-8 p-5 rounded-lg border border-gray-200 dark:border-gray-700 card-bg-primary backdrop-blur-sm shadow-lg">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center">
           <Bot className="h-4 w-4 text-blue-600 dark:text-blue-400 relative top-[0.075em]" />

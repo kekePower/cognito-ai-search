@@ -24,13 +24,14 @@ export function HowItWorksContent() {
         <section className="mb-10">
           <h2 className="text-2xl font-semibold mb-4">What is Cognito AI Search?</h2>
           <p>
-            Cognito AI Search is a privacy-first search engine that combines the comprehensive results of web search 
-            with the intelligence of AI-powered responses. Unlike traditional search engines, everything runs on your 
-            own infrastructure, ensuring your data stays completely private and secure.
+            Cognito AI Search is a privacy-first intelligent search platform that seamlessly combines comprehensive web results 
+            with AI-powered insights. Unlike traditional search engines, everything runs on your own infrastructure, 
+            ensuring your data remains completely private and secure while delivering a premium search experience.
           </p>
           <p>
-            Think of it as having both Google's search power and ChatGPT's intelligence, but without any of the 
-            privacy concerns or data collection.
+            Experience the power of web search enhanced by artificial intelligence - think Google's comprehensive results 
+            meets ChatGPT's intelligence, but with complete privacy and no data collection. Every interaction is smooth, 
+            fast, and designed with attention to detail.
           </p>
         </section>
 
@@ -47,8 +48,9 @@ export function HowItWorksContent() {
                   1. Ask Your Question
                 </h3>
                 <p className="text-blue-800 dark:text-blue-200">
-                  Type your question naturally, just like you would ask a friend. No need for special keywords 
-                  or search operators - our AI understands natural language.
+                  Type your question naturally in our beautifully designed search interface. As you focus on the search field, 
+                  watch as elegant gradient animations guide your attention. No need for special keywords - our AI understands 
+                  natural language and context.
                 </p>
               </div>
             </div>
@@ -62,8 +64,9 @@ export function HowItWorksContent() {
                   2. AI Query Optimization
                 </h3>
                 <p className="text-purple-800 dark:text-purple-200">
-                  Our local AI analyzes your question and creates an optimized search query. For example, 
-                  "Paris" becomes "things to do in Paris travel guide" to get you more useful results.
+                  Watch as our local AI analyzes your question with a subtle pulsing animation, optimizing your search query 
+                  for maximum relevance. For example, "Paris" becomes "things to do in Paris travel guide" - all while 
+                  maintaining complete privacy with smooth, professional visual feedback.
                 </p>
               </div>
             </div>
@@ -92,8 +95,9 @@ export function HowItWorksContent() {
                   4. AI Analysis & Summary
                 </h3>
                 <p className="text-orange-800 dark:text-orange-200">
-                  While searching the web, our local AI also analyzes your question and provides a thoughtful, 
-                  detailed response. You get both web results and AI insights in one place.
+                  While searching the web, our local AI analyzes your question with elegant loading animations. Watch as 
+                  both web results and AI insights fade in smoothly, creating a seamless experience where you get 
+                  comprehensive information and intelligent analysis in one beautifully designed interface.
                 </p>
               </div>
             </div>
@@ -187,7 +191,48 @@ export function HowItWorksContent() {
           </div>
         </section>
 
-        <section>
+        <section className="mb-10">
+          <h2 className="text-2xl font-semibold mb-6">Enhanced Search Experience</h2>
+          
+          <div className="grid md:grid-cols-2 gap-6 mb-8">
+            <div className="p-6 bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
+              <div className="flex items-center gap-3 mb-3">
+                <Sparkles className="h-6 w-6 text-blue-600 dark:text-blue-400" />
+                <h3 className="text-xl font-medium">Smart Suggestions</h3>
+              </div>
+              <p className="text-sm mb-3">
+                Get inspired with 6 curated search suggestions from our collection of 200+ diverse AI-related topics. 
+                Each suggestion is carefully crafted to help you explore fascinating areas of artificial intelligence.
+              </p>
+              <ul className="space-y-1 text-sm">
+                <li>• 200+ curated AI topics</li>
+                <li>• 6 suggestions per visit</li>
+                <li>• Covers cutting-edge AI research</li>
+                <li>• Perfect for learning and exploration</li>
+              </ul>
+            </div>
+
+            <div className="p-6 bg-gradient-to-br from-green-50 to-blue-50 dark:from-green-900/20 dark:to-blue-900/20 rounded-lg border border-green-200 dark:border-green-800">
+              <div className="flex items-center gap-3 mb-3">
+                <Zap className="h-6 w-6 text-green-600 dark:text-green-400" />
+                <h3 className="text-xl font-medium">Polished Interface</h3>
+              </div>
+              <p className="text-sm mb-3">
+                Every detail has been carefully crafted for a premium experience. From smooth animations to 
+                pixel-perfect alignment, the interface feels responsive and professional.
+              </p>
+              <ul className="space-y-1 text-sm">
+                <li>• Smooth fade-in transitions</li>
+                <li>• Elegant loading animations</li>
+                <li>• Responsive design</li>
+                <li>• Dark/light theme support</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <section className="mb-10">
+          <h2 className="text-2xl font-semibold mb-4">Technical Details (For the Curious)</h2>
           <details className="bg-gray-50 dark:bg-gray-800/50 rounded-lg p-6 border border-gray-200 dark:border-gray-700">
             <summary className="cursor-pointer font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
               <ArrowRight className="h-4 w-4 transition-transform duration-200" />
