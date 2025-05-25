@@ -1,11 +1,14 @@
 import { AlertTriangle, RefreshCw, Bot, Sparkles } from "lucide-react"
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
+import remarkMath from 'remark-math'
+import rehypeKatex from 'rehype-katex'
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
 import { oneDark } from 'react-syntax-highlighter/dist/cjs/styles/prism'
 import { oneLight } from 'react-syntax-highlighter/dist/cjs/styles/prism'
 import { Button } from "@/components/ui/button"
 import { useEffect, useState, useRef } from "react"
+import 'katex/dist/katex.min.css'
 
 type CodeProps = {
   node?: any
@@ -133,7 +136,8 @@ export default function AIResponseCard({ response, isError = false, isStreaming 
           <div className="text-foreground dark:text-gray-300">
             {/* Show the markdown content */}
             <ReactMarkdown
-              remarkPlugins={[remarkGfm]}
+              remarkPlugins={[remarkGfm, remarkMath]}
+              rehypePlugins={[rehypeKatex]}
               components={{
                 // Fix hydration errors by ensuring proper nesting
                 p: ({children}) => <div className="my-2">{children}</div>,
