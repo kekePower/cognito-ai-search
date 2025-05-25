@@ -62,7 +62,7 @@ export default function SearchResults({ results, query = '' }: SearchResultsProp
             <div 
               key={index}
               className={cn(
-                "group p-5 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 backdrop-blur-sm",
+                "group p-5 rounded-lg border border-gray-200 dark:border-gray-700 bg-card dark:bg-card backdrop-blur-sm",
                 "hover:shadow-lg transition-all duration-300",
                 "hover:border-blue-300 dark:hover:border-blue-600 hover:bg-gray-50 dark:hover:bg-gray-750"
               )}

@@ -65,7 +65,7 @@ export default function SearchContainer() {
   return (
     <div className="transition-colors duration-300">
       <div className="container mx-auto px-4 pt-4 pb-4">
-        <div className="w-full max-w-6xl mx-auto bg-white dark:bg-gray-800 backdrop-blur-md rounded-3xl border border-gray-200 dark:border-gray-700 shadow-xl p-4 transition-all duration-300">
+        <div className="w-full max-w-6xl mx-auto bg-card dark:bg-card backdrop-blur-md rounded-3xl border border-gray-200 dark:border-gray-700 shadow-xl p-4 transition-all duration-300">
           {/* Header with logo */}
           <div className="text-center mb-6">
             <div className="flex items-center justify-center gap-3 mb-4">
@@ -165,7 +165,7 @@ export default function SearchContainer() {
           {/* Recent Searches */}
           {!searchResults?.length && recentSearches.length > 0 && (
             <div className="max-w-6xl mx-auto mb-6">
-              <Card className="shadow-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-white/10 dark:shadow-white/5">
+              <Card className="shadow-lg border border-gray-200 dark:border-gray-700 dark:bg-gray-800 shadow-white/10 dark:shadow-white/5">
                 <CardContent className="p-4">
                   <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center gap-2">
@@ -223,7 +223,7 @@ export default function SearchContainer() {
               </div>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="flex items-start p-4 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all duration-200">
+                <div className="flex items-start p-4 rounded-xl bg-card dark:bg-card border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all duration-200">
                   <div className="mr-4 mt-1 bg-blue-100 dark:bg-blue-900/30 p-3 rounded-full">
                     <Globe className="h-6 w-6 text-blue-600 dark:text-blue-400" />
                   </div>
@@ -236,7 +236,7 @@ export default function SearchContainer() {
                   </div>
                 </div>
                 
-                <div className="flex items-start p-4 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all duration-200">
+                <div className="flex items-start p-4 rounded-xl bg-card dark:bg-card border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all duration-200">
                   <div className="mr-4 mt-1 bg-blue-100 dark:bg-blue-900/30 p-3 rounded-full">
                     <Bot className="h-6 w-6 text-blue-600 dark:text-blue-400" />
                   </div>
