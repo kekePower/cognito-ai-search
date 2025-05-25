@@ -47,6 +47,33 @@ Choosing Cognito AI Search means prioritizing your digital autonomy. Here’s wh
 
 For detailed setup instructions, see the [HOWTO](HOWTO.md).
 
+## 🐳 Quick Start with Docker
+
+The easiest way to get started is using our pre-built Docker image from Docker Hub:
+
+```bash
+docker run -d \
+  -p 3000:3000 \
+  -e OLLAMA_API_URL="http://YOUR_OLLAMA_HOST:11434" \
+  -e DEFAULT_OLLAMA_MODEL="phi4-mini:3.8b-q8_0" \
+  -e AI_RESPONSE_MAX_TOKENS="1200" \
+  -e SEARXNG_API_URL="http://YOUR_SEARXNG_HOST:8888" \
+  --name cognito-ai-search \
+  kekepower/cognito-ai-search:latest
+```
+
+**Available Tags:**
+- `kekepower/cognito-ai-search:latest` - Latest stable release
+- `kekepower/cognito-ai-search:1.1.0` - Specific version tags
+
+**Key Environment Variables:**
+- `OLLAMA_API_URL` - URL to your Ollama instance
+- `SEARXNG_API_URL` - URL to your SearXNG instance  
+- `DEFAULT_OLLAMA_MODEL` - AI model to use (recommended: `phi4-mini:3.8b-q8_0`)
+- `AI_RESPONSE_MAX_TOKENS` - Maximum tokens for AI responses
+
+The application will be available at `http://localhost:3000`. For detailed configuration and setup instructions, see the [HOWTO](HOWTO.md).
+
 ## 🌟 Join Our Community
 
 Cognito AI Search is more than just a tool; it's a step towards a more private and user-controlled internet. We welcome you to join us:

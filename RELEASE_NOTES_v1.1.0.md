@@ -6,6 +6,14 @@ This major release introduces significant improvements to the search experience,
 
 ## 🎯 **Major Features**
 
+### **Docker Hub Deployment** 🐳
+* **feat: Official Docker Hub release with automated CI/CD pipeline**
+  * Published to Docker Hub: `kekepower/cognito-ai-search:1.1.0` and `kekepower/cognito-ai-search:latest`
+  * Automated builds and releases with every new version
+  * Pre-built, optimized Docker images for instant deployment
+  * Simplified deployment with single `docker run` command
+  * **Impact**: Zero-friction deployment - get started in seconds without building from source
+
 ### **LaTeX Math Rendering Support** ✨
 * **feat: Add LaTeX math rendering support to AI responses** (`d5e546f`)
   * Install remark-math, rehype-katex, and katex dependencies
@@ -146,10 +154,11 @@ This major release introduces significant improvements to the search experience,
 - **None**: This release maintains full backward compatibility
 
 ### **Recommended Actions:**
-1. Update your deployment to use the latest Docker image
-2. Verify IPv6 configuration if using IPv6 networks
-3. Test math rendering with LaTeX expressions in AI responses
-4. Enjoy the improved user experience! 🎉
+1. **Try the new Docker Hub deployment**: `docker run -d -p 3000:3000 -e OLLAMA_API_URL="http://YOUR_OLLAMA_HOST:11434" -e SEARXNG_API_URL="http://YOUR_SEARXNG_HOST:8888" --name cognito-ai-search kekepower/cognito-ai-search:latest`
+2. Update your deployment to use the latest Docker image
+3. Verify IPv6 configuration if using IPv6 networks
+4. Test math rendering with LaTeX expressions in AI responses
+5. Enjoy the improved user experience! 🎉
 
 ---
 

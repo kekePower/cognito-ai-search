@@ -166,6 +166,72 @@ pnpm dev`}
           </div>
         </section>
 
+        {/* Docker Deployment Section */}
+        <section className="mb-12" id="docker-deployment">
+          <h2 className="text-2xl font-semibold mb-6 flex items-center gap-2">
+            <div className="h-6 w-6 text-blue-600 dark:text-blue-400">🐳</div>
+            Docker Deployment
+          </h2>
+          
+          <div className="bg-gradient-to-r from-blue-50 to-cyan-50 dark:from-blue-900/20 dark:to-cyan-900/20 rounded-lg p-6 border border-blue-200 dark:border-blue-800 mb-6">
+            <h3 className="text-lg font-semibold mb-4 text-blue-900 dark:text-blue-100">🚀 Quick Start with Docker Hub</h3>
+            <p className="text-blue-800 dark:text-blue-200 mb-4">
+              The easiest way to get started is using our pre-built Docker image from Docker Hub:
+            </p>
+            
+            <div className="bg-gray-900 dark:bg-gray-950 rounded-lg p-4 not-prose">
+              <div className="flex items-center gap-2 mb-3 text-gray-300">
+                <Terminal className="h-4 w-4" />
+                <span className="text-sm font-medium">Docker Run Command</span>
+              </div>
+              <pre className="text-green-400 text-sm overflow-x-auto">
+{`docker run -d \\
+  -p 3000:3000 \\
+  -e OLLAMA_API_URL="http://YOUR_OLLAMA_HOST:11434" \\
+  -e DEFAULT_OLLAMA_MODEL="phi4-mini:3.8b-q8_0" \\
+  -e AI_RESPONSE_MAX_TOKENS="1200" \\
+  -e SEARXNG_API_URL="http://YOUR_SEARXNG_HOST:8888" \\
+  --name cognito-ai-search \\
+  kekepower/cognito-ai-search:latest`}
+              </pre>
+            </div>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-6 mb-6 not-prose">
+            <div className="p-6 bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-lg border border-green-200 dark:border-green-800">
+              <h4 className="font-semibold text-green-900 dark:text-green-100 mb-3">📦 Available Tags</h4>
+              <ul className="space-y-2 text-sm text-green-800 dark:text-green-200">
+                <li>• <code>kekepower/cognito-ai-search:latest</code> - Latest stable</li>
+                <li>• <code>kekepower/cognito-ai-search:1.1.0</code> - Version 1.1.0</li>
+              </ul>
+            </div>
+            
+            <div className="p-6 bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 rounded-lg border border-purple-200 dark:border-purple-800">
+              <h4 className="font-semibold text-purple-900 dark:text-purple-100 mb-3">🔧 Key Environment Variables</h4>
+              <ul className="space-y-2 text-sm text-purple-800 dark:text-purple-200">
+                <li>• <code>OLLAMA_API_URL</code> - Your Ollama instance</li>
+                <li>• <code>SEARXNG_API_URL</code> - Your SearXNG instance</li>
+                <li>• <code>DEFAULT_OLLAMA_MODEL</code> - AI model to use</li>
+                <li>• <code>AI_RESPONSE_MAX_TOKENS</code> - Response length</li>
+              </ul>
+            </div>
+          </div>
+
+          <div className="bg-yellow-50 dark:bg-yellow-900/20 rounded-lg p-4 border border-yellow-200 dark:border-yellow-800 mb-6">
+            <div className="flex items-start gap-3">
+              <div className="flex-shrink-0 w-6 h-6 bg-yellow-100 dark:bg-yellow-900/40 rounded-full flex items-center justify-center mt-0.5">
+                <span className="text-xs font-bold text-yellow-600 dark:text-yellow-400">🔄</span>
+              </div>
+              <div>
+                <p className="text-yellow-800 dark:text-yellow-200 text-sm">
+                  <strong>Automatic Updates:</strong> The Docker Hub image is automatically updated with each new release through our CI/CD pipeline. 
+                  Pull the <code>latest</code> tag to get the newest features and fixes.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* Configuration Section */}
         <section className="mb-12" id="configuration">
           <h2 className="text-2xl font-semibold mb-6 flex items-center gap-2">
