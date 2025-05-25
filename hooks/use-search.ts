@@ -36,6 +36,7 @@ interface UseSearchReturn {
   handleRecentSearchClick: (searchQuery: string) => void
   handleRemoveRecentSearch: (index: number) => void
   handleClearRecentSearches: () => void
+  retryAi: () => void
 }
 
 export function useSearch({ initialQuery = '' }: UseSearchOptions = {}): UseSearchReturn {
@@ -170,14 +171,16 @@ export function useSearch({ initialQuery = '' }: UseSearchOptions = {}): UseSear
           })
           
           if (!response.ok) {
+            // Handle graceful API errors (like configuration issues) differently from network errors
+            if (response.status === 503) {
+              const data = await response.json()
+              return data // Return the graceful error response instead of throwing
+            }
             throw new Error(`Search request failed with status: ${response.status}`)
           }
           
           const data = await response.json()
-          if (data.error) {
-            throw new Error(data.error)
-          }
-          
+          // Don't throw for graceful API errors - return them so UI can handle appropriately
           return data
         }
       )
@@ -213,10 +216,23 @@ export function useSearch({ initialQuery = '' }: UseSearchOptions = {}): UseSear
                 const cleanedResponse = cleanResponse(data.response)
                 setAiResponse(cleanedResponse)
                 cacheResults(normalizedQuery, searchData.results || [], cleanedResponse)
+              } else if (data.error && !aiController.signal.aborted) {
+                // Handle graceful API error responses
+                setAiResponse(data.error)
               }
             } else if (response.status === 503) {
-              if (!aiController.signal.aborted) {
-                setAiResponse("AI assistant is currently unavailable. Please check that your Ollama server is running and accessible.")
+              // Handle 503 responses which may contain graceful error messages
+              try {
+                const data = await response.json()
+                if (data.error && !aiController.signal.aborted) {
+                  setAiResponse(data.error)
+                } else if (!aiController.signal.aborted) {
+                  setAiResponse("AI assistant is currently unavailable. Please check that your Ollama server is running and accessible.")
+                }
+              } catch {
+                if (!aiController.signal.aborted) {
+                  setAiResponse("AI assistant is currently unavailable. Please check that your Ollama server is running and accessible.")
+                }
               }
             } else {
               throw new Error(`AI request failed with status: ${response.status}`)
@@ -246,6 +262,66 @@ export function useSearch({ initialQuery = '' }: UseSearchOptions = {}): UseSear
       setIsTransitioning(false)
     }
   }, [recentSearches]) // Only depend on recentSearches
+
+  const retryAi = useCallback(() => {
+    if (query) {
+      setIsAiLoading(true)
+      deduplicateRequest(
+        `ai-${query}`,
+        async () => {
+          try {
+            const response = await fetch('/api/ollama', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+              },
+              body: JSON.stringify({ prompt: query }),
+              cache: 'no-store',
+              signal: aiAbortController.current?.signal
+            })
+            
+            if (response.ok) {
+              const data = await response.json()
+              if (data.response && !aiAbortController.current?.signal.aborted) {
+                const cleanedResponse = cleanResponse(data.response)
+                setAiResponse(cleanedResponse)
+                cacheResults(query, searchResults, cleanedResponse)
+              } else if (data.error && !aiAbortController.current?.signal.aborted) {
+                // Handle graceful API error responses
+                setAiResponse(data.error)
+              }
+            } else if (response.status === 503) {
+              // Handle 503 responses which may contain graceful error messages
+              try {
+                const data = await response.json()
+                if (data.error && !aiAbortController.current?.signal.aborted) {
+                  setAiResponse(data.error)
+                } else if (!aiAbortController.current?.signal.aborted) {
+                  setAiResponse("AI assistant is currently unavailable. Please check that your Ollama server is running and accessible.")
+                }
+              } catch {
+                if (!aiAbortController.current?.signal.aborted) {
+                  setAiResponse("AI assistant is currently unavailable. Please check that your Ollama server is running and accessible.")
+                }
+              }
+            } else {
+              throw new Error(`AI request failed with status: ${response.status}`)
+            }
+          } catch (error) {
+            console.error('Error in AI request:', error)
+            if (!aiAbortController.current?.signal.aborted) {
+              setAiResponse("AI assistant is currently unavailable. This might be due to network issues or server timeout.")
+            }
+          } finally {
+            if (!aiAbortController.current?.signal.aborted) {
+              setIsAiLoading(false)
+            }
+          }
+        }
+      )
+    }
+  }, [query, searchResults])
 
   // Initialize state and handle navigation changes
   useEffect(() => {
@@ -326,5 +402,6 @@ export function useSearch({ initialQuery = '' }: UseSearchOptions = {}): UseSear
     handleRecentSearchClick,
     handleRemoveRecentSearch,
     handleClearRecentSearches,
+    retryAi,
   }
 }

@@ -10,8 +10,18 @@ import { cleanResponse } from '@/lib/utils'
  */
 export async function POST(request: NextRequest) {
   try {
-    // Get configuration - validation is now part of getApiConfig()
-    const config = getApiConfig()
+    // Get configuration - handle missing env vars gracefully
+    let config;
+    try {
+      config = getApiConfig()
+    } catch (configError) {
+      console.error('[Ollama API] Configuration error:', configError)
+      const response: AIResponse = {
+        response: '',
+        error: 'AI assistant configuration is incomplete. Please check your environment setup.'
+      }
+      return NextResponse.json(response, { status: 503 })
+    }
     
     // Check if Ollama server is healthy before proceeding
     const isHealthy = await checkOllamaHealth(config.ollamaApiUrl)
@@ -99,8 +109,18 @@ Current query: ${prompt}`
  */
 export async function GET(request: NextRequest) {
   try {
-    // Get configuration - validation is now part of getApiConfig()
-    const config = getApiConfig()
+    // Get configuration - handle missing env vars gracefully
+    let config;
+    try {
+      config = getApiConfig()
+    } catch (configError) {
+      console.error('[Ollama API] Configuration error:', configError)
+      const response: AIResponse = {
+        response: '',
+        error: 'AI assistant configuration is incomplete. Please check your environment setup.'
+      }
+      return NextResponse.json(response, { status: 503 })
+    }
     
     // Check if Ollama server is healthy before proceeding
     const isHealthy = await checkOllamaHealth(config.ollamaApiUrl)

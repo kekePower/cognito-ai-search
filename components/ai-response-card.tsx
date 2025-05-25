@@ -79,14 +79,14 @@ export default function AIResponseCard({ response, isError = false, isStreaming 
             <div className="mt-4 bg-background/50 rounded-md p-4 text-sm">
               <h4 className="font-medium mb-2">Troubleshooting steps:</h4>
               <ol className="list-decimal ml-5 mt-2 space-y-1">
-                <li>Verify Ollama is running on your server (http://10.0.0.3:11434)</li>
+                <li>Verify Ollama is running on your server ({process.env.NEXT_PUBLIC_OLLAMA_API_URL})</li>
                 <li>
                   Check if the model is installed (run:{" "}
                   <code className="bg-gray-100 dark:bg-gray-800 p-1 rounded">ollama list</code>)
                 </li>
                 <li>
                   If not installed, run:{" "}
-                  <code className="bg-gray-100 dark:bg-gray-800 p-1 rounded">ollama pull {process.env.NEXT_PUBLIC_DEFAULT_OLLAMA_MODEL || 'qwen3:30b'}</code>
+                  <code className="bg-gray-100 dark:bg-gray-800 p-1 rounded">ollama pull {process.env.NEXT_PUBLIC_DEFAULT_OLLAMA_MODEL}</code>
                 </li>
                 <li>Ensure your network allows connections to the Ollama server</li>
               </ol>
@@ -196,7 +196,7 @@ export default function AIResponseCard({ response, isError = false, isStreaming 
             className="flex items-center gap-1 text-xs hover:bg-primary/10 hover:text-primary hover:border-primary/30 transition-all duration-200"
           >
             <RefreshCw className="h-3 w-3" />
-            Try Again
+            Retry
           </Button>
         </div>
       )}

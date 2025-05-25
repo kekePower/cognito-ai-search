@@ -1,4 +1,4 @@
-# Cognito AI Search v1.0.0 - Technical Documentation
+# Cognito AI Search v1.1.0 - Technical Documentation
 
 This document contains detailed technical information about setting up and configuring Cognito AI Search v1.0.x. For a general overview, please see the [README.md](README.md).
 
@@ -199,7 +199,6 @@ docker run -d \
 **Available Docker Hub Tags:**
 - `kekepower/cognito-ai-search:latest` - Latest stable release
 - `kekepower/cognito-ai-search:1.1.0` - Specific version tags
-- `kekepower/cognito-ai-search:1.0.0` - Previous versions
 
 **Environment Variables:**
 - `OLLAMA_API_URL`: URL for your Ollama instance

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { Search, Sparkles, Clock, X, RotateCcw, Globe, Bot, Loader2 } from 'lucide-react'
+import { Search, Sparkles, Clock, X, RotateCcw, Globe, Bot, Loader2, AlertTriangle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent } from '@/components/ui/card'
@@ -31,6 +31,7 @@ export default function SearchContainer() {
     handleRecentSearchClick,
     handleRemoveRecentSearch,
     handleClearRecentSearches,
+    retryAi,
   } = useSearch({ initialQuery })
 
   const [isFocused, setIsFocused] = useState(false)
@@ -66,12 +67,18 @@ export default function SearchContainer() {
   // Show loading state when we're actively searching
   const showLoading = isLoading && searchResults.length === 0;
   
-  // Show results when optimization is complete and we have search results (don't wait for AI)
-  const showResults = hasSearched && !isOptimizing && searchResults.length > 0;
-  
-  // Show no results message when search is complete, no results were found, and a search has been performed
-  const showNoResults = hasSearched && !isLoading && !isOptimizing && searchResults.length === 0 && query;
+  // Detect configuration errors from AI response
+  const isConfigError = Boolean(aiResponse && (
+    aiResponse.includes("configuration is incomplete") ||
+    aiResponse.includes("environment setup")
+  ))
 
+  // Show no results message when search is complete, no results were found, and a search has been performed (excluding config errors)
+  const showNoResults = hasSearched && !isLoading && !isOptimizing && searchResults.length === 0 && query && !isConfigError;
+
+  // Show results when optimization is complete and we have search results OR an AI response (excluding config errors)
+  const showResults = hasSearched && !isOptimizing && (searchResults.length > 0 || (aiResponse && !isConfigError));
+  
   return (
     <div className="min-h-screen">
       <div className="container mx-auto px-4 pt-6 pb-12">
@@ -151,6 +158,19 @@ export default function SearchContainer() {
                   )}
                 </Button>
               </div>
+              {isConfigError && (
+                <div className="mt-3 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+                  <div className="flex items-center gap-2 text-red-700 dark:text-red-300">
+                    <AlertTriangle className="h-4 w-4 flex-shrink-0" />
+                    <div className="text-sm">
+                      <div className="font-medium">Configuration Issue</div>
+                      <div className="text-red-600 dark:text-red-400 mt-1">
+                        Missing API endpoints. Please check your environment setup.
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
             </form>
           </div>
 
@@ -273,6 +293,7 @@ export default function SearchContainer() {
                 searchResults={searchResults}
                 aiResponse={aiResponse}
                 isAiLoading={isAiLoading}
+                onRetryAi={retryAi}
               />
             </div>
           )}

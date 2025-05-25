@@ -10,13 +10,35 @@ interface SearchResultsContainerProps {
   searchResults: SearchResult[]
   aiResponse: string
   isAiLoading: boolean
+  onRetryAi?: () => void
 }
 
 export function SearchResultsContainer({
   searchResults,
   aiResponse,
-  isAiLoading
+  isAiLoading,
+  onRetryAi
 }: SearchResultsContainerProps) {
+  // Detect if the AI response is an error message (excluding configuration errors which are handled above)
+  const isAiError = Boolean(aiResponse && (
+    aiResponse.includes("AI assistant is currently unavailable") ||
+    aiResponse.includes("network issues") ||
+    aiResponse.includes("server timeout") ||
+    aiResponse.includes("Error generating") ||
+    aiResponse.includes("failed to fetch") ||
+    aiResponse.includes("connection refused") ||
+    aiResponse.includes("timeout")
+  ) && !(
+    aiResponse.includes("configuration is incomplete") ||
+    aiResponse.includes("environment setup")
+  ))
+
+  // Check for configuration-specific errors
+  const isConfigError = Boolean(aiResponse && (
+    aiResponse.includes("configuration is incomplete") ||
+    aiResponse.includes("environment setup")
+  ))
+
   return (
     <div className="space-y-8">
       {/* AI Response Section - Always at the top */}
@@ -34,7 +56,8 @@ export function SearchResultsContainer({
               <AIResponseCard 
                 response={aiResponse} 
                 isStreaming={isAiLoading}
-                isError={false}
+                isError={isAiError}
+                onRegenerate={isAiError ? onRetryAi : undefined}
               />
             </div>
           ) : isAiLoading ? (
