@@ -167,11 +167,17 @@ export function removeRecentSearch(
 }
 
 /**
- * Clear all recent searches
+ * Clear all recent searches and cached search results
  */
 export function clearRecentSearches(): RecentSearch[] {
   if (typeof window !== 'undefined') {
+    // Clear recent searches
     localStorage.removeItem('recentSearches')
+    
+    // Clear all cached search results
+    const keys = Object.keys(localStorage)
+    const cacheKeys = keys.filter(key => key.startsWith('search_cache_'))
+    cacheKeys.forEach(key => localStorage.removeItem(key))
   }
   return []
 }

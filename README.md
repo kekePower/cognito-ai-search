@@ -56,7 +56,7 @@ Cognito AI Search is more than just a tool; it's a step towards a more private a
 *   💡 Suggest features you'd like to see
 *   🤝 Contribute code if you're a developer
 
-⭐ 12+ stars on GitHub.
+⭐ 35+ stars on GitHub.
 Thanks to everyone who’s starred the repo — your support means the world.
 
 ## 📄 License

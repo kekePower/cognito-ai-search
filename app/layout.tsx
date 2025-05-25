@@ -31,33 +31,23 @@ export const metadata: Metadata = {
   ],
   creator: "Stig",
   openGraph: {
-    type: "website",
-    locale: "en_US",
-    url: "https://cognito-search.vercel.app",
     title: "Cognito AI Search",
     description: "AI-powered search that understands natural language and finds what you're looking for.",
+    url: "https://cognito-search.vercel.app",
     siteName: "Cognito AI Search",
-    images: [
-      {
-        url: "/og-image.png",
-        width: 1200,
-        height: 630,
-        alt: "Cognito AI Search - AI-Powered Search",
-      },
-    ],
+    locale: "en_US",
+    type: "website",
   },
   twitter: {
     card: "summary_large_image",
     title: "Cognito AI Search",
     description: "AI-powered search that understands natural language and finds what you're looking for.",
     creator: "@stigok",
-    images: ["/og-image.png"],
   },
   icons: {
     icon: [
       { url: "/favicon.ico", sizes: "any" },
       { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
-      { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
     ],
     apple: [{ url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" }],
   },

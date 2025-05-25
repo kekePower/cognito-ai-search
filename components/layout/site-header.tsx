@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { Sparkles, Github, BookOpen } from "lucide-react"
+import { Sparkles, Github, BookOpen, FileText } from "lucide-react"
 import { ThemeToggleButton } from "@/components/theme-toggle-button"
 
 export function SiteHeader() {
@@ -30,6 +30,13 @@ export function SiteHeader() {
           >
             <BookOpen className="h-4 w-4" />
             <span>How It Works</span>
+          </Link>
+          <Link 
+            href="/documentation" 
+            className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors flex items-center gap-1.5"
+          >
+            <FileText className="h-4 w-4" />
+            <span>Documentation</span>
           </Link>
           <a 
             href="https://github.com/kekePower/cognito-ai-search"

@@ -11,7 +11,7 @@ interface SearchSuggestionsProps {
 }
 
 export function SearchSuggestions({ onSuggestionClick }: SearchSuggestionsProps) {
-  const { suggestions, refreshSuggestions, isLoading } = useSearchSuggestions({ count: 4 })
+  const { suggestions, refreshSuggestions, isLoading } = useSearchSuggestions({ count: 6 })
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
@@ -35,7 +35,7 @@ export function SearchSuggestions({ onSuggestionClick }: SearchSuggestionsProps)
           </Button>
         </div>
         <div className="flex flex-wrap gap-2">
-          {[...Array(4)].map((_, index) => (
+          {[...Array(6)].map((_, index) => (
             <div
               key={index}
               className="h-8 bg-gray-200 dark:bg-gray-700 rounded-full animate-pulse"
@@ -65,7 +65,7 @@ export function SearchSuggestions({ onSuggestionClick }: SearchSuggestionsProps)
       <div className="flex flex-wrap gap-2">
         {isLoading ? (
           // Skeleton loading for suggestions
-          [...Array(4)].map((_, index) => (
+          [...Array(6)].map((_, index) => (
             <div
               key={index}
               className="h-8 bg-gray-200 dark:bg-gray-700 rounded-full animate-pulse"

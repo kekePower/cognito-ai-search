@@ -190,7 +190,19 @@ export const searchSuggestions = [
   "How to optimize VRAM usage for large models",
   "Building AI applications with Streamlit",
   "How to deploy LLMs on cloud platforms",
-  "Creating AI chatbots for specific domains"
+  "Creating AI chatbots for specific domains",
+
+  // Emerging AI Trends & Future Tech
+  "Neuromorphic computing for AI acceleration",
+  "Quantum machine learning algorithms",
+  "Brain-computer interfaces and AI integration",
+  "AI in autonomous vehicle decision making",
+  "Swarm intelligence and collective AI behavior",
+  "AI-powered drug discovery and molecular design",
+  "Generative AI for 3D model creation",
+  "AI ethics frameworks for responsible development",
+  "Explainable AI (XAI) techniques and tools",
+  "AI for climate change prediction and mitigation"
 ];
 
 // Function to get a random subset of suggestions
