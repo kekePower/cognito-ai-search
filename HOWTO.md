@@ -175,13 +175,44 @@ For better process management in production, you can use PM2:
 
 ## Docker Deployment
 
-You can also deploy Cognito AI Search using Docker. This provides a containerized environment for easier setup and management, especially when integrating with other services like SearXNG using Docker Compose.
+You can deploy Cognito AI Search using Docker in two ways: using our pre-built Docker Hub image (recommended) or building your own image. This provides a containerized environment for easier setup and management, especially when integrating with other services like SearXNG using Docker Compose.
 
 ### Prerequisites
 
 - Docker installed on your system.
 
-### Building the Docker Image
+### Option 1: Using Pre-built Docker Hub Image (Recommended)
+
+The easiest way to get started is using our official Docker Hub image:
+
+```bash
+docker run -d \
+  -p 3000:3000 \
+  -e OLLAMA_API_URL="http://YOUR_OLLAMA_HOST:11434" \
+  -e DEFAULT_OLLAMA_MODEL="phi4-mini:3.8b-q8_0" \
+  -e AI_RESPONSE_MAX_TOKENS="1200" \
+  -e SEARXNG_API_URL="http://YOUR_SEARXNG_HOST:8888" \
+  --name cognito-ai-search \
+  kekepower/cognito-ai-search:latest
+```
+
+**Available Docker Hub Tags:**
+- `kekepower/cognito-ai-search:latest` - Latest stable release
+- `kekepower/cognito-ai-search:1.1.0` - Specific version tags
+- `kekepower/cognito-ai-search:1.0.0` - Previous versions
+
+**Environment Variables:**
+- `OLLAMA_API_URL`: URL for your Ollama instance
+- `SEARXNG_API_URL`: URL for your SearXNG instance  
+- `DEFAULT_OLLAMA_MODEL`: The default Ollama model to use (recommended: `phi4-mini:3.8b-q8_0`)
+- `AI_RESPONSE_MAX_TOKENS`: Maximum tokens for AI responses (recommended: 1200)
+- `PORT`: The port the application listens on (default: 3000)
+
+The application will be available at `http://localhost:3000`.
+
+### Option 2: Building Your Own Docker Image
+
+If you prefer to build the image yourself or need to customize the build:
 
 1.  Navigate to the root directory of the Cognito AI Search project (where the `Dockerfile` is located).
 2.  Build the Docker image using the following command:
@@ -203,7 +234,7 @@ You can also deploy Cognito AI Search using Docker. This provides a containerize
     ```
     *Note: For typical deployments where Cognito AI Search backend handles communication with Ollama and SearXNG, these `NEXT_PUBLIC_` build arguments might not be strictly necessary if the client only talks to the Cognito AI Search backend. The runtime environment variables (see below) are generally more critical for server-side functionality.*
 
-### Running the Docker Container
+#### Running Your Custom Built Container
 
 Once the image is built, you can run it as a container:
 
@@ -232,73 +263,53 @@ Adjust the environment variables as needed for your setup.
 
 ### Using Docker Compose with SearXNG
 
-For a more integrated setup, especially with SearXNG, you can use `docker-compose`. Here's an example `docker-compose.yml`:
+For a more integrated setup, especially with SearXNG, you can use `docker-compose`. Here's an example `docker-compose.yml` using the Docker Hub image:
 
 ```yaml
 version: '3.8'
 
 services:
   cognito-ai-search:
-    build:
-      context: . # Assumes docker-compose.yml is in the Cognito AI Search root
-      args:
-        # Optional: Provide build-time args for NEXT_PUBLIC_ variables if needed
-        # OLLAMA_API_URL: "http://ollama:11434"
-        # SEARXNG_API_URL: "http://searxng:8080"
-    image: cognito-ai-search # Optional: use a pre-built image name
-    container_name: cognito_ai_search
+    image: kekepower/cognito-ai-search:latest
+    container_name: cognito-ai-search
     ports:
       - "3000:3000"
     environment:
-      NODE_ENV: production
-      PORT: 3000
-      # Point to SearXNG service within the Docker network
-      SEARXNG_API_URL: "http://searxng:8080"
-      # Point to Ollama (adjust as needed)
-      OLLAMA_API_URL: "http://host.docker.internal:11434" # If Ollama is on host
-      # OLLAMA_API_URL: "http://ollama:11434" # If Ollama is another service in this compose
-      DEFAULT_OLLAMA_MODEL: "phi4-mini:3.8b-q8_0"
-    # depends_on:
-    #   - searxng # Uncomment if SearXNG should start first
-    #   - ollama  # Uncomment if Ollama is a service and should start first
-    restart: unless-stopped
+      - PORT=3000
+      - OLLAMA_API_URL=http://host.docker.internal:11434
+      - SEARXNG_API_URL=http://searxng:8080
+      - DEFAULT_OLLAMA_MODEL=phi4-mini:3.8b-q8_0
+      - AI_RESPONSE_MAX_TOKENS=1200
+      - NODE_ENV=production
+    depends_on:
+      - searxng
+    networks:
+      - cognito_network
 
   searxng:
-    image: searxng/searxng:latest # Or your preferred SearXNG image
+    image: searxng/searxng:latest
     container_name: searxng
-    # ports: # Only if you need to access SearXNG directly from host
-    #   - "8080:8080"
-    # Add SearXNG specific configurations (volumes for settings.yml, etc.)
-    # volumes:
-    #   - ./your_searxng_settings.yml:/etc/searxng/settings.yml:ro
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./searxng:/etc/searxng
     environment:
-      # Example: Ensure SearXNG listens on all interfaces if accessed by cognito-ai-search container
-      BIND_ADDRESS: "0.0.0.0:8080" 
-      INSTANCE_NAME: "my-searxng"
-    restart: unless-stopped
+      - SEARXNG_BASE_URL=http://localhost:8080/
+    networks:
+      - cognito_network
 
-  # Optional: Ollama service
-  # ollama:
-  #   image: ollama/ollama:latest
-  #   container_name: ollama
-  #   ports:
-  #     - "11434:11434"
-  #   volumes:
-  #     - ollama_data:/root/.ollama
-  #   restart: unless-stopped
-
-# Optional: Define a volume for Ollama data persistence
-# volumes:
-#   ollama_data:
+networks:
+  cognito_network:
+    driver: bridge
 ```
 
-To use this:
-1.  Save the content above as `docker-compose.yml` in the root of your Cognito AI Search project.
-2.  Adjust the SearXNG image, volumes, and environment variables as per your SearXNG setup.
-3.  If you run Ollama as a container, uncomment and configure the `ollama` service.
-4.  Run `docker-compose up -d` to start all services.
+To run with Docker Compose:
 
-This Docker setup provides a flexible way to deploy and manage Cognito AI Search.
+```bash
+docker-compose up -d
+```
+
+This Docker setup provides a flexible way to deploy and manage Cognito AI Search. The Docker Hub image is automatically updated with each new release through our CI/CD pipeline.
 
 ## IPv6 Support Configuration
 
