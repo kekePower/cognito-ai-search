@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
 import { SearchResult, RecentSearch } from '@/lib/api/types'
 import { 
@@ -11,6 +11,7 @@ import {
   clearExpiredCache
 } from '@/lib/cache'
 import { cleanResponse } from '@/lib/utils'
+import { deduplicateRequest } from '@/lib/utils/request-deduplicator'
 
 interface UseSearchOptions {
   initialQuery?: string | string[]
@@ -49,11 +50,24 @@ export function useSearch({ initialQuery = '' }: UseSearchOptions = {}): UseSear
   const [searchResults, setSearchResults] = useState<SearchResult[]>([])
   const [recentSearches, setRecentSearches] = useState<RecentSearch[]>([])
   const [isInitialized, setIsInitialized] = useState(false)
+  const searchAbortController = useRef<AbortController | null>(null)
+  const aiAbortController = useRef<AbortController | null>(null)
 
   const handleSearch = useCallback(async (searchQuery: string) => {
     const normalizedQuery = searchQuery.trim()
     if (!normalizedQuery) return
 
+    // Cancel any ongoing requests
+    searchAbortController.current?.abort()
+    aiAbortController.current?.abort()
+    
+    // Create new abort controllers for this request
+    const searchController = new AbortController()
+    const aiController = new AbortController()
+    searchAbortController.current = searchController
+    aiAbortController.current = aiController
+
+    // Set loading states
     setIsLoading(true)
     setIsOptimizing(true)
     setIsTransitioning(true)
@@ -63,6 +77,9 @@ export function useSearch({ initialQuery = '' }: UseSearchOptions = {}): UseSear
       // Check cache first
       const cachedResult = getCachedResult(normalizedQuery)
       if (cachedResult) {
+        // Skip if we've been aborted
+        if (searchController.signal.aborted) return
+        
         setSearchResults(cachedResult.results)
         setAiResponse(cachedResult.aiResponse)
         setIsLoading(false)
@@ -73,7 +90,9 @@ export function useSearch({ initialQuery = '' }: UseSearchOptions = {}): UseSear
         
         // Add delay for smooth transition even with cached results
         setTimeout(() => {
-          setIsOptimizing(false)
+          if (!searchController.signal.aborted) {
+            setIsOptimizing(false)
+          }
         }, 500)
         
         // Add to recent searches
@@ -82,27 +101,68 @@ export function useSearch({ initialQuery = '' }: UseSearchOptions = {}): UseSear
         return
       }
 
-      // Fetch search results
-      const searchResponse = await fetch(`/api/searxng?q=${encodeURIComponent(normalizedQuery)}`, {
-        method: 'GET',
-        headers: {
-          'Accept': 'application/json',
-        },
-        cache: 'no-store'
-      })
+      // Use deduplication for concurrent requests
+      const [searchData, aiData] = await Promise.all([
+        // Search request
+        deduplicateRequest(
+          `search-${normalizedQuery}`,
+          async () => {
+            const response = await fetch(`/api/searxng?q=${encodeURIComponent(normalizedQuery)}`, {
+              method: 'GET',
+              headers: { 'Accept': 'application/json' },
+              cache: 'no-store',
+              signal: searchController.signal
+            })
+            
+            if (!response.ok) {
+              throw new Error(`Search request failed with status: ${response.status}`)
+            }
+            
+            const data = await response.json()
+            if (data.error) {
+              throw new Error(data.error)
+            }
+            
+            return data
+          }
+        ),
+        
+        // AI request
+        deduplicateRequest(
+          `ai-${normalizedQuery}`,
+          async () => {
+            try {
+              const response = await fetch('/api/ollama', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Accept': 'application/json',
+                },
+                body: JSON.stringify({ prompt: normalizedQuery }),
+                cache: 'no-store',
+                signal: aiController.signal
+              })
+              
+              if (response.ok) {
+                return await response.json()
+              } else if (response.status === 503) {
+                return { error: "AI assistant is currently unavailable. Please check that your Ollama server is running and accessible." }
+              } else {
+                throw new Error(`AI request failed with status: ${response.status}`)
+              }
+            } catch (error) {
+              console.error('Error in AI request:', error)
+              return { error: "AI assistant is currently unavailable. This might be due to network issues or server timeout." }
+            }
+          }
+        )
+      ])
       
-      if (!searchResponse.ok) {
-        throw new Error(`Search request failed with status: ${searchResponse.status}`)
-      }
-      
-      const data = await searchResponse.json()
-      
-      if (data.error) {
-        throw new Error(data.error)
-      }
+      // Skip updates if request was aborted
+      if (searchController.signal.aborted) return
       
       // Update search results
-      setSearchResults(data.results || [])
+      setSearchResults(searchData.results || [])
       setIsLoading(false)
       
       // Start the fade-out transition for optimization
@@ -110,45 +170,18 @@ export function useSearch({ initialQuery = '' }: UseSearchOptions = {}): UseSear
       
       // Add a longer delay to ensure smooth transition before showing results
       setTimeout(() => {
-        setIsOptimizing(false)
+        if (!searchController.signal.aborted) {
+          setIsOptimizing(false)
+        }
       }, 500)
       
-      // Now fetch the AI response in the background
-      try {
-        const aiResponse = await fetch('/api/ollama', {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Accept": "application/json",
-          },
-          body: JSON.stringify({ prompt: normalizedQuery }), // Always use the original query for AI response
-          cache: "no-store"
-        })
-        
-        if (aiResponse.ok) {
-          const aiData = await aiResponse.json()
-          if (aiData.response) {
-            const cleanedResponse = cleanResponse(aiData.response)
-            setAiResponse(cleanedResponse)
-            
-            // Cache the results only after AI response is ready
-            cacheResults(normalizedQuery, data.results || [], cleanedResponse)
-          } else if (aiData.error) {
-            // Handle error from API response
-            setAiResponse(aiData.error)
-          }
-        } else if (aiResponse.status === 503) {
-          // Service unavailable - Ollama server is down
-          setAiResponse("AI assistant is currently unavailable. Please check that your Ollama server is running and accessible.")
-        } else {
-          console.error(`AI response request failed with status: ${aiResponse.status}`)
-          // Set a friendly message when AI is not available
-          setAiResponse("AI assistant is currently unavailable. Please check that your Ollama server is running and accessible.")
-        }
-      } catch (error) {
-        console.error('Error fetching AI response:', error)
-        // Set a friendly message for network/timeout errors
-        setAiResponse("AI assistant is currently unavailable. This might be due to network issues or server timeout.")
+      // Handle AI response
+      if (aiData.response) {
+        const cleanedResponse = cleanResponse(aiData.response)
+        setAiResponse(cleanedResponse)
+        cacheResults(normalizedQuery, searchData.results || [], cleanedResponse)
+      } else if (aiData.error) {
+        setAiResponse(aiData.error)
       }
       
       setIsAiLoading(false)
