@@ -182,8 +182,20 @@ import type { SearchApiResponse } from "@/lib/api/types"
 
 export async function GET(request: NextRequest) {
   try {
-    // Get configuration
-    const config = getApiConfig()
+    // Get configuration - handle missing env vars gracefully
+    let config;
+    try {
+      config = getApiConfig()
+    } catch (configError) {
+      console.error('[SearXNG API] Configuration error:', configError)
+      const response: SearchApiResponse = {
+        results: [],
+        originalQuery: '',
+        optimizedQuery: '',
+        error: 'Search service configuration is incomplete. Please check your environment setup.'
+      }
+      return NextResponse.json(response, { status: 503 })
+    }
 
     // Extract query from URL parameters
     const { searchParams } = new URL(request.url)

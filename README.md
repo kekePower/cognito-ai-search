@@ -1,4 +1,4 @@
-# 🔍 Cognito AI Search v1.0.0: Your Private Gateway to Information
+# 🔍 Cognito AI Search v1.1.0: Your Private Gateway to Information
 
 Cognito AI Search offers a secure and private way to find information and get answers. It's designed for individuals who value their privacy and want more control over their digital footprint. This tool brings together the power of a local AI assistant and a private web search engine, all running on your own hardware, ensuring your data stays with you.
 
@@ -6,7 +6,7 @@ In an online world where tracking is common, Cognito AI Search provides an alter
 
 ![Cognito AI Search Screenshot](https://kekepower.com/images/cognito-ai-search-screenshot-inner.jpg "Cognito AI Search Screenshot")
 
-## ✨ What's New in v1.0.0
+## ✨ What's New in v1.1.0
 
 🎨 **Complete UI/UX Redesign**: Modern interface with gradient animations, dark/light themes, and polished interactions  
 🚀 **Enhanced Performance**: Smart caching, optimized search flow, and faster response times  
