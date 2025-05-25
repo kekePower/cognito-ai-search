@@ -3,6 +3,7 @@ export interface SearchResult {
   title: string
   url: string
   content: string
+  parsed_url?: string[]
 }
 
 export interface SearXNGResult {

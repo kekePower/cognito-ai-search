@@ -62,10 +62,15 @@ export default function SearchContainer() {
     setTimeout(() => setIsAnimatingOut(false), 3000)
   }
 
+  // Show loading state only when we're actively searching and don't have results yet
+  const showLoading = (isLoading || isOptimizing) && searchResults.length === 0;
+  const showResults = isOptimizing === false && searchResults.length > 0;
+  const showNoResults = isOptimizing === false && searchResults.length === 0 && query;
+
   return (
-    <div className="transition-colors duration-300">
-      <div className="container mx-auto px-4 pt-4 pb-4">
-        <div className="w-full max-w-6xl mx-auto bg-card dark:bg-card backdrop-blur-md rounded-3xl border border-gray-200 dark:border-gray-700 shadow-xl p-4 transition-all duration-300">
+    <div className="min-h-screen">
+      <div className="container mx-auto px-4 pt-6 pb-12">
+        <div className="w-full max-w-6xl mx-auto bg-card rounded-3xl border border-gray-200 dark:border-gray-700 shadow-xl p-6 transition-all duration-300">
           {/* Header with logo */}
           <div className="text-center mb-6">
             <div className="flex items-center justify-center gap-3 mb-4">
@@ -144,7 +149,7 @@ export default function SearchContainer() {
           {/* Query Optimization Animation */}
           {isOptimizing && (
             <div className={`max-w-6xl mx-auto mb-8 transition-all duration-700 ease-in-out ${
-              isTransitioning 
+              isOptimizing 
                 ? 'animate-in fade-in slide-in-from-top-2 duration-300' 
                 : 'animate-out fade-out slide-out-to-top-2 duration-500'
             }`}>
@@ -165,11 +170,11 @@ export default function SearchContainer() {
           {/* Recent Searches */}
           {!searchResults?.length && recentSearches.length > 0 && (
             <div className="max-w-6xl mx-auto mb-6">
-              <Card className="shadow-lg border border-gray-200 dark:border-gray-700 dark:bg-gray-800 shadow-white/10 dark:shadow-white/5">
+              <Card className="shadow-lg border border-gray-200 dark:border-gray-700 dark:bg-gray-800 shadow-gray-200/50 dark:shadow-gray-900/50">
                 <CardContent className="p-4">
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="flex items-center gap-2">
-                      <Clock className="h-5 w-5 text-muted-foreground" />
+                  <div className="flex items-baseline justify-between mb-4">
+                    <div className="flex items-baseline gap-2">
+                      <Clock className="h-5 w-5 text-muted-foreground flex-shrink-0 relative -top-[0.0625rem]" />
                       <h3 className="text-lg font-semibold">Recent Searches</h3>
                     </div>
                     <Button
@@ -181,15 +186,15 @@ export default function SearchContainer() {
                       Clear All
                     </Button>
                   </div>
-                  <div className="space-y-2">
+                  <div className="flex flex-wrap gap-2">
                     {recentSearches.map((search, index) => (
                       <div
                         key={index}
-                        className="flex items-center justify-between p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors group"
+                        className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors group"
                       >
                         <button
                           onClick={() => handleRecentSearchClick(search.query)}
-                          className="flex-1 text-left text-foreground hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                          className="text-sm text-foreground hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
                         >
                           {search.query}
                         </button>
@@ -197,9 +202,9 @@ export default function SearchContainer() {
                           variant="ghost"
                           size="sm"
                           onClick={() => handleRemoveRecentSearch(index)}
-                          className="opacity-0 group-hover:opacity-100 transition-opacity text-muted-foreground hover:text-red-500"
+                          className="h-4 w-4 p-0 opacity-60 hover:opacity-100 transition-opacity text-muted-foreground hover:text-red-500"
                         >
-                          <X className="h-4 w-4" />
+                          <X className="h-3 w-3" />
                         </Button>
                       </div>
                     ))}
@@ -223,7 +228,7 @@ export default function SearchContainer() {
               </div>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="flex items-start p-4 rounded-xl bg-card dark:bg-card border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all duration-200">
+                <div className="flex items-start p-4 rounded-xl bg-card border border-gray-200 dark:border-gray-600 shadow-sm hover:shadow-md transition-all duration-200">
                   <div className="mr-4 mt-1 bg-blue-100 dark:bg-blue-900/30 p-3 rounded-full">
                     <Globe className="h-6 w-6 text-blue-600 dark:text-blue-400" />
                   </div>
@@ -236,7 +241,7 @@ export default function SearchContainer() {
                   </div>
                 </div>
                 
-                <div className="flex items-start p-4 rounded-xl bg-card dark:bg-card border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all duration-200">
+                <div className="flex items-start p-4 rounded-xl bg-card border border-gray-200 dark:border-gray-600 shadow-sm hover:shadow-md transition-all duration-200">
                   <div className="mr-4 mt-1 bg-blue-100 dark:bg-blue-900/30 p-3 rounded-full">
                     <Bot className="h-6 w-6 text-blue-600 dark:text-blue-400" />
                   </div>
@@ -252,13 +257,25 @@ export default function SearchContainer() {
             </div>
           )}
 
-          {/* Search Results */}
-          {!isOptimizing && (
-            <SearchResultsContainer
-              searchResults={searchResults}
-              aiResponse={aiResponse}
-              isAiLoading={isAiLoading}
-            />
+          {/* Results */}
+          {showResults && (
+            <div className="animate-in fade-in duration-300">
+              <SearchResultsContainer
+                searchResults={searchResults}
+                aiResponse={aiResponse}
+                isAiLoading={isAiLoading}
+              />
+            </div>
+          )}
+
+          {/* No Results State */}
+          {showNoResults && (
+            <div className="text-center py-16 animate-in fade-in">
+              <p className="text-gray-600 dark:text-gray-300">No results found for "{query}"</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
+                Try different keywords or check your search query
+              </p>
+            </div>
           )}
         </div>
       </div>
