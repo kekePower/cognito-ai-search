@@ -13,7 +13,7 @@
     /* Light mode color variables */
     --background: 0 0% 100%;
     --foreground: 222.2 84% 4.9%;
-    --card: 0 0% 100%;
+    --card: 45 29% 97%;
     --card-foreground: 222.2 84% 4.9%;
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
@@ -56,7 +56,7 @@
   }
 
   /* Base styles */
-body {
+  body {
     background: linear-gradient(180deg, #F9FAFB 0%, #F3F4F6 100%); /* gray-50 to gray-100 gradient */
     color: #0B1120; /* Explicit light mode text color */
     font-feature-settings: "rlig" 1, "calt" 1;
@@ -66,10 +66,10 @@ body {
     font-family: var(--font-sans);
     min-height: 100vh; /* Ensure gradient covers full viewport */
     transition: background 0.3s ease-in-out; /* Smooth theme transitions */
-}
+  }
 
-/* Dark mode styles */
-html.dark body {
+  /* Dark mode styles */
+  html.dark body {
     background: linear-gradient(180deg, #111827 0%, #1F2937 100%) !important; /* gray-900 to gray-800 gradient */
     color: #F0F0F0 !important; /* Explicit dark mode text color */
   }

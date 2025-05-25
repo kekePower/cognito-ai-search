@@ -227,7 +227,7 @@ export function HowItWorksContent() {
                   <li>• <strong>Frontend:</strong> Next.js 15, TypeScript, Tailwind CSS</li>
                   <li>• <strong>Search:</strong> SearXNG metasearch engine</li>
                   <li>• <strong>AI:</strong> Ollama with local language models</li>
-                  <li>• <strong>Deployment:</strong>Node.js or static hosting</li>
+                  <li>• <strong>Deployment:</strong> Docker, Node.js or static hosting</li>
                 </ul>
               </div>
               

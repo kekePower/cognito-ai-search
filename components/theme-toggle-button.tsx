@@ -17,7 +17,11 @@ export function ThemeToggleButton() {
 
   if (!mounted) {
     return (
-      <Button variant="outline" size="icon" className="h-10 w-10 dark:bg-[#182338]/80 dark:border-white/10 dark:hover:bg-[#182338] dark:hover:border-white/20">
+      <Button
+        variant="outline"
+        size="icon"
+        className="h-10 w-10 dark:bg-[#182338]/80 dark:border-white/10 dark:hover:bg-[#182338] dark:hover:border-white/20"
+      >
         <Sun className="h-5 w-5 dark:text-white/90" />
         <span className="sr-only">Toggle theme</span>
       </Button>
@@ -32,11 +36,7 @@ export function ThemeToggleButton() {
       className="h-10 w-10 dark:bg-[#182338]/80 dark:border-white/10 dark:hover:bg-[#182338] dark:hover:border-white/20"
       aria-label="Toggle theme"
     >
-      {theme === "light" ? (
-        <Moon className="h-5 w-5" />
-      ) : (
-        <Sun className="h-5 w-5 text-white/90" />
-      )}
+      {theme === "light" ? <Moon className="h-5 w-5" /> : <Sun className="h-5 w-5 text-white/90" />}
       <span className="sr-only">Toggle theme</span>
     </Button>
   )
