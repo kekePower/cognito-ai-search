@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getApiConfig, validateApiConfig } from '@/lib/api/config'
+import { getApiConfig } from '@/lib/api/config'
 import { generateAIResponse, checkOllamaHealth } from '@/lib/api/ollama'
 import { AIResponse } from '@/lib/api/types'
 import { cleanResponse } from '@/lib/utils'
@@ -10,9 +10,8 @@ import { cleanResponse } from '@/lib/utils'
  */
 export async function POST(request: NextRequest) {
   try {
-    // Get and validate configuration
+    // Get configuration - validation is now part of getApiConfig()
     const config = getApiConfig()
-    validateApiConfig(config)
     
     // Check if Ollama server is healthy before proceeding
     const isHealthy = await checkOllamaHealth(config.ollamaApiUrl)
@@ -100,9 +99,8 @@ Current query: ${prompt}`
  */
 export async function GET(request: NextRequest) {
   try {
-    // Get and validate configuration
+    // Get configuration - validation is now part of getApiConfig()
     const config = getApiConfig()
-    validateApiConfig(config)
     
     // Check if Ollama server is healthy before proceeding
     const isHealthy = await checkOllamaHealth(config.ollamaApiUrl)

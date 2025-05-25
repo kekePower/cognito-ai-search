@@ -169,15 +169,14 @@ async function getOptimizedQuery(originalQuery: string, ollamaApiUrl: string, ol
   }
 }
 
-import { getApiConfig, validateApiConfig } from '@/lib/api/config'
+import { getApiConfig } from '@/lib/api/config'
 import { fetchSearchResults } from '@/lib/api/searxng'
 import { SearchApiResponse } from '@/lib/api/types'
 
 export async function GET(request: NextRequest) {
   try {
-    // Get and validate configuration
+    // Get configuration
     const config = getApiConfig()
-    validateApiConfig(config)
     
     // Extract query from URL parameters
     const { searchParams } = new URL(request.url)
@@ -246,14 +245,91 @@ export async function GET(request: NextRequest) {
   }
 }
 
+export async function POST(req: Request) {
+  try {
+    const { query } = await req.json();
+
+    if (!query) {
+      return NextResponse.json(
+        { error: 'Query parameter "query" in JSON body is required' },
+        { status: 400 }
+      );
+    }
+
+    const config = getApiConfig();
+    console.log(`[SearXNG API] Processing search query: "${query}"`);
+
+    let optimizedQuery = query;
+    // Ensure config.ollamaApiUrl and config.defaultOllamaModel are valid before calling
+    if (config.ollamaApiUrl && config.defaultOllamaModel) {
+      try {
+        optimizedQuery = await getOptimizedQuery(
+          query,
+          config.ollamaApiUrl,
+          config.defaultOllamaModel,
+          config.ollamaTimeoutMs // This was in the previous version, ensure it's in config
+        );
+        console.log(`[SearXNG API] Query optimized: "${query}" -> "${optimizedQuery}"`);
+      } catch (error) {
+        console.warn('[SearXNG API] Query optimization failed, using original query:', error);
+      }
+    } else {
+      console.warn('[SearXNG API] Ollama configuration missing, skipping query optimization.');
+    }
+    
+    const results = await fetchSearchResults(optimizedQuery, config.searxngApiUrl); // Using optimizedQuery for search
+    
+    console.log(`[SearXNG API] Found ${results.length} search results for query: "${optimizedQuery}"`);
+
+    const response: SearchApiResponse = {
+      results,
+      originalQuery: query,
+      optimizedQuery,
+    };
+
+    return NextResponse.json(response, {
+      headers: {
+        'Cache-Control': 'no-store, no-cache, must-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0',
+      },
+    });
+
+  } catch (error: any) {
+    console.error('[SearXNG API] Error in POST handler:', error.message, error.stack);
+    
+    // Ensure query is defined for the error response, even if it failed early
+    const requestBody = await req.text().catch(() => '{}'); // Try to get body text for logging
+    let originalQueryAttempt = "";
+    try {
+      originalQueryAttempt = JSON.parse(requestBody).query || "";
+    } catch { /* ignore parsing error */ }
+
+    const response: SearchApiResponse = {
+      results: [],
+      originalQuery: originalQueryAttempt,
+      optimizedQuery: originalQueryAttempt, // as optimization might not have run
+      error: error.message || 'An unexpected error occurred in SearXNG API',
+    };
+
+    return NextResponse.json(response, { 
+      status: 500,
+      headers: {
+        'Cache-Control': 'no-store, no-cache, must-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0',
+      },
+    });
+  }
+}
+
 /**
  * HEAD handler for health check of the SearXNG server
  */
 export async function HEAD() {
   try {
-    // Get and validate configuration
+    // Get configuration
     const config = getApiConfig()
-    validateApiConfig(config) // It's good practice to validate here too
 
     // Simple health check
     const response = await fetch(`${config.searxngApiUrl}/healthz`, {

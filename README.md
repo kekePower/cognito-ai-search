@@ -41,6 +41,7 @@ Choosing Cognito AI Search means prioritizing your digital autonomy. Here’s wh
 *   **Complete Data Control:** By self-hosting, you are in full command of your data. Nothing is sent to external servers without your explicit action.
 *   **Freedom from Ads and Trackers:** Enjoy a cleaner, more focused experience without targeted advertisements or hidden data collection.
 *   **Efficient and User-Friendly:** The interface is designed to be lightweight and responsive, delivering quick results on any device without unnecessary clutter.
+*   **IPv6 Support:** Configurable for accessibility over IPv6. See [HOWTO.md#ipv6-support-configuration](HOWTO.md#ipv6-support-configuration) for details.
 
 ## 🚀 Get Started
 

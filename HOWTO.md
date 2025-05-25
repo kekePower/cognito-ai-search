@@ -1,6 +1,6 @@
 # Cognito AI Search v1.0.0 - Technical Documentation
 
-This document contains detailed technical information about setting up and configuring Cognito AI Search v1.0.0. For a general overview, please see the [README.md](README.md).
+This document contains detailed technical information about setting up and configuring Cognito AI Search v1.0.x. For a general overview, please see the [README.md](README.md).
 
 ## Table of Contents
 - [Prerequisites](#prerequisites)
@@ -10,6 +10,7 @@ This document contains detailed technical information about setting up and confi
 - [Development](#development)
 - [Production Deployment](#production-deployment)
 - [Docker Deployment](#docker-deployment)
+- [IPv6 Support Configuration](#ipv6-support-configuration)
 - [New Features in v1.0.0](#new-features-in-v100)
 - [Troubleshooting](#troubleshooting)
 
@@ -211,8 +212,10 @@ docker run -d -p 3000:3000 \
   -e PORT="3000" \
   -e OLLAMA_API_URL="http://host.docker.internal:11434" \
   -e SEARXNG_API_URL="http://host.docker.internal:8080" \
-  -e DEFAULT_OLLAMA_MODEL="phi3:mini" \
-  --name cognito-ai-search-container \
+  -e DEFAULT_OLLAMA_MODEL="phi4-mini:3.8b-q8_0" \
+  -e AI_RESPONSE_MAX_TOKENS=1200 \
+  -e NODE_ENV=production \
+  -e PORT=3000 \
   cognito-ai-search
 ```
 
@@ -254,7 +257,7 @@ services:
       # Point to Ollama (adjust as needed)
       OLLAMA_API_URL: "http://host.docker.internal:11434" # If Ollama is on host
       # OLLAMA_API_URL: "http://ollama:11434" # If Ollama is another service in this compose
-      DEFAULT_OLLAMA_MODEL: "phi3:mini"
+      DEFAULT_OLLAMA_MODEL: "phi4-mini:3.8b-q8_0"
     # depends_on:
     #   - searxng # Uncomment if SearXNG should start first
     #   - ollama  # Uncomment if Ollama is a service and should start first
@@ -297,7 +300,92 @@ To use this:
 
 This Docker setup provides a flexible way to deploy and manage Cognito AI Search.
 
-## New Features in v1.0.0
+## IPv6 Support Configuration
+
+Cognito AI Search can be configured to be accessible over IPv6. This requires changes at the application, Docker host, and deployment levels.
+
+### 1. Application Configuration (`package.json`)
+
+The `scripts.start` command in `package.json` has been updated to:
+
+```json
+"start": "next start -H ::"
+```
+
+This tells the Next.js application to listen on all available IPv6 (and by default, IPv4-mapped IPv6) interfaces within its container.
+
+### 2. Docker Host Configuration
+
+Your Docker daemon on the host machine must be configured to enable IPv6. This is a one-time setup on the machine running Docker.
+
+1.  **Edit `daemon.json`**:
+    *   Locate or create the Docker daemon configuration file (usually at `/etc/docker/daemon.json`).
+    *   Add or ensure the following content is present:
+        ```json
+        {
+          "ipv6": true,
+          "fixed-cidr-v6": "2001:db8:1::/64" 
+        }
+        ```
+        *Note: You can replace `"2001:db8:1::/64"` with a different unique local IPv6 unicast address (ULA) block if this one is already in use on your network or if you have a specific range assigned.*
+
+2.  **Restart Docker Service**:
+    *   After saving `daemon.json`, restart the Docker service. The command varies by system:
+        *   `sudo systemctl restart docker` (most common on Linux)
+        *   `sudo service docker restart` (older systems)
+
+### 3. Deployment Configuration
+
+#### Using `docker-compose.yml` (Recommended)
+
+The provided `docker-compose.yml` file is pre-configured for IPv6:
+
+*   **Port Mapping**: The `cognito-ai-search` service uses `ports: - "[::]:${APP_PORT:-3000}:3000"`. This maps port 3000 of the container to the specified host port (defaulting to 3000) on all IPv6 and IPv4 interfaces of the host.
+*   **Network**: An IPv6-enabled Docker network (`cognito_network`) is defined and used by the service:
+    ```yaml
+    networks:
+      cognito_network:
+        driver: bridge
+        enable_ipv6: true
+        ipam:
+          driver: default
+          config:
+            - subnet: "fd00:db8:cognito::/64" # Example IPv6 ULA subnet
+    ```
+
+To run with Docker Compose:
+
+```bash
+docker-compose up -d --build
+```
+
+#### Using `docker run` (Manual)
+
+If you are not using Docker Compose, you need to modify your `docker run` command to map the port to IPv6 on the host:
+
+```bash
+docker run -d --name cognito-ai-search \
+  -p [::]:3000:3000 \
+  -e OLLAMA_API_URL="http://[your_ollama_host_or_ipv6]:11434" \
+  -e SEARXNG_API_URL="http://[your_searxng_host_or_ipv6]:8080" \
+  -e AI_RESPONSE_MAX_TOKENS=1200 \
+  -e DEFAULT_OLLAMA_MODEL="phi4-mini:3.8b-q8_0" \
+  -e NODE_ENV=production \
+  -e PORT=3000 \
+  cognito-ai-search # Your built image name
+```
+
+*Ensure you replace placeholder URLs and add all required environment variables.*
+
+### 4. Accessing the Service via IPv6
+
+Once configured and running, you can access Cognito AI Search using the IPv6 address of your host machine:
+
+`http://[<ipv6_address_of_host>]:3000/`
+
+Replace `<ipv6_address_of_host>` with the actual IPv6 address.
+
+## New Features in v1.0.x
 
 ### 🎨 Modern UI/UX
 - **Dark/Light Theme**: Automatic theme detection with manual toggle

@@ -1,39 +1,62 @@
-import { ApiConfig } from './types'
+import { ApiConfig } from './types';
 
 /**
- * Get API configuration from environment variables with defaults
+ * Get API configuration from environment variables.
+ * This function ensures that all required configurations are present and valid,
+ * or it throws an error. It also provides defaults for optional numeric values.
  */
 export function getApiConfig(): ApiConfig {
-  return {
-    searxngApiUrl: process.env.SEARXNG_API_URL || 'http://127.0.0.1:8888',
-    ollamaApiUrl: process.env.OLLAMA_API_URL || 'http://127.0.0.1:11434',
-    defaultOllamaModel: process.env.DEFAULT_OLLAMA_MODEL || 'qwen3:30b', // Fallback to qwen3:30b
-    aiResponseMaxTokens: parseInt(process.env.AI_RESPONSE_MAX_TOKENS || '1200', 10), // Default to 1200 tokens
-    ollamaTimeoutMs: parseInt(process.env.OLLAMA_TIMEOUT_MS || '120000', 10), // 120 seconds
-  }
-}
+  const searxngApiUrl = process.env.SEARXNG_API_URL;
+  const ollamaApiUrl = process.env.OLLAMA_API_URL;
+  const defaultOllamaModel = process.env.DEFAULT_OLLAMA_MODEL;
 
-/**
- * Validate API configuration
- */
-export function validateApiConfig(config: ApiConfig): void {
-  if (!config.searxngApiUrl) {
-    throw new Error('SEARXNG_API_URL is required')
+  // --- Validate presence of required environment variables ---
+  const missingRequiredVars: string[] = [];
+  if (!searxngApiUrl) { // Checks for undefined, null, or empty string
+    missingRequiredVars.push('SEARXNG_API_URL');
   }
-  
-  if (!config.ollamaApiUrl) {
-    throw new Error('OLLAMA_API_URL is required')
+  if (!ollamaApiUrl) {
+    missingRequiredVars.push('OLLAMA_API_URL');
   }
-  
-  if (!config.defaultOllamaModel) {
-    throw new Error('DEFAULT_OLLAMA_MODEL is required')
+  if (!defaultOllamaModel) {
+    missingRequiredVars.push('DEFAULT_OLLAMA_MODEL');
   }
-  
-  if (config.aiResponseMaxTokens <= 0) {
-    throw new Error('AI_RESPONSE_MAX_TOKENS must be a positive number')
+
+  if (missingRequiredVars.length > 0) {
+    throw new Error(
+      `Missing required environment variables: ${missingRequiredVars.join(', ')}. ` +
+      `Please define them in your .env.local file or environment.`
+    );
   }
-  
-  if (config.ollamaTimeoutMs <= 0) {
-    throw new Error('OLLAMA_TIMEOUT_MS must be a positive number')
+
+  // --- Process numeric configurations with defaults and validation ---
+  const aiResponseMaxTokensInput = process.env.AI_RESPONSE_MAX_TOKENS;
+  let aiResponseMaxTokens = parseInt(aiResponseMaxTokensInput || '1200', 10);
+  if (isNaN(aiResponseMaxTokens) || aiResponseMaxTokens <= 0) {
+    console.warn(
+      `Invalid or missing AI_RESPONSE_MAX_TOKENS (value: "${aiResponseMaxTokensInput}"). ` +
+      `Using default: 1200.`
+    );
+    aiResponseMaxTokens = 1200;
   }
+
+  const ollamaTimeoutMsInput = process.env.OLLAMA_TIMEOUT_MS;
+  let ollamaTimeoutMs = parseInt(ollamaTimeoutMsInput || '120000', 10);
+  if (isNaN(ollamaTimeoutMs) || ollamaTimeoutMs <= 0) {
+    console.warn(
+      `Invalid or missing OLLAMA_TIMEOUT_MS (value: "${ollamaTimeoutMsInput}"). ` +
+      `Using default: 120000 ms.`
+    );
+    ollamaTimeoutMs = 120000;
+  }
+
+  // All required string variables are guaranteed to be non-null and non-empty here
+  // due to the checks above. The non-null assertion operator (!) is safe to use.
+  return {
+    searxngApiUrl: searxngApiUrl!,
+    ollamaApiUrl: ollamaApiUrl!,
+    defaultOllamaModel: defaultOllamaModel!,
+    aiResponseMaxTokens,
+    ollamaTimeoutMs,
+  };
 }
