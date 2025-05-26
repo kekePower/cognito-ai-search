@@ -83,8 +83,9 @@ Cognito AI Search is more than just a tool; it's a step towards a more private a
 *   💡 Suggest features you'd like to see
 *   🤝 Contribute code if you're a developer
 
-⭐ 35+ stars on GitHub.
-Thanks to everyone who’s starred the repo — your support means the world.
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=kekePower/cognito-ai-search&type=Date)](https://www.star-history.com/#kekePower/cognito-ai-search&Date)
 
 ## 📄 License
 

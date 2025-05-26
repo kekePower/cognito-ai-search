@@ -34,7 +34,7 @@ interface UseSearchReturn {
   setQuery: (query: string) => void
   handleSearch: (searchQuery: string, isInitialLoad?: boolean) => Promise<void>
   handleRecentSearchClick: (searchQuery: string) => void
-  handleRemoveRecentSearch: (index: number) => void
+  handleRemoveRecentSearch: (query: string) => void
   handleClearRecentSearches: () => void
   retryAi: () => void
 }
@@ -364,8 +364,8 @@ export function useSearch({ initialQuery = '' }: UseSearchOptions = {}): UseSear
     router.push(searchUrl, { scroll: false })
   }, [router]) // Only depend on router
   
-  const handleRemoveRecentSearch = useCallback((index: number) => {
-    const updatedSearches = removeRecentSearch(index, recentSearches)
+  const handleRemoveRecentSearch = useCallback((query: string) => {
+    const updatedSearches = removeRecentSearch(query, recentSearches)
     setRecentSearches(updatedSearches)
   }, [recentSearches]) // Only depend on recentSearches
   

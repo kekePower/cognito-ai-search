@@ -81,13 +81,13 @@ export default function RootLayout({
       <head>{/* Geist fonts are loaded via the geist package */}</head>
       <body
         className={cn(
-          "min-h-screen font-sans antialiased",
+          "min-h-screen font-sans antialiased bg-background text-foreground",
           "selection:bg-primary-20 selection:text-foreground",
           GeistSans.variable,
           GeistMono.variable,
         )}
       >
-        <Providers attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+        <Providers attribute="class" defaultTheme="system" enableSystem>
           <div className="flex flex-col min-h-screen">
             <main className="flex-1">{children}</main>
             <Footer />

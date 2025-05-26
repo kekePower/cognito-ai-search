@@ -1,28 +1,32 @@
 "use client"
 
-import Link from "next/link"
-import { Search, Sparkles, ArrowLeft, Globe, Bot, Shield, Zap, Database, ArrowRight } from "lucide-react"
+import React from "react"
+import { Search, Sparkles, Globe, Bot, Shield, Zap, Database, ArrowRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { BackButton } from "@/components/ui/back-button"
+import { SectionHeader } from "@/components/ui/section-header"
 
 export function HowItWorksContent() {
   return (
     <main className="flex-1 container max-w-4xl mx-auto px-4 py-8 md:py-12">
       <div className="mb-8">
-        <Link href="/">
-          <Button variant="ghost" size="sm" className="flex items-center gap-1">
-            <ArrowLeft className="h-4 w-4" />
-            Back to Search
-          </Button>
-        </Link>
+        <BackButton href="/" />
       </div>
       
       <div className="prose prose-lg dark:prose-invert max-w-none">
-        <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-primary mb-6">
-          How Cognito AI Search Works
-        </h1>
+        <SectionHeader
+          title="How Cognito AI Search Works"
+          size="xl"
+          align="left"
+          className="mb-6"
+        />
 
         <section className="mb-10">
-          <h2 className="text-2xl font-semibold mb-4">What is Cognito AI Search?</h2>
+          <SectionHeader
+            title="What is Cognito AI Search?"
+            size="lg"
+            className="mb-4"
+          />
           <p>
             Cognito AI Search is a privacy-first intelligent search platform that seamlessly combines comprehensive web results 
             with AI-powered insights. Unlike traditional search engines, everything runs on your own infrastructure, 
@@ -36,7 +40,11 @@ export function HowItWorksContent() {
         </section>
 
         <section className="mb-10">
-          <h2 className="text-2xl font-semibold mb-6">Your Search Journey: Step by Step</h2>
+          <SectionHeader
+            title="Your Search Journey: Step by Step"
+            size="lg"
+            className="mb-6"
+          />
           
           <div className="grid gap-6 mb-8">
             <div className="flex items-start gap-4 p-6 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
@@ -44,9 +52,11 @@ export function HowItWorksContent() {
                 <Search className="h-6 w-6 text-blue-600 dark:text-blue-400" />
               </div>
               <div>
-                <h3 className="text-xl font-medium mb-2 text-blue-900 dark:text-blue-100">
-                  1. Ask Your Question
-                </h3>
+                <SectionHeader
+                  title="1. Ask Your Question"
+                  size="md"
+                  className="mb-2 text-blue-900 dark:text-blue-100"
+                />
                 <p className="text-blue-800 dark:text-blue-200">
                   Type your question naturally in our beautifully designed search interface. As you focus on the search field, 
                   watch as elegant gradient animations guide your attention. No need for special keywords - our AI understands 
@@ -55,15 +65,17 @@ export function HowItWorksContent() {
               </div>
             </div>
 
-            <div className="flex items-start gap-4 p-6 bg-purple-50 dark:bg-purple-900/20 rounded-lg border border-purple-200 dark:border-purple-800">
-              <div className="flex-shrink-0 w-12 h-12 bg-purple-100 dark:bg-purple-900/40 rounded-full flex items-center justify-center">
-                <Zap className="h-6 w-6 text-purple-600 dark:text-purple-400" />
+            <div className="flex items-start gap-4 p-6 bg-card rounded-lg border border-border">
+              <div className="flex-shrink-0 w-12 h-12 bg-card rounded-full flex items-center justify-center">
+                <Zap className="h-6 w-6 text-primary" />
               </div>
               <div>
-                <h3 className="text-xl font-medium mb-2 text-purple-900 dark:text-purple-100">
-                  2. AI Query Optimization
-                </h3>
-                <p className="text-purple-800 dark:text-purple-200">
+                <SectionHeader
+                  title="Instant AI Analysis"
+                  size="md"
+                  className="mb-2 text-foreground"
+                />
+                <p className="text-muted-foreground">
                   Watch as our local AI analyzes your question with a subtle pulsing animation, optimizing your search query 
                   for maximum relevance. For example, "Paris" becomes "things to do in Paris travel guide" - all while 
                   maintaining complete privacy with smooth, professional visual feedback.
@@ -76,9 +88,11 @@ export function HowItWorksContent() {
                 <Globe className="h-6 w-6 text-green-600 dark:text-green-400" />
               </div>
               <div>
-                <h3 className="text-xl font-medium mb-2 text-green-900 dark:text-green-100">
-                  3. Anonymous Web Search
-                </h3>
+                <SectionHeader
+                  title="3. Anonymous Web Search"
+                  size="md"
+                  className="mb-2 text-green-900 dark:text-green-100"
+                />
                 <p className="text-green-800 dark:text-green-200">
                   Your optimized query is sent to SearXNG, which searches multiple engines (Google, Bing, DuckDuckGo, etc.) 
                   without tracking you or storing your data. You get comprehensive results while staying anonymous.
@@ -91,9 +105,11 @@ export function HowItWorksContent() {
                 <Bot className="h-6 w-6 text-orange-600 dark:text-orange-400" />
               </div>
               <div>
-                <h3 className="text-xl font-medium mb-2 text-orange-900 dark:text-orange-100">
-                  4. AI Analysis & Summary
-                </h3>
+                <SectionHeader
+                  title="4. AI Analysis & Summary"
+                  size="md"
+                  className="mb-2 text-orange-900 dark:text-orange-100"
+                />
                 <p className="text-orange-800 dark:text-orange-200">
                   While searching the web, our local AI analyzes your question with elegant loading animations. Watch as 
                   both web results and AI insights fade in smoothly, creating a seamless experience where you get 
@@ -105,13 +121,21 @@ export function HowItWorksContent() {
         </section>
 
         <section className="mb-10">
-          <h2 className="text-2xl font-semibold mb-6">Why Choose Cognito AI Search?</h2>
+          <SectionHeader
+            title="Why Choose Cognito AI Search?"
+            size="lg"
+            className="mb-6"
+          />
           
           <div className="grid md:grid-cols-2 gap-6 mb-8">
-            <div className="p-6 bg-gray-50 dark:bg-gray-800/50 rounded-lg">
+            <div className="p-6 bg-card rounded-lg">
               <div className="flex items-center gap-3 mb-3">
                 <Shield className="h-6 w-6 text-blue-600 dark:text-blue-400" />
-                <h3 className="text-xl font-medium">100% Private</h3>
+                <SectionHeader
+                  title="100% Private"
+                  size="md"
+                  className="mb-0"
+                />
               </div>
               <ul className="space-y-2 text-sm">
                 <li>• No tracking or data collection</li>
@@ -121,10 +145,14 @@ export function HowItWorksContent() {
               </ul>
             </div>
 
-            <div className="p-6 bg-gray-50 dark:bg-gray-800/50 rounded-lg">
+            <div className="p-6 bg-card rounded-lg">
               <div className="flex items-center gap-3 mb-3">
-                <Sparkles className="h-6 w-6 text-purple-600 dark:text-purple-400" />
-                <h3 className="text-xl font-medium">AI-Enhanced</h3>
+                <Sparkles className="h-6 w-6 text-primary" />
+                <SectionHeader
+                  title="AI-Enhanced"
+                  size="md"
+                  className="mb-0"
+                />
               </div>
               <ul className="space-y-2 text-sm">
                 <li>• Smart query optimization</li>
@@ -134,10 +162,14 @@ export function HowItWorksContent() {
               </ul>
             </div>
 
-            <div className="p-6 bg-gray-50 dark:bg-gray-800/50 rounded-lg">
+            <div className="p-6 bg-card rounded-lg">
               <div className="flex items-center gap-3 mb-3">
                 <Database className="h-6 w-6 text-green-600 dark:text-green-400" />
-                <h3 className="text-xl font-medium">Self-Hosted</h3>
+                <SectionHeader
+                  title="Self-Hosted"
+                  size="md"
+                  className="mb-0"
+                />
               </div>
               <ul className="space-y-2 text-sm">
                 <li>• Complete control over your data</li>
@@ -147,10 +179,14 @@ export function HowItWorksContent() {
               </ul>
             </div>
 
-            <div className="p-6 bg-gray-50 dark:bg-gray-800/50 rounded-lg">
+            <div className="p-6 bg-card rounded-lg">
               <div className="flex items-center gap-3 mb-3">
                 <Globe className="h-6 w-6 text-indigo-600 dark:text-indigo-400" />
-                <h3 className="text-xl font-medium">Comprehensive</h3>
+                <SectionHeader
+                  title="Comprehensive"
+                  size="md"
+                  className="mb-0"
+                />
               </div>
               <ul className="space-y-2 text-sm">
                 <li>• Results from multiple search engines</li>
@@ -163,14 +199,22 @@ export function HowItWorksContent() {
         </section>
 
         <section className="mb-10">
-          <h2 className="text-2xl font-semibold mb-4">Privacy: What Makes Us Different</h2>
+          <SectionHeader
+            title="Privacy: What Makes Us Different"
+            size="lg"
+            className="mb-4"
+          />
           <p className="mb-4">
             Traditional search engines like Google track everything you search to build detailed profiles for advertising. 
             Here's how we're different:
           </p>
           
           <div className="bg-red-50 dark:bg-red-900/20 p-6 rounded-lg border border-red-200 dark:border-red-800 mb-4">
-            <h4 className="font-semibold text-red-900 dark:text-red-100 mb-2">❌ Traditional Search Engines:</h4>
+            <SectionHeader
+              title="Traditional Search Engines:"
+              size="md"
+              className="mb-2 text-red-900 dark:text-red-100"
+            />
             <ul className="text-red-800 dark:text-red-200 space-y-1">
               <li>• Track every search you make</li>
               <li>• Build advertising profiles</li>
@@ -180,7 +224,11 @@ export function HowItWorksContent() {
           </div>
 
           <div className="bg-green-50 dark:bg-green-900/20 p-6 rounded-lg border border-green-200 dark:border-green-800">
-            <h4 className="font-semibold text-green-900 dark:text-green-100 mb-2">✅ Cognito AI Search:</h4>
+            <SectionHeader
+              title="Cognito AI Search:"
+              size="md"
+              className="mb-2 text-green-900 dark:text-green-100"
+            />
             <ul className="text-green-800 dark:text-green-200 space-y-1">
               <li>• No tracking or data collection</li>
               <li>• No advertising or profiling</li>
@@ -192,13 +240,21 @@ export function HowItWorksContent() {
         </section>
 
         <section className="mb-10">
-          <h2 className="text-2xl font-semibold mb-6">Enhanced Search Experience</h2>
+          <SectionHeader
+            title="Enhanced Search Experience"
+            size="lg"
+            className="mb-6"
+          />
           
           <div className="grid md:grid-cols-2 gap-6 mb-8">
             <div className="p-6 bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
               <div className="flex items-center gap-3 mb-3">
                 <Sparkles className="h-6 w-6 text-blue-600 dark:text-blue-400" />
-                <h3 className="text-xl font-medium">Smart Suggestions</h3>
+                <SectionHeader
+                  title="Smart Suggestions"
+                  size="md"
+                  className="mb-0"
+                />
               </div>
               <p className="text-sm mb-3">
                 Get inspired with 6 curated search suggestions from our collection of 200+ diverse AI-related topics. 
@@ -215,7 +271,11 @@ export function HowItWorksContent() {
             <div className="p-6 bg-gradient-to-br from-green-50 to-blue-50 dark:from-green-900/20 dark:to-blue-900/20 rounded-lg border border-green-200 dark:border-green-800">
               <div className="flex items-center gap-3 mb-3">
                 <Zap className="h-6 w-6 text-green-600 dark:text-green-400" />
-                <h3 className="text-xl font-medium">Polished Interface</h3>
+                <SectionHeader
+                  title="Polished Interface"
+                  size="md"
+                  className="mb-0"
+                />
               </div>
               <p className="text-sm mb-3">
                 Every detail has been carefully crafted for a premium experience. From smooth animations to 
@@ -232,15 +292,23 @@ export function HowItWorksContent() {
         </section>
 
         <section className="mb-10">
-          <h2 className="text-2xl font-semibold mb-4">Technical Details (For the Curious)</h2>
-          <details className="bg-gray-50 dark:bg-gray-800/50 rounded-lg p-6 border border-gray-200 dark:border-gray-700">
-            <summary className="cursor-pointer font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+          <SectionHeader
+            title="Technical Details (For the Curious)"
+            size="lg"
+            className="mb-4"
+          />
+          <details className="bg-card rounded-lg p-6 border border-border">
+            <summary className="cursor-pointer font-semibold text-primary mb-4 flex items-center gap-2">
               <ArrowRight className="h-4 w-4 transition-transform duration-200" />
               Technical Details (For the Curious)
             </summary>
             <div className="space-y-6 mt-4">
               <div>
-                <h4 className="font-semibold text-lg mb-2">🔍 Search Engine: SearXNG</h4>
+                <SectionHeader
+                  title="Search Engine: SearXNG"
+                  size="md"
+                  className="mb-2"
+                />
                 <p className="mb-2">
                   SearXNG is a privacy-respecting metasearch engine that aggregates results from multiple search engines 
                   without storing your data or tracking your searches.
@@ -254,7 +322,11 @@ export function HowItWorksContent() {
               </div>
               
               <div>
-                <h4 className="font-semibold text-lg mb-2">🤖 AI Processing: Ollama</h4>
+                <SectionHeader
+                  title="AI Processing: Ollama"
+                  size="md"
+                  className="mb-2"
+                />
                 <p className="mb-2">
                   Ollama runs large language models locally on your hardware, ensuring your conversations never leave your infrastructure.
                 </p>
@@ -267,7 +339,11 @@ export function HowItWorksContent() {
               </div>
               
               <div>
-                <h4 className="font-semibold text-lg mb-2">⚡ Technology Stack</h4>
+                <SectionHeader
+                  title="Technology Stack"
+                  size="md"
+                  className="mb-2"
+                />
                 <ul className="text-sm space-y-1 ml-4">
                   <li>• <strong>Frontend:</strong> Next.js 15, TypeScript, Tailwind CSS</li>
                   <li>• <strong>Search:</strong> SearXNG metasearch engine</li>
@@ -277,7 +353,11 @@ export function HowItWorksContent() {
               </div>
               
               <div>
-                <h4 className="font-semibold text-lg mb-2">🏠 Deployment Options</h4>
+                <SectionHeader
+                  title="Deployment Options"
+                  size="md"
+                  className="mb-2"
+                />
                 <ul className="text-sm space-y-1 ml-4">
                   <li>• <strong>Home Server:</strong> Run on a spare computer or NAS</li>
                   <li>• <strong>VPS/Cloud:</strong> Deploy on any Linux server</li>
@@ -286,7 +366,11 @@ export function HowItWorksContent() {
               </div>
 
               <div>
-                <h4 className="font-semibold text-lg mb-2">🔄 How It All Works Together</h4>
+                <SectionHeader
+                  title="How It All Works Together"
+                  size="md"
+                  className="mb-2"
+                />
                 <p className="text-sm">
                   When you search, your query is processed in parallel: sent to both SearXNG for web results and to 
                   Ollama for AI-generated responses. The optimized query ensures better search results, while the AI 

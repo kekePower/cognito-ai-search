@@ -1,21 +1,7 @@
-import { AlertTriangle, RefreshCw, Bot, Sparkles } from "lucide-react"
-import ReactMarkdown from 'react-markdown'
-import remarkGfm from 'remark-gfm'
-import remarkMath from 'remark-math'
-import rehypeKatex from 'rehype-katex'
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
-import { oneDark } from 'react-syntax-highlighter/dist/cjs/styles/prism'
-import { oneLight } from 'react-syntax-highlighter/dist/cjs/styles/prism'
+import { AlertTriangle, RefreshCw, Bot, Sparkles, Zap, Diamond, Download, Copy, Check } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useEffect, useState, useRef } from "react"
-import 'katex/dist/katex.min.css'
-
-type CodeProps = {
-  node?: any
-  inline?: boolean
-  className?: string
-  children?: React.ReactNode
-}
+import { MarkdownRenderer } from "@/lib/markdown-renderer"
 
 interface AIResponseCardProps {
   response: string
@@ -27,6 +13,7 @@ interface AIResponseCardProps {
 export default function AIResponseCard({ response, isError = false, isStreaming = false, onRegenerate }: AIResponseCardProps) {
   // Track dark mode
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const [copiedToClipboard, setCopiedToClipboard] = useState(false);
   
   // Check for dark mode
   useEffect(() => {
@@ -49,154 +36,156 @@ export default function AIResponseCard({ response, isError = false, isStreaming 
     return () => observer.disconnect();
   }, []);
 
+  // Copy to clipboard function
+  const copyToClipboard = async () => {
+    try {
+      await navigator.clipboard.writeText(response);
+      setCopiedToClipboard(true);
+      setTimeout(() => setCopiedToClipboard(false), 2000);
+    } catch (err) {
+      console.error('Failed to copy to clipboard:', err);
+    }
+  };
+
+  // Download as PDF function using dedicated module
+  const downloadAsPDF = async () => {
+    try {
+      console.log('[AIResponseCard] Attempting to download PDF for response:', response.substring(0, 100) + '...');
+      // Dynamic import to reduce bundle size
+      const { generateMarkdownPDF } = await import('@/lib/pdf-generator');
+      
+      await generateMarkdownPDF(response, {
+        headerText: 'Cognito AI Search - Analysis Report',
+        includeTimestamp: true
+      });
+    } catch (err) {
+      console.error('Failed to generate PDF:', err);
+    }
+  };
+
   // Static placeholder text for loading state
   const placeholderText = "I'm generating a thoughtful response to your query. This might take a moment as I process your question and create a comprehensive answer...";
 
   return (
-    <div className="mb-8 p-5 rounded-lg border border-gray-200 dark:border-gray-700 card-bg-primary backdrop-blur-sm shadow-lg">
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center">
-          <Bot className="h-4 w-4 text-blue-600 dark:text-blue-400 relative top-[0.075em]" />
-          <span className="text-sm font-medium ml-2 text-gray-900 dark:text-white">AI Response</span>
-        </div>
-        {!isStreaming && response && (
-          <div className="text-xs px-2 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-700">
-            AI Analysis
+    <div className="glass-panel-solid rounded-lg p-6 relative overflow-hidden" style={{ backgroundColor: 'rgba(59, 130, 246, 0.05)' }}>
+      {/* Decorative holographic lines */}
+      <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-primary/40 to-transparent"></div>
+      <div className="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent"></div>
+      
+      {/* Header with AI badge */}
+      <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center gap-3">
+          <div className="relative">
+            <Diamond className="h-5 w-5 text-primary" />
+            <div className="absolute inset-0 bg-primary/20 rounded-full blur-sm"></div>
           </div>
-        )}
+          <h2 className="text-lg font-semibold text-primary">AI Response</h2>
+        </div>
+        <div className="flex items-center gap-2">
+          <div className="glass-panel px-3 py-1 text-xs text-primary border border-primary/30 rounded-md">
+            <Sparkles className="h-3 w-3 inline mr-1" />
+            Cognito AI
+          </div>
+        </div>
       </div>
-      <div className="text-gray-600 dark:text-gray-300">
+      
+      {/* Content */}
+      <div className="relative">
         {isError ? (
-          <div className="text-destructive">
-            <div className="flex items-start mb-4">
-              <AlertTriangle className="h-5 w-5 mr-2 mt-0.5 flex-shrink-0" />
-              <div>
-                <h3 className="font-medium">Error generating AI response</h3>
-                <p className="text-sm text-muted-foreground mt-1">{response}</p>
-              </div>
+          <div className="glass-panel rounded-lg p-6 border border-destructive/30">
+            <div className="flex items-center gap-3 mb-3">
+              <AlertTriangle className="h-5 w-5 text-destructive" />
+              <p className="text-destructive font-medium">Error generating response</p>
             </div>
-            
-            <div className="mt-4 bg-background/50 rounded-md p-4 text-sm">
-              <h4 className="font-medium mb-2">Troubleshooting steps:</h4>
-              <ol className="list-decimal ml-5 mt-2 space-y-1">
-                <li>Verify Ollama is running on your server ({process.env.NEXT_PUBLIC_OLLAMA_API_URL})</li>
-                <li>
-                  Check if the model is installed (run:{" "}
-                  <code className="bg-gray-100 dark:bg-gray-800 p-1 rounded">ollama list</code>)
-                </li>
-                <li>
-                  If not installed, run:{" "}
-                  <code className="bg-gray-100 dark:bg-gray-800 p-1 rounded">ollama pull {process.env.NEXT_PUBLIC_DEFAULT_OLLAMA_MODEL}</code>
-                </li>
-                <li>Ensure your network allows connections to the Ollama server</li>
-              </ol>
-            </div>
+            <p className="text-muted">{response || "Please try again or refine your search query."}</p>
           </div>
         ) : isStreaming ? (
-          // Enhanced loading animation with typing effect
-          <div className="space-y-5">
-            {/* Animated typing indicator with spinner */}
-            <div className="flex items-center gap-2 mb-4">
-              <div className="animate-spin text-primary">
-                <RefreshCw className="h-4 w-4" />
+          <div className="space-y-4">
+            {/* Streaming header */}
+            <div className="flex items-center gap-3 text-primary">
+              <div className="relative">
+                <Bot className="h-5 w-5" />
+                <div className="absolute inset-0 bg-primary/30 rounded-full blur-sm animate-pulse"></div>
               </div>
-              <span className="text-sm text-muted-foreground">AI is generating...</span>
+              <span className="text-sm font-medium">Crystallizing response...</span>
             </div>
             
-            {/* Static loading message with animated cursor */}
-            <div className="text-sm text-foreground/80 leading-relaxed mb-4">
-              {placeholderText}
-              <span className="inline-block h-4 w-1.5 bg-primary ml-0.5 animate-pulse" />
-            </div>
-            
-            {/* Simulated text lines with gradient loading effect */}
-            <div className="space-y-4">
-              {[...Array(2)].map((_, i) => (
-                <div key={i} className="space-y-2">
-                  <div className="h-4 bg-gradient-to-r from-primary/10 via-primary/5 to-primary/10 rounded w-3/4 animate-shimmer" 
-                    style={{ backgroundSize: '200% 100%', animationDuration: '1.5s' }} />
-                  <div className="h-4 bg-gradient-to-r from-primary/10 via-primary/5 to-primary/10 rounded w-full animate-shimmer" 
-                    style={{ backgroundSize: '200% 100%', animationDuration: '1.8s' }} />
-                  <div className="h-4 bg-gradient-to-r from-primary/10 via-primary/5 to-primary/10 rounded w-5/6 animate-shimmer" 
-                    style={{ backgroundSize: '200% 100%', animationDuration: '1.6s' }} />
+            {/* Animated loading bars */}
+            <div className="space-y-3">
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="overflow-hidden">
+                  <div className="h-4 bg-gradient-to-r from-primary/10 via-primary/20 to-primary/10 rounded shimmer" 
+                    style={{ animationDelay: `${i * 0.2}s` }} />
                 </div>
               ))}
             </div>
             
-            {/* Code block simulation with theme support */}
-            <div className={`rounded-md p-3 mt-4 border ${isDarkMode ? 'bg-gray-800 border-gray-700' : 'bg-gray-100 border-gray-200'}`}>
+            {/* Placeholder content */}
+            <div className="glass-panel rounded-lg p-4 mt-4 border border-primary/20">
               <div className="space-y-2">
-                <div className={`h-3 rounded w-1/2 animate-pulse ${isDarkMode ? 'bg-gray-700' : 'bg-gray-300'}`} />
-                <div className={`h-3 rounded w-3/4 animate-pulse ${isDarkMode ? 'bg-gray-700' : 'bg-gray-300'}`} />
-                <div className={`h-3 rounded w-2/3 animate-pulse ${isDarkMode ? 'bg-gray-700' : 'bg-gray-300'}`} />
+                <div className="h-3 rounded w-1/2 bg-primary/20 shimmer" />
+                <div className="h-3 rounded w-3/4 bg-primary/15 shimmer" />
+                <div className="h-3 rounded w-2/3 bg-primary/10 shimmer" />
               </div>
             </div>
           </div>
         ) : (
-          <div className="text-foreground dark:text-gray-300">
-            {/* Show the markdown content */}
-            <ReactMarkdown
-              remarkPlugins={[remarkGfm, remarkMath]}
-              rehypePlugins={[rehypeKatex]}
-              components={{
-                // Fix hydration errors by ensuring proper nesting
-                p: ({children}) => <div className="my-2">{children}</div>,
-                code: ({node, inline, className, children, ...props}: CodeProps) => {
-                  const match = /language-(\w+)/.exec(className || '')
-                  return !inline ? (
-                    <div className="my-4 rounded-md overflow-hidden">
-                      <SyntaxHighlighter
-                        style={isDarkMode ? oneDark : oneLight}
-                        language={match ? match[1] : 'text'}
-                        PreTag="div"
-                        {...props}
-                      >
-                        {String(children).replace(/\n$/, '')}
-                      </SyntaxHighlighter>
-                    </div>
-                  ) : (
-                    <code className="bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded text-sm">
-                      {children}
-                    </code>
-                  )
-                },
-                a: ({...props}) => (
-                  <a 
-                    {...props} 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="text-blue-600 hover:underline dark:text-blue-400"
-                  />
-                ),
-                h1: ({...props}) => <h1 className="text-3xl font-bold my-4" {...props} />,
-                h2: ({...props}) => <h2 className="text-2xl font-bold my-3" {...props} />,
-                h3: ({...props}) => <h3 className="text-xl font-bold my-2" {...props} />,
-                ul: ({...props}) => <ul className="list-disc pl-5 my-3 space-y-1" {...props} />,
-                ol: ({...props}) => <ol className="list-decimal pl-5 my-3 space-y-1" {...props} />,
-                li: ({...props}) => <li className="my-1" {...props} />,
-                blockquote: ({...props}) => <blockquote className="border-l-4 border-primary/30 pl-4 my-4 italic" {...props} />
-              }}
-            >
-              {response}
-            </ReactMarkdown>
+          <div className="relative">
+            <MarkdownRenderer content={response} />
             
             {/* Show pulsing cursor at the end when streaming */}
             {isStreaming && (
-              <span className="inline-block h-4 w-2 bg-primary animate-pulse ml-1" />
+              <span className="inline-block h-4 w-2 bg-primary animate-pulse ml-1 rounded-sm" />
             )}
           </div>
         )}
       </div>
+      
+      {/* Action buttons - always show for successful responses */}
+      {!isStreaming && response && !isError && response.length > 50 && (
+        <div className="pt-6 flex justify-end gap-2">
+          <Button 
+            variant="outline" 
+            size="sm" 
+            onClick={copyToClipboard}
+            className="glass-panel text-primary hover:text-primary/80 dark:text-primary dark:hover:text-primary/80 border-primary/30 hover:border-primary/50 transition-all duration-300 hover:scale-105 rounded-md"
+          >
+            {copiedToClipboard ? (
+              <>
+                <Check className="h-3 w-3 mr-2" />
+                Copied!
+              </>
+            ) : (
+              <>
+                <Copy className="h-3 w-3 mr-2" />
+                Copy
+              </>
+            )}
+          </Button>
+          
+          <Button 
+            variant="outline" 
+            size="sm" 
+            onClick={downloadAsPDF}
+            className="glass-panel text-success hover:text-success/80 dark:text-success dark:hover:text-success/80 border-success/30 hover:border-success/50 transition-all duration-300 hover:scale-105 rounded-md"
+          >
+            <Download className="h-3 w-3 mr-2" />
+            PDF
+          </Button>
+        </div>
+      )}
+
+      {/* Regenerate button - only show for errors or short responses */}
       {!isStreaming && onRegenerate && (isError || !response || response.length < 50) && (
-        <div className="pt-4 flex justify-end">
+        <div className="pt-6 flex justify-end">
           <Button 
             variant="outline" 
             size="sm" 
             onClick={onRegenerate}
-            className="flex items-center gap-1 text-xs hover:bg-primary/10 hover:text-primary hover:border-primary/30 transition-all duration-200"
+            className="glass-panel text-accent hover:text-accent/80 dark:text-accent dark:hover:text-accent/80 border-accent/30 hover:border-accent/50 transition-all duration-300 hover:scale-105 rounded-md"
           >
-            <RefreshCw className="h-3 w-3" />
-            Retry
+            <RefreshCw className="h-3 w-3 mr-2" />
+            Recrystallize
           </Button>
         </div>
       )}

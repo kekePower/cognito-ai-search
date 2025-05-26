@@ -147,23 +147,33 @@ export function addToRecentSearches(
 }
 
 /**
- * Remove a recent search by index
+ * Remove a recent search by query string
  */
 export function removeRecentSearch(
-  index: number, 
+  queryToRemove: string, 
   currentSearches: RecentSearch[]
 ): RecentSearch[] {
-  if (index < 0 || index >= currentSearches.length) {
-    return currentSearches
+  const normalizedQueryToRemove = queryToRemove.trim().toLowerCase();
+  const updatedSearches = currentSearches.filter(
+    (search) => search.query.trim().toLowerCase() !== normalizedQueryToRemove
+  );
+
+  // Only save if something actually changed
+  if (updatedSearches.length !== currentSearches.length) {
+    saveRecentSearches(updatedSearches);
+    
+    // Also remove the cached search result for this specific query
+    if (typeof window !== 'undefined') {
+      try {
+        const cacheKey = getCacheKey(queryToRemove);
+        localStorage.removeItem(cacheKey);
+      } catch (error) {
+        console.error(`Error removing cached result for query '${queryToRemove}':`, error);
+      }
+    }
   }
   
-  const updatedSearches = [...currentSearches]
-  updatedSearches.splice(index, 1)
-  
-  // Save to localStorage
-  saveRecentSearches(updatedSearches)
-  
-  return updatedSearches
+  return updatedSearches;
 }
 
 /**

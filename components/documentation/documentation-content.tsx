@@ -1,26 +1,27 @@
 "use client"
 
+import React from "react"
 import Link from "next/link"
-import { ArrowLeft, Download, Settings, Zap, Shield, BookOpen, Github, ExternalLink, Terminal, Globe, Bot, Database, Sparkles } from "lucide-react"
+import { Download, Settings, Zap, Shield, BookOpen, Github, ExternalLink, Terminal, Globe, Bot, Database, Sparkles } from "lucide-react"
+import { BackButton } from "@/components/ui/back-button"
 import { Button } from "@/components/ui/button"
+import { SectionHeader } from "@/components/ui/section-header"
 import packageJson from "../../package.json"
 
 export function DocumentationContent() {
   return (
     <main className="flex-1 container max-w-5xl mx-auto px-4 py-8 md:py-12">
       <div className="mb-8">
-        <Link href="/">
-          <Button variant="ghost" size="sm" className="flex items-center gap-1">
-            <ArrowLeft className="h-4 w-4" />
-            Back to Search
-          </Button>
-        </Link>
+        <BackButton href="/" />
       </div>
       
       <div className="prose prose-lg dark:prose-invert max-w-none">
-        <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-primary mb-4">
-          Documentation
-        </h1>
+        <SectionHeader
+          title="Documentation"
+          size="xl"
+          align="left"
+          className="mb-4"
+        />
         
         <div className="flex items-center gap-3 mb-6">
           <span className="px-3 py-1 bg-blue-100 dark:bg-blue-900/40 text-blue-800 dark:text-blue-200 rounded-full text-sm font-medium border border-blue-200 dark:border-blue-800">
@@ -64,10 +65,13 @@ export function DocumentationContent() {
 
         {/* What's New Section */}
         <section className="mb-12" id="whats-new">
-          <h2 className="text-2xl font-semibold mb-6 flex items-center gap-2">
-            <Sparkles className="h-6 w-6 text-blue-600 dark:text-blue-400" />
-            What's New in v{packageJson.version}
-          </h2>
+          <SectionHeader
+            title={`What's New in v${packageJson.version}`}
+            size="lg"
+            align="left"
+            className="mb-4"
+            icon={<Sparkles className="h-6 w-6 text-blue-600 dark:text-blue-400" />}
+          />
           
           <div className="grid md:grid-cols-2 gap-6 mb-8 not-prose">
             <div className="p-6 bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
@@ -114,12 +118,15 @@ export function DocumentationContent() {
 
         {/* Getting Started Section */}
         <section className="mb-12" id="getting-started">
-          <h2 className="text-2xl font-semibold mb-6 flex items-center gap-2">
-            <Zap className="h-6 w-6 text-green-600 dark:text-green-400" />
-            Getting Started
-          </h2>
+          <SectionHeader
+            title="Getting Started"
+            size="lg"
+            align="left"
+            className="mb-4"
+            icon={<Zap className="h-6 w-6 text-green-600 dark:text-green-400" />}
+          />
           
-          <div className="bg-gray-50 dark:bg-gray-800/50 rounded-lg p-6 border border-gray-200 dark:border-gray-700 mb-6">
+          <div className="bg-secondary-50 dark:bg-secondary-900/50 rounded-lg p-6 border border-secondary-200 dark:border-secondary-700 mb-6">
             <h3 className="text-lg font-semibold mb-4">Prerequisites</h3>
             <ul className="space-y-2">
               <li>• <strong>Node.js 18+</strong> and npm/yarn/pnpm</li>
@@ -131,8 +138,8 @@ export function DocumentationContent() {
 
           <h3 className="text-lg font-semibold mb-4">Quick Installation</h3>
           
-          <div className="bg-gray-900 dark:bg-gray-950 rounded-lg p-4 mb-6 not-prose">
-            <div className="flex items-center gap-2 mb-3 text-gray-300">
+          <div className="bg-secondary-900 dark:bg-secondary-950 rounded-lg p-4 mb-6 not-prose">
+            <div className="flex items-center gap-2 mb-3 text-secondary">
               <Terminal className="h-4 w-4" />
               <span className="text-sm font-medium">Terminal</span>
             </div>
@@ -168,10 +175,13 @@ pnpm dev`}
 
         {/* Docker Deployment Section */}
         <section className="mb-12" id="docker-deployment">
-          <h2 className="text-2xl font-semibold mb-6 flex items-center gap-2">
-            <div className="h-6 w-6 text-blue-600 dark:text-blue-400">🐳</div>
-            Docker Deployment
-          </h2>
+          <SectionHeader
+            title="Docker Deployment"
+            size="lg"
+            align="left"
+            className="mb-4"
+            icon={<div className="h-6 w-6 text-blue-600 dark:text-blue-400">🐳</div>}
+          />
           
           <div className="bg-gradient-to-r from-blue-50 to-cyan-50 dark:from-blue-900/20 dark:to-cyan-900/20 rounded-lg p-6 border border-blue-200 dark:border-blue-800 mb-6">
             <h3 className="text-lg font-semibold mb-4 text-blue-900 dark:text-blue-100">🚀 Quick Start with Docker Hub</h3>
@@ -179,8 +189,8 @@ pnpm dev`}
               The easiest way to get started is using our pre-built Docker image from Docker Hub:
             </p>
             
-            <div className="bg-gray-900 dark:bg-gray-950 rounded-lg p-4 not-prose">
-              <div className="flex items-center gap-2 mb-3 text-gray-300">
+            <div className="bg-secondary-900 dark:bg-secondary-950 rounded-lg p-4 not-prose">
+              <div className="flex items-center gap-2 mb-3 text-secondary">
                 <Terminal className="h-4 w-4" />
                 <span className="text-sm font-medium">Docker Run Command</span>
               </div>
@@ -234,15 +244,18 @@ pnpm dev`}
 
         {/* Configuration Section */}
         <section className="mb-12" id="configuration">
-          <h2 className="text-2xl font-semibold mb-6 flex items-center gap-2">
-            <Settings className="h-6 w-6 text-purple-600 dark:text-purple-400" />
-            Configuration
-          </h2>
+          <SectionHeader
+            title="Configuration"
+            size="lg"
+            align="left"
+            className="mb-4"
+            icon={<Settings className="h-6 w-6 text-purple-600 dark:text-purple-400" />}
+          />
 
           <h3 className="text-lg font-semibold mb-4">Environment Variables</h3>
           
-          <div className="bg-gray-900 dark:bg-gray-950 rounded-lg p-4 mb-6 not-prose">
-            <div className="flex items-center gap-2 mb-3 text-gray-300">
+          <div className="bg-secondary-900 dark:bg-secondary-950 rounded-lg p-4 mb-6 not-prose">
+            <div className="flex items-center gap-2 mb-3 text-secondary">
               <Settings className="h-4 w-4" />
               <span className="text-sm font-medium">.env.local</span>
             </div>
@@ -297,17 +310,17 @@ NEXT_PUBLIC_APP_URL=http://localhost:3000`}
           <h3 className="text-lg font-semibold mb-4">Deployment Options</h3>
           
           <div className="grid md:grid-cols-3 gap-4 mb-6 not-prose">
-            <div className="p-4 bg-gray-50 dark:bg-gray-800/50 rounded-lg border border-gray-200 dark:border-gray-700">
+            <div className="p-4 bg-secondary-50 dark:bg-secondary-800/50 rounded-lg border border-secondary-200 dark:border-secondary-700">
               <h4 className="font-semibold mb-2">🏠 Home Server</h4>
               <p className="text-sm text-muted-foreground">Run on a spare computer or NAS device</p>
             </div>
             
-            <div className="p-4 bg-gray-50 dark:bg-gray-800/50 rounded-lg border border-gray-200 dark:border-gray-700">
+            <div className="p-4 bg-secondary-50 dark:bg-secondary-800/50 rounded-lg border border-secondary-200 dark:border-secondary-700">
               <h4 className="font-semibold mb-2">☁️ VPS/Cloud</h4>
               <p className="text-sm text-muted-foreground">Deploy on any Linux server or cloud provider</p>
             </div>
             
-            <div className="p-4 bg-gray-50 dark:bg-gray-800/50 rounded-lg border border-gray-200 dark:border-gray-700">
+            <div className="p-4 bg-secondary-50 dark:bg-secondary-800/50 rounded-lg border border-secondary-200 dark:border-secondary-700">
               <h4 className="font-semibold mb-2">🥧 Raspberry Pi</h4>
               <p className="text-sm text-muted-foreground">Works great on Pi 4 with 8GB RAM</p>
             </div>
@@ -316,12 +329,15 @@ NEXT_PUBLIC_APP_URL=http://localhost:3000`}
 
         {/* Architecture Section */}
         <section className="mb-12" id="architecture">
-          <h2 className="text-2xl font-semibold mb-6 flex items-center gap-2">
-            <Database className="h-6 w-6 text-orange-600 dark:text-orange-400" />
-            Architecture Overview
-          </h2>
+          <SectionHeader
+            title="Architecture Overview"
+            size="lg"
+            align="left"
+            className="mb-4"
+            icon={<Database className="h-6 w-6 text-orange-600 dark:text-orange-400" />}
+          />
           
-          <div className="bg-gradient-to-br from-gray-50 to-blue-50 dark:from-gray-800/50 dark:to-blue-900/20 rounded-lg p-6 border border-gray-200 dark:border-gray-700 mb-6">
+          <div className="bg-gradient-to-br from-secondary-50 to-blue-50 dark:from-secondary-800/50 dark:to-blue-900/20 rounded-lg p-6 border border-secondary-200 dark:border-secondary-700 mb-6">
             <h3 className="text-lg font-semibold mb-4">How It All Works Together</h3>
             <p className="mb-4">
               Cognito AI Search operates on a parallel processing architecture where your search query is simultaneously:
@@ -385,10 +401,13 @@ NEXT_PUBLIC_APP_URL=http://localhost:3000`}
 
         {/* Contributing Section */}
         <section className="mb-12" id="contributing">
-          <h2 className="text-2xl font-semibold mb-6 flex items-center gap-2">
-            <Github className="h-6 w-6 text-green-600 dark:text-green-400" />
-            Contributing
-          </h2>
+          <SectionHeader
+            title="Contributing"
+            size="lg"
+            align="left"
+            className="mb-4"
+            icon={<Github className="h-6 w-6 text-green-600 dark:text-green-400" />}
+          />
           
           <div className="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-lg p-6 border border-green-200 dark:border-green-800 mb-8">
             <h3 className="text-lg font-semibold mb-4 text-green-900 dark:text-green-100">🚀 Join Our Mission</h3>
@@ -471,15 +490,15 @@ NEXT_PUBLIC_APP_URL=http://localhost:3000`}
 
           <h3 className="text-lg font-semibold mb-4">Development Setup</h3>
           
-          <div className="bg-gray-900 dark:bg-gray-950 rounded-lg p-6 mb-6 not-prose">
-            <div className="flex items-center gap-2 mb-4 text-gray-300">
+          <div className="bg-secondary-900 dark:bg-secondary-950 rounded-lg p-6 mb-6 not-prose">
+            <div className="flex items-center gap-2 mb-4 text-secondary">
               <Terminal className="h-5 w-5" />
               <span className="font-medium">Quick Development Setup</span>
             </div>
             <div className="space-y-4">
               <div>
-                <p className="text-gray-400 text-sm mb-2">1. Clone and install dependencies:</p>
-                <pre className="text-green-400 text-sm bg-gray-800 rounded p-3 overflow-x-auto">
+                <p className="text-muted text-sm mb-2">1. Clone and install dependencies:</p>
+                <pre className="text-green-400 text-sm bg-secondary-800 rounded p-3 overflow-x-auto">
 {`git clone https://github.com/YOUR-USERNAME/cognito-ai-search.git
 cd cognito-ai-search
 pnpm install`}
@@ -487,16 +506,16 @@ pnpm install`}
               </div>
               
               <div>
-                <p className="text-gray-400 text-sm mb-2">2. Set up your environment:</p>
-                <pre className="text-blue-400 text-sm bg-gray-800 rounded p-3 overflow-x-auto">
+                <p className="text-muted text-sm mb-2">2. Set up your environment:</p>
+                <pre className="text-blue-400 text-sm bg-secondary-800 rounded p-3 overflow-x-auto">
 {`cp .env.example .env.local
 # Edit .env.local with your SearXNG and Ollama URLs`}
                 </pre>
               </div>
               
               <div>
-                <p className="text-gray-400 text-sm mb-2">3. Start development:</p>
-                <pre className="text-purple-400 text-sm bg-gray-800 rounded p-3 overflow-x-auto">
+                <p className="text-muted text-sm mb-2">3. Start development:</p>
+                <pre className="text-purple-400 text-sm bg-secondary-800 rounded p-3 overflow-x-auto">
 {`pnpm dev          # Start development server
 pnpm type-check   # Run TypeScript checks
 pnpm build        # Test production build`}
@@ -573,22 +592,25 @@ pnpm build        # Test production build`}
 
         {/* Resources Section */}
         <section className="mb-12">
-          <h2 className="text-2xl font-semibold mb-6 flex items-center gap-2">
-            <BookOpen className="h-6 w-6 text-blue-600 dark:text-blue-400" />
-            Additional Resources
-          </h2>
+          <SectionHeader
+            title="Additional Resources"
+            size="lg"
+            align="left"
+            className="mb-4"
+            icon={<BookOpen className="h-6 w-6 text-blue-600 dark:text-blue-400" />}
+          />
           
           <div className="grid md:grid-cols-2 gap-6 not-prose">
             <a 
               href="https://github.com/kekePower/cognito-ai-search" 
               target="_blank" 
               rel="noreferrer"
-              className="p-6 bg-gray-50 dark:bg-gray-800/50 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800/70 transition-colors group"
+              className="p-6 bg-secondary-50 dark:bg-secondary-800/50 rounded-lg border border-secondary-200 dark:border-secondary-700 hover:bg-secondary-100 dark:hover:bg-secondary-800/70 transition-colors group"
             >
               <div className="flex items-center gap-3 mb-3">
-                <Github className="h-6 w-6 text-gray-600 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" />
+                <Github className="h-6 w-6 text-secondary dark:text-muted group-hover:text-primary dark:group-hover:text-white" />
                 <h3 className="font-semibold">GitHub Repository</h3>
-                <ExternalLink className="h-4 w-4 text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-300" />
+                <ExternalLink className="h-4 w-4 text-muted group-hover:text-secondary dark:group-hover:text-secondary" />
               </div>
               <p className="text-sm text-muted-foreground">
                 Source code, issues, and latest releases
@@ -599,12 +621,12 @@ pnpm build        # Test production build`}
               href="https://docs.searxng.org/" 
               target="_blank" 
               rel="noreferrer"
-              className="p-6 bg-gray-50 dark:bg-gray-800/50 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800/70 transition-colors group"
+              className="p-6 bg-secondary-50 dark:bg-secondary-800/50 rounded-lg border border-secondary-200 dark:border-secondary-700 hover:bg-secondary-100 dark:hover:bg-secondary-800/70 transition-colors group"
             >
               <div className="flex items-center gap-3 mb-3">
-                <Globe className="h-6 w-6 text-gray-600 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" />
+                <Globe className="h-6 w-6 text-secondary dark:text-muted group-hover:text-primary dark:group-hover:text-white" />
                 <h3 className="font-semibold">SearXNG Documentation</h3>
-                <ExternalLink className="h-4 w-4 text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-300" />
+                <ExternalLink className="h-4 w-4 text-muted group-hover:text-secondary dark:group-hover:text-secondary" />
               </div>
               <p className="text-sm text-muted-foreground">
                 Official SearXNG setup and configuration guide
@@ -615,12 +637,12 @@ pnpm build        # Test production build`}
               href="https://ollama.ai/" 
               target="_blank" 
               rel="noreferrer"
-              className="p-6 bg-gray-50 dark:bg-gray-800/50 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800/70 transition-colors group"
+              className="p-6 bg-secondary-50 dark:bg-secondary-800/50 rounded-lg border border-secondary-200 dark:border-secondary-700 hover:bg-secondary-100 dark:hover:bg-secondary-800/70 transition-colors group"
             >
               <div className="flex items-center gap-3 mb-3">
-                <Bot className="h-6 w-6 text-gray-600 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" />
+                <Bot className="h-6 w-6 text-secondary dark:text-muted group-hover:text-primary dark:group-hover:text-white" />
                 <h3 className="font-semibold">Ollama</h3>
-                <ExternalLink className="h-4 w-4 text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-300" />
+                <ExternalLink className="h-4 w-4 text-muted group-hover:text-secondary dark:group-hover:text-secondary" />
               </div>
               <p className="text-sm text-muted-foreground">
                 Local AI model runner and management
@@ -629,10 +651,10 @@ pnpm build        # Test production build`}
             
             <Link 
               href="/how-it-works"
-              className="p-6 bg-gray-50 dark:bg-gray-800/50 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800/70 transition-colors group"
+              className="p-6 bg-secondary-50 dark:bg-secondary-800/50 rounded-lg border border-secondary-200 dark:border-secondary-700 hover:bg-secondary-100 dark:hover:bg-secondary-800/70 transition-colors group"
             >
               <div className="flex items-center gap-3 mb-3">
-                <BookOpen className="h-6 w-6 text-gray-600 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" />
+                <BookOpen className="h-6 w-6 text-secondary dark:text-muted group-hover:text-primary dark:group-hover:text-white" />
                 <h3 className="font-semibold">How It Works</h3>
               </div>
               <p className="text-sm text-muted-foreground">

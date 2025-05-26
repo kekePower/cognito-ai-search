@@ -21,7 +21,7 @@ export default function Error({
         <AlertCircle className="h-16 w-16 text-red-500" />
       </div>
       <h2 className="text-2xl font-bold mb-4">Something went wrong</h2>
-      <p className="text-gray-600 mb-6">We encountered an error while processing your request. Please try again.</p>
+      <p className="text-secondary mb-6">We encountered an error while processing your request. Please try again.</p>
       <Button onClick={reset} variant="default">
         Try again
       </Button>
