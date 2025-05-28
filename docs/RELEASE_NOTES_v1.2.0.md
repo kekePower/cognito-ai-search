@@ -29,6 +29,11 @@ Cognito AI Search v1.2.0 represents a major evolution in our AI-powered search p
 - **Interactive Suggestions**: 100 new AI-focused search suggestions organized into 16 technical categories
 - **Improved Loading States**: Better visual feedback with branded loading indicators
 - **Responsive Design**: Optimized layouts for mobile, tablet, and desktop experiences
+- **Search Button Refinements**: Fixed search button styling with transparent backgrounds in both light and dark modes
+- **Icon Styling**: Removed cyan drop shadows from search icons for cleaner appearance
+- **Gradient Typography**: Applied consistent gradient styling to section headings (Web Results, AI Analysis)
+- **Visual Consistency**: Matched styling between Web Results and AI Analysis sections with cyan-to-pink gradients
+- **Recent Search Button**: Added a recent search button to the search interface for easy access to previous searches
 
 ### Advanced Caching & Performance
 
