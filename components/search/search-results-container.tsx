@@ -7,17 +7,21 @@ import { SearchResult } from "@/lib/api/types"
 import { Loader2, Info, Sparkles, Globe, Bot, Diamond } from 'lucide-react'
 
 interface SearchResultsContainerProps {
-  searchResults: SearchResult[]
-  aiResponse: string
-  isAiLoading: boolean
-  onRetryAi?: () => void
+  searchResults: SearchResult[];
+  aiResponse: string;
+  isAiLoading: boolean;
+  isOptimizing?: boolean; // Added
+  optimizedQuery?: string; // Added
+  onRetryAi?: () => void;
 }
 
 export function SearchResultsContainer({
   searchResults,
   aiResponse,
   isAiLoading,
-  onRetryAi
+  isOptimizing, // Added
+  optimizedQuery, // Added
+  onRetryAi,
 }: SearchResultsContainerProps) {
   // Detect if the AI response is an error message (excluding configuration errors which are handled above)
   const isAiError = Boolean(aiResponse && (
@@ -68,7 +72,9 @@ export function SearchResultsContainer({
             <div className="animate-in fade-in slide-in-from-top-2 duration-500">
               <AIResponseCard 
                 response={aiResponse} 
-                isStreaming={isAiLoading}
+                isAiLoading={isAiLoading} // Prop renamed in AIResponseCard
+                isOptimizing={isOptimizing} // Pass down
+                optimizedQuery={optimizedQuery} // Pass down
                 isError={isAiError}
                 onRegenerate={isAiError ? onRetryAi : undefined}
               />
@@ -97,17 +103,17 @@ export function SearchResultsContainer({
         <div className="glass-panel rounded-lg p-6 transition-all duration-700">
           <div className="flex items-center gap-3 mb-6">
             <div className="p-2 rounded-lg bg-gradient-to-br from-accent/20 to-primary/20 border border-accent/30">
-              <Globe className="h-6 w-6 text-pink-500 drop-shadow-[0_0_8px_rgba(236,72,153,0.8)]" />
+              <Globe className="h-6 w-6 text-primary drop-shadow-[0_0_8px_hsl(var(--primary)/0.8)]" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <Diamond className="h-5 w-5 text-pink-500 drop-shadow-[0_0_4px_rgba(236,72,153,0.6)]" />
-                <h3 className="text-xl font-semibold bg-gradient-to-r from-purple-500 to-blue-500 bg-clip-text text-transparent">
+                <Diamond className="h-5 w-5 text-primary drop-shadow-[0_0_4px_hsl(var(--primary)/0.6)]" />
+                <h3 className="text-xl font-semibold bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">
                   Web Results
                 </h3>
               </div>
               <p className="text-sm text-muted">
-                <span className="bg-gradient-to-r from-pink-500 to-cyan-400 bg-clip-text text-transparent font-medium">
+                <span className="bg-gradient-to-r from-cyan-400 to-pink-500 bg-clip-text text-transparent font-medium">
                   Web search results
                 </span>
                 {" "}powered by SearXNG

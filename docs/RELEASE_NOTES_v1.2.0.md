@@ -392,10 +392,10 @@ Cognito AI Search v1.2.0 represents a major evolution in our AI-powered search p
 ## Support & Resources
 
 ### Documentation
-- **Getting Started**: `/documentation` - Complete setup and configuration guide
-- **Component Guide**: `COMPONENT_GUIDE.md` - UI component usage documentation
-- **Migration Guide**: `MIGRATION_EXAMPLES.md` - Upgrade instructions and examples
-- **Contributing**: `CONTRIBUTING.md` - Development and contribution guidelines
+- Getting Started: [HOWTO.md](HOWTO.md) - Complete setup and configuration guide
+- Component Guide: [COMPONENT_GUIDE.md](COMPONENT_GUIDE.md) - UI component usage documentation
+- Migration Guide: [MIGRATION_EXAMPLES.md](MIGRATION_EXAMPLES.md) - Upgrade instructions and examples
+- Contributing: [CONTRIBUTING.md](CONTRIBUTING.md) - Development and contribution guidelines
 
 ### Community
 - **GitHub Issues**: Report bugs and request features

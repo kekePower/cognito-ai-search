@@ -18,6 +18,7 @@ interface UseSearchOptions {
 }
 
 interface UseSearchReturn {
+  optimizedQuery: string;
   // State
   query: string
   isLoading: boolean
@@ -55,6 +56,7 @@ export function useSearch({ initialQuery = '' }: UseSearchOptions = {}): UseSear
   const searchAbortController = useRef<AbortController | null>(null)
   const aiAbortController = useRef<AbortController | null>(null)
   const [hasSearched, setHasSearched] = useState(false)
+  const [optimizedQuery, setOptimizedQuery] = useState('')
 
   // Handle initial query when hook is initialized
   useEffect(() => {
@@ -72,212 +74,177 @@ export function useSearch({ initialQuery = '' }: UseSearchOptions = {}): UseSear
   }, [initialQuery]) // Only depend on initialQuery
 
   const handleSearch = useCallback(async (searchQuery: string, isInitialLoad = false) => {
-    const normalizedQuery = searchQuery.trim()
-    if (!normalizedQuery) return
+    setOptimizedQuery(''); // Reset optimized query for new search
+    setIsOptimizing(true); // Start optimizing phase
+    const normalizedQuery = searchQuery.trim();
+    if (!normalizedQuery) return;
 
-    // Only update hasSearched if this is not an initial load
     if (!isInitialLoad) {
-      setHasSearched(true)
+      setHasSearched(true);
     }
 
-    // Cancel any ongoing requests
-    searchAbortController.current?.abort()
-    aiAbortController.current?.abort()
+    searchAbortController.current?.abort();
+    aiAbortController.current?.abort();
     
-    // Create new abort controllers for this request
-    const searchController = new AbortController()
-    const aiController = new AbortController()
-    searchAbortController.current = searchController
-    aiAbortController.current = aiController
+    const searchController = new AbortController();
+    const aiController = new AbortController();
+    searchAbortController.current = searchController;
+    aiAbortController.current = aiController;
 
-    // Set loading states
-    setIsLoading(true)
-    setIsOptimizing(true)
-    setIsTransitioning(true)
-    setIsAiLoading(true)
+    setIsLoading(true);
+    setIsOptimizing(true);
+    setIsTransitioning(true);
+    setIsAiLoading(true);
     
     try {
-      // Check cache first
-      const cachedResult = getCachedResult(normalizedQuery)
+      const cachedResult = getCachedResult(normalizedQuery);
       if (cachedResult) {
-        // Skip if we've been aborted
-        if (searchController.signal.aborted) return
+        if (searchController.signal.aborted) return;
         
-        setSearchResults(cachedResult.results)
-        setAiResponse(cachedResult.aiResponse)
-        setIsLoading(false)
-        setIsAiLoading(false)
+        setSearchResults(cachedResult.results);
+        setAiResponse(cachedResult.aiResponse);
+        if (cachedResult.optimizedQuery) {
+          setOptimizedQuery(cachedResult.optimizedQuery);
+        }
+        setIsLoading(false);
+        setIsAiLoading(false);
+        setIsTransitioning(false);
         
-        // Start the fade-out transition for cached results too
-        setIsTransitioning(false)
-        
-        // Add delay for smooth transition even with cached results
         setTimeout(() => {
           if (!searchController.signal.aborted) {
-            setIsOptimizing(false)
+            setIsOptimizing(false); // Optimizing ends after cache load and delay
           }
-        }, 500)
+        }, 500);
         
-        // Add to recent searches
-        const updatedSearches = addToRecentSearches(searchQuery, recentSearches)
-        setRecentSearches(updatedSearches)
-        return
+        const updatedSearches = addToRecentSearches(searchQuery, recentSearches);
+        setRecentSearches(updatedSearches);
+        return;
       }
 
-      // Use deduplication for concurrent requests
-      // First, get the AI-optimized query
-      const aiOptimizationData = await deduplicateRequest(
-        `optimize-${normalizedQuery}`,
-        async () => {
-          try {
-            const response = await fetch('/api/ollama', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-              },
-              body: JSON.stringify({ prompt: `Optimize this search query for better web search results: "${normalizedQuery}". Return only the optimized query, nothing else.` }),
-              cache: 'no-store',
-              signal: searchController.signal
-            })
-            
-            if (response.ok) {
-              const data = await response.json()
-              return { optimizedQuery: data.response || normalizedQuery }
-            } else {
-              return { optimizedQuery: normalizedQuery } // Fallback to original query
-            }
-          } catch (error) {
-            console.error('Error optimizing query:', error)
-            return { optimizedQuery: normalizedQuery } // Fallback to original query
-          }
-        }
-      )
+      // Live search
+      const response = await fetch(`/api/searxng`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ query: normalizedQuery }),
+        signal: searchController.signal,
+      });
 
-      // Skip updates if request was aborted
-      if (searchController.signal.aborted) return
+      if (!response.ok) {
+        throw new Error(`Search API request failed with status: ${response.status}`);
+      }
 
-      const optimizedQuery = aiOptimizationData.optimizedQuery || normalizedQuery
+      if (searchController.signal.aborted) return;
 
-      // Now perform the search with the optimized query
-      const searchData = await deduplicateRequest(
-        `search-${optimizedQuery}`,
-        async () => {
-          const response = await fetch(`/api/searxng?q=${encodeURIComponent(optimizedQuery)}`, {
-            method: 'GET',
-            headers: { 'Accept': 'application/json' },
-            cache: 'no-store',
-            signal: searchController.signal
-          })
-          
-          if (!response.ok) {
-            // Handle graceful API errors (like configuration issues) differently from network errors
-            if (response.status === 503) {
-              const data = await response.json()
-              return data // Return the graceful error response instead of throwing
-            }
-            throw new Error(`Search request failed with status: ${response.status}`)
-          }
-          
-          const data = await response.json()
-          // Don't throw for graceful API errors - return them so UI can handle appropriately
-          return data
-        }
-      )
-
-      // Skip updates if request was aborted
-      if (searchController.signal.aborted) return
+      const data = await response.json();
+      setSearchResults(data.results || []);
+      if (data.optimizedQuery) {
+        setOptimizedQuery(data.optimizedQuery);
+      }
       
-      // Update search results immediately when available and transition from optimization
-      setSearchResults(searchData.results || [])
-      setIsLoading(false)
-      setIsOptimizing(false)
-      setIsTransitioning(false)
+      const updatedSearches = addToRecentSearches(searchQuery, recentSearches);
+      setRecentSearches(updatedSearches);
 
-      // Now start the AI response generation in parallel (don't wait for it)
-      deduplicateRequest(
-        `ai-${normalizedQuery}`,
-        async () => {
-          try {
-            const response = await fetch('/api/ollama', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-              },
-              body: JSON.stringify({ prompt: normalizedQuery }),
-              cache: 'no-store',
-              signal: aiController.signal
-            })
-            
-            if (response.ok) {
-              const data = await response.json()
-              if (data.response && !aiController.signal.aborted) {
-                const cleanedResponse = cleanResponse(data.response)
-                setAiResponse(cleanedResponse)
-                cacheResults(normalizedQuery, searchData.results || [], cleanedResponse)
-              } else if (data.error && !aiController.signal.aborted) {
-                // Handle graceful API error responses
-                setAiResponse(data.error)
+      setIsLoading(false); // Search part is done loading
+      // setIsOptimizing(false) will be set before the AI summarization call
+      setIsTransitioning(false); // Allow UI to transition/show search results
+
+      // AI call (summarization) starts after a short delay
+      setTimeout(async () => {
+        const constructedAiPrompt = `Based on the query "${data.optimizedQuery || normalizedQuery}" and the following search results, please provide a concise summary or insights:\n\n${(data.results || []).map((r: SearchResult) => `- ${r.title}: ${r.content?.substring(0, 150)}...`).join('\n')}`;
+
+        if (aiController.signal.aborted) return;
+        setIsOptimizing(false); // Transition from query optimization to AI summarization message
+        try {
+          const aiApiResponse = await fetch('/api/ollama', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ prompt: constructedAiPrompt }),
+            signal: aiController.signal,
+          });
+
+          if (aiApiResponse.ok) {
+            const aiData = await aiApiResponse.json();
+            if (aiData.response && !aiController.signal.aborted) {
+              const cleanedResponse = cleanResponse(aiData.response);
+              setAiResponse(cleanedResponse);
+              cacheResults(
+                normalizedQuery, 
+                data.results || [], 
+                cleanedResponse, 
+                data.optimizedQuery || '' // Cache optimized query
+              );
+            } else if (aiData.error && !aiController.signal.aborted) {
+              setAiResponse(aiData.error);
+            }
+          } else if (aiApiResponse.status === 503) {
+            try {
+              const errorData = await aiApiResponse.json();
+              if (errorData.error && !aiController.signal.aborted) {
+                setAiResponse(errorData.error);
+              } else if (!aiController.signal.aborted) {
+                setAiResponse("AI assistant is currently unavailable. Please check that your Ollama server is running and accessible.");
               }
-            } else if (response.status === 503) {
-              // Handle 503 responses which may contain graceful error messages
-              try {
-                const data = await response.json()
-                if (data.error && !aiController.signal.aborted) {
-                  setAiResponse(data.error)
-                } else if (!aiController.signal.aborted) {
-                  setAiResponse("AI assistant is currently unavailable. Please check that your Ollama server is running and accessible.")
-                }
-              } catch {
-                if (!aiController.signal.aborted) {
-                  setAiResponse("AI assistant is currently unavailable. Please check that your Ollama server is running and accessible.")
-                }
+            } catch {
+              if (!aiController.signal.aborted) {
+                setAiResponse("AI assistant is currently unavailable. Please check that your Ollama server is running and accessible.");
               }
-            } else {
-              throw new Error(`AI request failed with status: ${response.status}`)
             }
-          } catch (error) {
-            console.error('Error in AI request:', error)
-            if (!aiController.signal.aborted) {
-              setAiResponse("AI assistant is currently unavailable. This might be due to network issues or server timeout.")
-            }
-          } finally {
-            if (!aiController.signal.aborted) {
-              setIsAiLoading(false)
-            }
+          } else {
+            throw new Error(`AI request failed with status: ${aiApiResponse.status}`);
+          }
+        } catch (error) {
+          console.error('Error in AI request:', error);
+          if (!aiController.signal.aborted) {
+            setAiResponse("AI assistant is currently unavailable. This might be due to network issues or server timeout.");
+          }
+        } finally {
+          if (!aiController.signal.aborted) {
+            setIsAiLoading(false); // AI summarization is complete
+            // setIsOptimizing(false) was moved earlier
           }
         }
-      )
-      
-      // Add to recent searches
-      const updatedSearches = addToRecentSearches(searchQuery, recentSearches)
-      setRecentSearches(updatedSearches)
-      
+      }, 100);
+
     } catch (error) {
-      console.error('Search error:', error)
-      setIsLoading(false)
-      setIsAiLoading(false)
-      setIsOptimizing(false)
-      setIsTransitioning(false)
+      console.error('Search error:', error);
+      setIsLoading(false);
+      setIsAiLoading(false);
+      setIsOptimizing(false); // Ensure optimizing stops on search error
+      setIsTransitioning(false);
+      // Optionally set error messages for UI
+      // setAiResponse('Failed to fetch search results or AI summary.');
+    } finally {
+      // Main finally for the search try/catch.
+      // Most loading states are handled within the try or catch blocks, 
+      // or within the AI call's finally block.
+      // If searchController was aborted and not caught by earlier checks, 
+      // ensure loading states are reset.
+      if (searchController.signal.aborted && (isLoading || isOptimizing || isAiLoading)) {
+        setIsLoading(false);
+        setIsAiLoading(false);
+        setIsOptimizing(false);
+        setIsTransitioning(false);
+      }
     }
-  }, [recentSearches]) // Only depend on recentSearches
 
-  const retryAi = useCallback(() => {
+  }, [recentSearches]) // Dependencies: query, searchResults, recentSearches
+
+  const retryAi = useCallback(async () => {
     if (query) {
+      setAiResponse('') // Clear the AI response first to show the container loading state
       setIsAiLoading(true)
       deduplicateRequest(
         `ai-${query}`,
         async () => {
           try {
-            const response = await fetch('/api/ollama', {
+            const response = await fetch('/api/ai', {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
-                'Accept': 'application/json',
               },
-              body: JSON.stringify({ prompt: query }),
-              cache: 'no-store',
+              body: JSON.stringify({ query: query, searchResults: searchResults }),
               signal: aiAbortController.current?.signal
             })
             
@@ -350,6 +317,7 @@ export function useSearch({ initialQuery = '' }: UseSearchOptions = {}): UseSear
         setSearchResults([])
         setAiResponse('')
         setHasSearched(false)
+        setOptimizedQuery('')
       }
     }
     
@@ -381,6 +349,7 @@ export function useSearch({ initialQuery = '' }: UseSearchOptions = {}): UseSear
     
     // Clear the URL search params
     window.history.pushState({}, '', '/')
+    setOptimizedQuery('');
   }, [])
 
   return {
@@ -395,6 +364,7 @@ export function useSearch({ initialQuery = '' }: UseSearchOptions = {}): UseSear
     recentSearches,
     isInitialized,
     hasSearched,
+    optimizedQuery,
     
     // Actions
     setQuery,

@@ -2,7 +2,8 @@
 import { useState, useEffect, useRef } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Form from 'next/form'
-import { Search, Diamond, AlertTriangle, Loader2, Clock, X } from 'lucide-react'
+import Link from 'next/link'
+import { Search, Diamond, AlertTriangle, Loader2, Clock, X, Globe, Bot } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
@@ -29,6 +30,7 @@ export default function SearchContainer() {
     isAiLoading,
     aiResponse,
     searchResults,
+    optimizedQuery, // Added optimizedQuery from useSearch
     recentSearches,
     hasSearched,
     setQuery,
@@ -138,7 +140,7 @@ export default function SearchContainer() {
                   <div className="relative glass-panel p-4 flex items-center justify-between gap-3 rounded-lg">
                     {/* Search Icon Wrapper: Spans the pl-14 area and centers the icon within it */}
                     <div className="absolute left-0 top-0 bottom-0 w-14 flex items-center justify-center pointer-events-none z-10">
-                      <Search className="h-6 w-6 text-primary drop-shadow-[0_0_4px_rgba(34,211,238,0.6)]" />
+                      <Search className="h-6 w-6 text-muted-foreground" />
                       {/* Temporarily removed: <div className="absolute inset-0 bg-primary/20 rounded-full blur-sm animate-pulse"></div> */}
                     </div>
                     
@@ -207,6 +209,8 @@ export default function SearchContainer() {
             )}
           </div> {/* This div closes the Main Search Panel that starts around line 85 */}
           
+
+
             {/* Recent Searches and Search Results */}
             <div className="mt-8 w-full">
             {/* Recent Searches Panel */}
@@ -262,8 +266,46 @@ export default function SearchContainer() {
                     </div>
                   ))}
                 </div>
+
               </div>
             )}
+            {/* Information Cards - Start */}
+            {!hasSearched && !showResults && (
+            <div className="mt-8 w-full">
+              <div className="grid gap-4 sm:grid-cols-2">
+                {/* Card 1: Private Web Search */}
+                <Link href="/how-it-works" passHref>
+                  <div className="h-full glass-panel rounded-lg relative overflow-hidden cursor-pointer group transition-all duration-300 hover:scale-105 border border-transparent hover:border-cyan-400/40 hover:shadow-[0_0_18px_rgba(34,211,238,0.3)]">
+                    <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-cyan-400/40 to-transparent"></div>
+                    <div className="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-cyan-400/20 to-transparent"></div>
+                    <div className="p-6 flex items-center space-x-4">
+                      <Globe className="h-12 w-12 text-cyan-400 group-hover:text-cyan-300 transition-colors" />
+                      <div>
+                        <h4 className="font-semibold text-cyan-400 group-hover:text-cyan-300 transition-colors">Private Web Search</h4>
+                        <p className="text-sm text-muted-foreground group-hover:text-foreground/90 transition-colors">Powered by SearXNG, your searches remain completely anonymous. No tracking, no data collection, no advertising profiles. Get comprehensive results from multiple search engines while maintaining your privacy.</p>
+                      </div>
+                    </div>
+                  </div>
+                </Link>
+
+                {/* Card 2: Local AI Intelligence */}
+                <Link href="/documentation" passHref>
+                  <div className="h-full glass-panel rounded-lg relative overflow-hidden cursor-pointer group transition-all duration-300 hover:scale-105 border border-transparent hover:border-fuchsia-400/40 hover:shadow-[0_0_18px_rgba(244,114,182,0.3)]">
+                    <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-fuchsia-400/40 to-transparent"></div>
+                    <div className="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-fuchsia-400/20 to-transparent"></div>
+                    <div className="p-6 flex items-center space-x-4">
+                      <Bot className="h-12 w-12 text-fuchsia-400 group-hover:text-fuchsia-300 transition-colors" />
+                      <div>
+                        <h4 className="font-semibold text-fuchsia-400 group-hover:text-fuchsia-300 transition-colors">Local AI Intelligence</h4>
+                        <p className="text-sm text-muted-foreground group-hover:text-foreground/90 transition-colors">Using Ollama running on your own hardware, get intelligent query optimization and detailed answers without sending any data to third parties. Your conversations stay completely local and private.</p>
+                      </div>
+                    </div>
+                  </div>
+                </Link>
+              </div>
+            </div>
+            )}
+            {/* Information Cards - End */}
 
             {/* Results */}
             {showResults && (
@@ -272,6 +314,8 @@ export default function SearchContainer() {
                   searchResults={searchResults}
                   aiResponse={aiResponse}
                   isAiLoading={isAiLoading}
+                  isOptimizing={isOptimizing} // Pass down isOptimizing
+                  optimizedQuery={optimizedQuery} // Pass down optimizedQuery
                   onRetryAi={retryAi}
                 />
               </div>

@@ -4,13 +4,22 @@ import { useEffect, useState, useRef } from "react"
 import { MarkdownRenderer } from "@/lib/markdown-renderer"
 
 interface AIResponseCardProps {
-  response: string
-  isError?: boolean
-  isStreaming?: boolean
-  onRegenerate?: () => void
+  response: string;
+  isError?: boolean;
+  isAiLoading?: boolean; // Renamed from isStreaming
+  isOptimizing?: boolean;
+  optimizedQuery?: string;
+  onRegenerate?: () => void;
 }
 
-export default function AIResponseCard({ response, isError = false, isStreaming = false, onRegenerate }: AIResponseCardProps) {
+export default function AIResponseCard({
+  response,
+  isError = false,
+  isAiLoading = false, // Renamed from isStreaming
+  isOptimizing = false,
+  optimizedQuery,
+  onRegenerate,
+}: AIResponseCardProps) {
   // Track dark mode
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [copiedToClipboard, setCopiedToClipboard] = useState(false);
@@ -91,15 +100,7 @@ export default function AIResponseCard({ response, isError = false, isStreaming 
       
       {/* Content */}
       <div className="relative">
-        {isError ? (
-          <div className="glass-panel rounded-lg p-6 border border-destructive/30">
-            <div className="flex items-center gap-3 mb-3">
-              <AlertTriangle className="h-5 w-5 text-destructive" />
-              <p className="text-destructive font-medium">Error generating response</p>
-            </div>
-            <p className="text-muted">{response || "Please try again or refine your search query."}</p>
-          </div>
-        ) : isStreaming ? (
+        {isAiLoading ? (
           <div className="space-y-4">
             {/* Streaming header */}
             <div className="flex items-center gap-3 text-primary">
@@ -107,7 +108,13 @@ export default function AIResponseCard({ response, isError = false, isStreaming 
                 <Bot className="h-5 w-5" />
                 <div className="absolute inset-0 bg-primary/30 rounded-full blur-sm animate-pulse"></div>
               </div>
-              <span className="text-sm font-medium">Crystallizing response...</span>
+              <span className="text-sm font-medium">
+                  {isOptimizing && !optimizedQuery
+                    ? "Optimizing search query..."
+                    : isOptimizing && optimizedQuery
+                    ? `Search optimized to: "${optimizedQuery}". Generating summary...`
+                    : "Generating summary..."}
+                </span>
             </div>
             
             {/* Animated loading bars */}
@@ -129,12 +136,20 @@ export default function AIResponseCard({ response, isError = false, isStreaming 
               </div>
             </div>
           </div>
+        ) : isError ? (
+          <div className="glass-panel rounded-lg p-6 border border-destructive/30">
+            <div className="flex items-center gap-3 mb-3">
+              <AlertTriangle className="h-5 w-5 text-destructive" />
+              <p className="text-destructive font-medium">Error generating response</p>
+            </div>
+            <p className="text-muted">{response || "Please try again or refine your search query."}</p>
+          </div>
         ) : (
           <div className="relative">
             <MarkdownRenderer content={response} />
             
-            {/* Show pulsing cursor at the end when streaming */}
-            {isStreaming && (
+            {/* Show pulsing cursor at the end when AI is loading */}
+            {isAiLoading && (
               <span className="inline-block h-4 w-2 bg-primary animate-pulse ml-1 rounded-sm" />
             )}
           </div>
@@ -142,7 +157,7 @@ export default function AIResponseCard({ response, isError = false, isStreaming 
       </div>
       
       {/* Action buttons - always show for successful responses */}
-      {!isStreaming && response && !isError && response.length > 50 && (
+      {!isAiLoading && response && !isError && response.length > 50 && (
         <div className="pt-6 flex justify-end gap-2">
           <Button 
             variant="outline" 
@@ -176,7 +191,7 @@ export default function AIResponseCard({ response, isError = false, isStreaming 
       )}
 
       {/* Regenerate button - only show for errors or short responses */}
-      {!isStreaming && onRegenerate && (isError || !response || response.length < 50) && (
+      {!isAiLoading && onRegenerate && (isError || !response || response.length < 50) && (
         <div className="pt-6 flex justify-end">
           <Button 
             variant="outline" 
@@ -185,7 +200,7 @@ export default function AIResponseCard({ response, isError = false, isStreaming 
             className="glass-panel text-accent hover:text-accent/80 dark:text-accent dark:hover:text-accent/80 border-accent/30 hover:border-accent/50 transition-all duration-300 hover:scale-105 rounded-md"
           >
             <RefreshCw className="h-3 w-3 mr-2" />
-            Recrystallize
+            Regenerate
           </Button>
         </div>
       )}

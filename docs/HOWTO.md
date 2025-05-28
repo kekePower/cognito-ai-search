@@ -1,6 +1,6 @@
 # Cognito AI Search v1.1.0 - Technical Documentation
 
-This document contains detailed technical information about setting up and configuring Cognito AI Search v1.0.x. For a general overview, please see the [README.md](README.md).
+This document contains detailed technical information about setting up and configuring Cognito AI Search v1.0.x. For a general overview, please see the [README.md](../README.md).
 
 ## Table of Contents
 - [Prerequisites](#prerequisites)

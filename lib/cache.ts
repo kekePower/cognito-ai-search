@@ -40,7 +40,7 @@ export function getCachedResult(query: string): CachedResult | null {
 /**
  * Cache search results
  */
-export function cacheResults(query: string, results: SearchResult[], aiResponse: string): void {
+export function cacheResults(query: string, results: SearchResult[], aiResponse: string, optimizedQuery?: string): void {
   if (typeof window === 'undefined') return
   
   try {
@@ -48,7 +48,8 @@ export function cacheResults(query: string, results: SearchResult[], aiResponse:
     const cacheData: CachedResult = {
       results,
       aiResponse,
-      timestamp: Date.now()
+      timestamp: Date.now(),
+      optimizedQuery // Add optimizedQuery to the cached data
     }
     
     localStorage.setItem(cacheKey, JSON.stringify(cacheData))

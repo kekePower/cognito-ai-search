@@ -64,6 +64,7 @@ export interface CachedResult {
   results: SearchResult[]
   aiResponse: string
   timestamp: number
+  optimizedQuery?: string // Added to store the AI-optimized query string
 }
 
 export interface RecentSearch {

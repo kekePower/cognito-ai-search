@@ -130,13 +130,16 @@ export function SearchForm({
           
           <Button 
             type="submit" 
-            className="absolute right-2 top-1/2 transform -translate-y-1/2 rounded-xl h-10 px-4 bg-gradient-to-r from-primary/10 to-primary/20 hover:from-primary/20 hover:to-primary/30 dark:from-primary-dark/10 dark:to-primary-dark/20 dark:hover:from-primary-dark/20 dark:hover:to-primary-dark/30 border-0 shadow-md hover:shadow-lg transition-all duration-300 z-20"
+            className="absolute right-2 top-1/2 transform -translate-y-1/2 rounded-xl h-10 px-4 
+                     bg-primary/20 hover:bg-primary/30 dark:bg-primary-dark/10 dark:hover:bg-primary-dark/20 
+                     border border-primary/30 dark:border-primary-dark/20 
+                     shadow-md hover:shadow-lg transition-all duration-300 z-20"
             disabled={isLoading || !query.trim()}
           >
             {isLoading ? (
-              <Loader2 className="h-4 w-4 animate-spin text-secondary dark:text-white" />
+              <Loader2 className="h-4 w-4 animate-spin text-primary dark:text-white" />
             ) : (
-              <Sparkles className="h-4 w-4 text-primary" />
+              <Sparkles className="h-4 w-4 text-primary dark:text-primary-dark" />
             )}
           </Button>
         </div>
