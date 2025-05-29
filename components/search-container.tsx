@@ -89,7 +89,7 @@ export default function SearchContainer() {
       <div className="container mx-auto px-4 pt-8 pb-12 text-foreground duration-500">
         <div className="w-full max-w-6xl mx-auto">
           {/* Main Search Panel */}
-          <div className={`bg-[hsl(var(--card))] dark:bg-[hsl(var(--glass-bg))]/[0.7] rounded-xl shadow-sm border border-border/60 dark:border-white/10 relative overflow-hidden duration-500 ${
+          <div className={`glass-panel rounded-xl shadow-sm border border-border/60 dark:border-white/10 relative overflow-hidden duration-500 ${
             showResults ? 'p-4 mb-6' : 'p-8 mb-8'
           }`}>
             {/* Header with cognito logo */}

@@ -46,14 +46,15 @@ export function SearchResultsContainer({
   return (
     <div className="space-y-8">
       {/* AI Response Section - Matching other cards styling */}
-      <div className="glass-panel rounded-lg p-6 transition-all duration-700">
+      <div className="glass-panel rounded-lg p-6 overflow-visible">
         <div className="flex items-center gap-3 mb-6">
           <div className="p-2 rounded-lg bg-gradient-to-br from-primary/20 to-accent/20 border border-primary/30">
             <Bot className="h-6 w-6 text-cyan-400 drop-shadow-[0_0_8px_rgba(34,211,238,0.8)]" />
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <Diamond className="h-5 w-5 text-cyan-400 drop-shadow-[0_0_4px_rgba(34,211,238,0.6)]" />
+              <Diamond className="h-5 w-5 text-purple-500 dark:text-primary drop-shadow-[0_0_4px_rgba(168,85,247,0.6)]
+                             dark:drop-shadow-[0_0_4px_hsl(var(--primary)/0.6)]" />
               <h3 className="text-xl font-semibold bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">
                 AI Analysis
               </h3>
@@ -100,14 +101,17 @@ export function SearchResultsContainer({
       
       {/* Web Results Section - Matching other cards styling */}
       {searchResults.length > 0 && (
-        <div className="glass-panel rounded-lg p-6 transition-all duration-700">
+        <div className="glass-panel rounded-lg p-6 overflow-visible">
           <div className="flex items-center gap-3 mb-6">
-            <div className="p-2 rounded-lg bg-gradient-to-br from-accent/20 to-primary/20 border border-accent/30">
-              <Globe className="h-6 w-6 text-primary drop-shadow-[0_0_8px_hsl(var(--primary)/0.8)]" />
+            <div className="p-2 rounded-lg bg-gradient-to-br from-accent/20 to-primary/20 border border-accent/30
+                          light:from-purple-500/20 light:to-pink-500/20 light:border-purple-300">
+              <Globe className="h-6 w-6 text-purple-500 dark:text-primary drop-shadow-[0_0_8px_rgba(168,85,247,0.8)]
+                             dark:drop-shadow-[0_0_8px_hsl(var(--primary)/0.8)]" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <Diamond className="h-5 w-5 text-primary drop-shadow-[0_0_4px_hsl(var(--primary)/0.6)]" />
+                <Diamond className="h-5 w-5 text-purple-500 dark:text-primary drop-shadow-[0_0_4px_rgba(168,85,247,0.6)]
+                               dark:drop-shadow-[0_0_4px_hsl(var(--primary)/0.6)]" />
                 <h3 className="text-xl font-semibold bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">
                   Web Results
                 </h3>
@@ -121,7 +125,7 @@ export function SearchResultsContainer({
             </div>
           </div>
           
-          <div className="animate-in fade-in slide-in-from-top-2 duration-500">
+          <div className="animate-in fade-in slide-in-from-top-2 duration-500 overflow-visible">
             <SearchResults results={searchResults} />
           </div>
         </div>

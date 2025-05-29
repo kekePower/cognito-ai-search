@@ -60,17 +60,26 @@ export function MarkdownRenderer({ content, isDarkMode = false, className = '' }
           code: CodeComponent,
           // Enhanced heading styles
           h1: ({ children }) => (
-            <h1 className="text-2xl font-bold mb-4 mt-6 first:mt-0 bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent drop-shadow-[0_0_8px_rgba(34,211,238,0.6)]">
+            <h1 className="text-2xl font-bold mb-4 mt-6 first:mt-0 bg-gradient-to-r from-[hsl(var(--neon-cyan))] via-[hsl(var(--neon-magenta))] to-[hsl(var(--neon-blue))] bg-clip-text text-transparent
+                         drop-shadow-[0_0_8px_rgba(34,211,238,0.6)]
+                         dark:drop-shadow-[0_0_8px_rgba(34,211,238,0.6)]
+                         light:drop-shadow-[0_0_8px_rgba(168,85,247,0.6)]">
               {children}
             </h1>
           ),
           h2: ({ children }) => (
-            <h2 className="text-xl font-semibold mb-3 mt-5 text-cyan-300 drop-shadow-[0_0_4px_rgba(34,211,238,0.4)]">
+            <h2 className="text-xl font-semibold mb-3 mt-5 bg-gradient-to-r from-[hsl(var(--neon-cyan))] via-[hsl(var(--neon-magenta))] to-[hsl(var(--neon-blue))] bg-clip-text text-transparent
+                         drop-shadow-[0_0_4px_rgba(34,211,238,0.4)]
+                         dark:drop-shadow-[0_0_4px_rgba(34,211,238,0.4)]
+                         light:drop-shadow-[0_0_4px_rgba(168,85,247,0.4)]">
               {children}
             </h2>
           ),
           h3: ({ children }) => (
-            <h3 className="text-lg font-medium mb-2 mt-4 text-cyan-400/90 drop-shadow-[0_0_4px_rgba(34,211,238,0.3)]">
+            <h3 className="text-lg font-medium mb-2 mt-4 bg-gradient-to-r from-[hsl(var(--neon-cyan))] via-[hsl(var(--neon-magenta))] to-[hsl(var(--neon-blue))] bg-clip-text text-transparent
+                         drop-shadow-[0_0_4px_rgba(34,211,238,0.3)]
+                         dark:drop-shadow-[0_0_4px_rgba(34,211,238,0.3)]
+                         light:drop-shadow-[0_0_4px_rgba(168,85,247,0.3)]">
               {children}
             </h3>
           ),

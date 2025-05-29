@@ -16,7 +16,7 @@ export class MarkdownPDFGenerator {
   private pageHeight: number;
   private margin: number = 20;
   private maxWidth: number;
-  private yPosition: number = 30;
+  private yPosition: number = 20;
   private inCodeBlock: boolean = false;
   private codeLang: string = '';
   private baseFont: string = 'helvetica';
@@ -403,37 +403,37 @@ export class MarkdownPDFGenerator {
     let contentAdded = false;
 
     if (headerText) {
-      this.doc.setFontSize(16);
+      this.doc.setFontSize(12);
       this.doc.setFont('helvetica', 'bold');
       this.doc.setTextColor(0, 80, 150); // Dark blue
       const headerWidth = this.doc.getTextWidth(headerText);
       this.doc.text(headerText, (this.pageWidth - headerWidth) / 2, currentY);
-      currentY += 10; // Space after header text
+      currentY += 6; // Space after header text
       contentAdded = true;
     } else if (title && !headerText) { // Fallback to title if no specific headerText
-      this.doc.setFontSize(16);
+      this.doc.setFontSize(12);
       this.doc.setFont('helvetica', 'bold');
       this.doc.setTextColor(0, 80, 150); // Dark blue
       const titleWidth = this.doc.getTextWidth(title);
       this.doc.text(title, (this.pageWidth - titleWidth) / 2, currentY);
-      currentY += 10; // Space after title
+      currentY += 6; // Space after title
       contentAdded = true;
     }
 
     if (includeTimestamp) {
-      this.doc.setFontSize(9);
+      this.doc.setFontSize(8);
       this.doc.setFont('helvetica', 'normal');
       this.doc.setTextColor(120, 120, 120); // Gray
       const timestamp = `Generated: ${new Date().toLocaleString()}`;
       const timestampWidth = this.doc.getTextWidth(timestamp);
       const timestampX = (this.pageWidth - timestampWidth) / 2;
       this.doc.text(timestamp, timestampX, currentY);
-      currentY += 7; // Space after timestamp text itself
+      currentY += 5; // Space after timestamp text itself
       contentAdded = true; // Timestamp itself is content
     }
 
     if (contentAdded) {
-      currentY += 5; // Add 5 units of padding if any header content was rendered
+      currentY += 3; // Add 3 units of padding if any header content was rendered
       this.yPosition = currentY; // Update main yPosition
     }
     return contentAdded;

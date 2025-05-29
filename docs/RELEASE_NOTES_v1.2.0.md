@@ -35,6 +35,20 @@ Cognito AI Search v1.2.0 represents a major evolution in our AI-powered search p
 - **Visual Consistency**: Matched styling between Web Results and AI Analysis sections with cyan-to-pink gradients
 - **Recent Search Button**: Added a recent search button to the search interface for easy access to previous searches
 
+#### Light Mode Theme Enhancements (v1.2.0 Update)
+- **Purple/Pink Theme**: Transitioned light mode from cyan/blue to purple/pink color scheme for improved aesthetics
+- **Site Header Transparency**: Fixed glass panel transparency effect in light mode for consistent visual experience
+- **Icon Color Updates**: Updated all icons (Globe, Diamond, Sparkles) to purple-500 in light mode with appropriate glow effects
+- **Gradient Consistency**: Applied matching gradient effects to AI Response headers and Cognito AI pill
+- **Markdown Headers**: Enhanced h1, h2, h3 headers with gradient text effects matching the site header
+- **Web Results Card**: Restored Globe icon color with purple/pink theming and updated background gradients
+
+#### PDF Generation Improvements
+- **Compact Headers**: Reduced PDF header font size from 16 to 12 for better content focus
+- **Optimized Spacing**: Decreased spacing around headers and timestamps for more content per page
+- **Top Positioning**: Moved headers closer to page top for better space utilization
+- **Professional Layout**: Enhanced overall PDF appearance with improved typography hierarchy
+
 ### Advanced Caching & Performance
 
 #### Intelligent Caching System
