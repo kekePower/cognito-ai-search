@@ -1,6 +1,6 @@
 # Cognito AI Search v1.2.0 Release Notes
 
-**Release Date:** May 26, 2025  
+**Release Date:** May 30, 2025  
 **Version:** 1.2.0  
 **Previous Version:** 1.1.0
 
@@ -8,7 +8,7 @@
 
 ## Release Overview
 
-Cognito AI Search v1.2.0 represents a major evolution in our AI-powered search platform, delivering significant improvements in user experience, performance, architecture, and developer productivity. This release includes comprehensive UI enhancements, advanced caching systems, modular architecture, and extensive optimization efforts that make the platform faster, more maintainable, and more user-friendly.
+Cognito AI Search v1.2.0 represents a major evolution in our AI-powered search platform, delivering significant improvements in user experience, performance, architecture, and developer productivity. This release includes comprehensive UI enhancements, advanced caching systems, modular architecture, extensive optimization efforts, and crucial bug fixes that make the platform faster, more maintainable, and more user-friendly.
 
 ---
 
@@ -25,23 +25,31 @@ Cognito AI Search v1.2.0 represents a major evolution in our AI-powered search p
 
 #### Enhanced Search Interface
 - **Crystalline Search Form**: Sharp angular design with neon border effects and hover animations
-- **Feature Panels**: Redesigned "Private Web Search" and "Local AI Intelligence" panels with unique polygon shapes
-- **Interactive Suggestions**: 100 new AI-focused search suggestions organized into 16 technical categories
+- **Feature Panels**: Redesigned "Private Web Search" and "Local AI Intelligence" panels with unique polygon shapes and crystalline styling
+- **Interactive Suggestions**: 200 new AI-focused search suggestions organized into 16 technical categories
 - **Improved Loading States**: Better visual feedback with branded loading indicators
 - **Responsive Design**: Optimized layouts for mobile, tablet, and desktop experiences
 - **Search Button Refinements**: Fixed search button styling with transparent backgrounds in both light and dark modes
-- **Icon Styling**: Removed cyan drop shadows from search icons for cleaner appearance
+- **Icon Styling**: Enhanced icon styling with proper neon colors and glow effects
 - **Gradient Typography**: Applied consistent gradient styling to section headings (Web Results, AI Analysis)
 - **Visual Consistency**: Matched styling between Web Results and AI Analysis sections with cyan-to-pink gradients
-- **Recent Search Button**: Added a recent search button to the search interface for easy access to previous searches
+- **Information Cards**: Re-added and enhanced "Private Web Search" and "Local AI Intelligence" cards with proper transparency and crystalline design
 
-#### Light Mode Theme Enhancements (v1.2.0 Update)
-- **Purple/Pink Theme**: Transitioned light mode from cyan/blue to purple/pink color scheme for improved aesthetics
+#### Advanced Theme System
+- **Dual Theme Support**: Beautiful light mode with warm cream tones and enhanced dark mode with neon aesthetics
+- **Light Mode Enhancements**: Warm cream background (not pure white) with purple/pink accent scheme
+- **Dark Mode Perfection**: Preserved the perfect dark mode configuration with cyan/magenta neon effects
 - **Site Header Transparency**: Fixed glass panel transparency effect in light mode for consistent visual experience
-- **Icon Color Updates**: Updated all icons (Globe, Diamond, Sparkles) to purple-500 in light mode with appropriate glow effects
-- **Gradient Consistency**: Applied matching gradient effects to AI Response headers and Cognito AI pill
-- **Markdown Headers**: Enhanced h1, h2, h3 headers with gradient text effects matching the site header
-- **Web Results Card**: Restored Globe icon color with purple/pink theming and updated background gradients
+- **Cross-Browser Compatibility**: Firefox-specific fixes ensuring consistent appearance across all browsers
+- **Theme Switching**: Seamless transitions between light and dark modes
+
+#### Visual Polish & Refinements
+- **Sparkles Icon**: Replaced brain emoji with modern AI-appropriate Sparkles icon from lucide-react
+- **Vibrant Colors**: Enhanced icon colors with neon cyan for AI elements and neon magenta for web elements
+- **Text Gradients**: Fixed gradient text rendering with proper separation of icons and text elements
+- **Crystalline Feature Panels**: Sharp angular borders with unique polygon shapes for each panel
+- **Enhanced Glow Effects**: Stronger drop shadows and glow effects for better visual impact
+- **No Page Scrolling**: Optimized spacing to fit all content within viewport without scrolling
 
 #### PDF Generation Improvements
 - **Compact Headers**: Reduced PDF header font size from 16 to 12 for better content focus
@@ -62,17 +70,18 @@ Cognito AI Search v1.2.0 represents a major evolution in our AI-powered search p
 - **Bundle Size Reduction**: Removed 38 unused UI components (68% reduction)
 - **Dependency Cleanup**: Eliminated 31 unused dependencies
 - **Code Splitting**: Better module organization for improved loading performance
+- **Types Directory Cleanup**: Removed 4 duplicate type files with 115 lines of redundant code
 
 ### Modular Architecture Overhaul
 
 #### API Layer Restructuring
 - **Centralized Types**: New `lib/api/types.ts` with comprehensive TypeScript interfaces
 - **Configuration Management**: Enhanced `lib/api/config.ts` with environment validation
-- **Ollama Integration**: Dedicated `lib/api/ollama.ts` module for AI operations
+- **Ollama Integration**: Dedicated `lib/api/ollama.ts` module for AI operations with unconditional 'think: false' setting
 - **SearXNG Integration**: Specialized `lib/api/searxng.ts` module for search operations
 
 #### Component Modularization
-- **Search Suggestions Module**: Complete refactoring into self-contained module structure
+- **Search Suggestions Module**: Complete refactoring into self-contained module structure (`modules/suggestions/`)
 - **Reusable UI Components**: Created 9 new abstracted components for common patterns
 - **Custom Hooks**: Enhanced React hooks for search state management and suggestions
 - **Clean Architecture**: Proper separation of concerns and dependency management
@@ -95,10 +104,12 @@ Cognito AI Search v1.2.0 represents a major evolution in our AI-powered search p
 - **Custom Styling**: Branded PDF design with consistent styling and professional appearance
 
 #### Intelligent Error Handling
+- **Clean Error System**: Completely redesigned error handling that eliminates redundant UI elements
+- **Contextual Error Messages**: Configuration errors appear below search input with clear guidance
 - **AI Retry Functionality**: Added "Retry" button for failed AI requests
-- **Smart Error Detection**: Automatic detection of AI error patterns
+- **Smart Error Detection**: Automatic detection of AI error patterns and configuration issues
 - **Graceful Degradation**: Better handling of network and server issues
-- **User-Friendly Messages**: Improved error messaging and recovery options
+- **Professional Styling**: Error messages with proper styling and clear recovery options
 
 ### Comprehensive Documentation
 
@@ -113,6 +124,35 @@ Cognito AI Search v1.2.0 represents a major evolution in our AI-powered search p
 - **Technical Details**: Collapsible sections for advanced users
 - **Visual Hierarchy**: Better organization with icons, colors, and responsive design
 - **Progressive Disclosure**: Information layered from basic to advanced
+
+---
+
+## Critical Bug Fixes
+
+### Hydration & Rendering Issues
+- **Fixed Hydration Mismatch**: Eliminated `Math.random()` in skeleton loading causing server/client content mismatches
+- **Deterministic Skeleton Widths**: Replaced random widths with deterministic pattern (120px, 140px, 160px, 180px)
+- **Consistent Rendering**: No more React hydration warnings in console
+- **Text Readjustment Fix**: Eliminated annoying text readjustment in AI response cards after streaming completion
+
+### Cross-Browser Compatibility
+- **Firefox Compatibility**: Comprehensive fixes for Firefox-based browsers (including Zen browser)
+- **Colored Pills**: Enhanced vibrant colors in light mode for better visibility
+- **Search Interface**: Fixed dark blue/gray backgrounds to clean white in Firefox
+- **Call-to-Action Section**: Corrected purple/lavender gradient to clean blue gradient
+- **Browser Caching Issues**: Documented aggressive CSS caching in Zen browser and provided solutions
+
+### Environment & Configuration
+- **Environment Variables**: Fixed API failures when using Next.js standalone mode
+- **Docker IPv6 Support**: Enhanced IPv6 configuration for Docker deployments
+- **Build Configuration**: Removed problematic standalone output mode
+- **API Integration**: Resolved issues with SEARXNG_API_URL and OLLAMA_API_URL loading
+
+### UI/UX Improvements
+- **Markdown Formatting**: Fixed numbered lists and spacing issues from AI models like deepseek-r1
+- **Search Results Colors**: Enhanced light mode visibility with better color contrast
+- **Page Scrolling**: Eliminated unnecessary scrolling by optimizing spacing throughout the interface
+- **Loading States**: Fixed inconsistent loading indicators and skeleton animations
 
 ---
 
@@ -194,67 +234,26 @@ Cognito AI Search v1.2.0 represents a major evolution in our AI-powered search p
 
 ---
 
-## API & Backend Improvements
+## Performance Metrics
 
-### Search API Enhancements
+### Build & Bundle Improvements
+- **Build Time**: Reduced from 4.0s to 2.0s (50% improvement)
+- **Bundle Size**: Significant reduction through dependency cleanup
+- **Component Count**: Reduced from 57 to 19 UI components (68% reduction)
+- **Dependencies**: Removed 31 unused packages
+- **Code Cleanup**: Eliminated 115 lines of duplicate type definitions
 
-#### SearXNG Integration
-- **Improved Error Handling**: Better handling of search engine failures
-- **Response Optimization**: Enhanced result parsing and formatting
-- **Performance Tuning**: Optimized search request handling
-- **Privacy Features**: Enhanced anonymization and data protection
+### Runtime Performance
+- **Page Load**: Improved initial page load times
+- **Search Response**: Faster search result rendering
+- **Cache Hit Rate**: Better cache utilization and hit rates
+- **Memory Usage**: Optimized memory consumption
 
-#### Ollama AI Integration
-- **Query Optimization**: Improved AI query enhancement capabilities
-- **Response Generation**: Better AI analysis and summary generation
-- **Error Recovery**: Enhanced handling of AI service failures
-- **Performance**: Optimized AI request processing
-
-### Caching & Storage
-
-#### Enhanced Caching Layer
-- **Expiration Management**: Automatic cleanup of expired cache entries
-- **Storage Efficiency**: Optimized data structures for better performance
-- **Cache Invalidation**: Smart refresh mechanisms for stale data
-- **Memory Management**: Better handling of browser storage limits
-
-#### Data Persistence
-- **Recent Searches**: Persistent storage of user search history
-- **User Preferences**: Enhanced storage of user settings and preferences
-- **Session Management**: Better handling of user sessions and state
-- **Data Migration**: Smooth migration of existing user data
-
----
-
-## User Experience Improvements
-
-### Search Interface
-
-#### Enhanced Search Form
-- **Real-Time Suggestions**: Dynamic search suggestions with 100 AI-focused topics
-- **Loading States**: Better visual feedback during search operations
-- **Error Handling**: Improved error messages and recovery options
-- **Keyboard Navigation**: Enhanced accessibility and keyboard shortcuts
-
-#### Results Display
-- **Improved Layout**: Better organization of search results and AI analysis
-- **Loading Indicators**: Branded loading animations with progress feedback
-- **Error Recovery**: Retry functionality for failed AI requests
-- **Responsive Design**: Optimized layouts for all device sizes
-
-### Navigation & Interaction
-
-#### Page Navigation
-- **Client-Side Routing**: Smooth transitions between pages
-- **Back Button**: Consistent navigation patterns throughout the app
-- **Breadcrumbs**: Clear indication of current location and navigation path
-- **Deep Linking**: Proper URL handling for search queries and results
-
-#### Interactive Elements
-- **Hover Effects**: Subtle animations and feedback on interactive elements
-- **Click Feedback**: Clear visual confirmation of user actions
-- **Loading States**: Comprehensive loading indicators for all async operations
-- **Error Boundaries**: Graceful handling of component errors
+### User Experience Metrics
+- **Time to Interactive**: Faster initial page interactivity
+- **Search Latency**: Reduced time from query to results
+- **Error Recovery**: Faster recovery from failed requests
+- **Navigation Speed**: Smoother page transitions
 
 ---
 
@@ -274,36 +273,6 @@ Cognito AI Search v1.2.0 represents a major evolution in our AI-powered search p
 - **HTTPS Enforcement**: Proper handling of secure connections
 - **Content Security**: Enhanced content security policies
 
-### Infrastructure Security
-
-#### Self-Hosted Benefits
-- **Complete Control**: Full control over data and infrastructure
-- **No External Dependencies**: Reduced reliance on third-party services
-- **Audit Trail**: Better logging and monitoring capabilities
-- **Compliance**: Enhanced support for privacy regulations
-
----
-
-## Performance Metrics
-
-### Build & Bundle Improvements
-- **Build Time**: Reduced from 4.0s to 2.0s (50% improvement)
-- **Bundle Size**: Significant reduction through dependency cleanup
-- **Component Count**: Reduced from 57 to 19 UI components (68% reduction)
-- **Dependencies**: Removed 31 unused packages
-
-### Runtime Performance
-- **Page Load**: Improved initial page load times
-- **Search Response**: Faster search result rendering
-- **Cache Hit Rate**: Better cache utilization and hit rates
-- **Memory Usage**: Optimized memory consumption
-
-### User Experience Metrics
-- **Time to Interactive**: Faster initial page interactivity
-- **Search Latency**: Reduced time from query to results
-- **Error Recovery**: Faster recovery from failed requests
-- **Navigation Speed**: Smoother page transitions
-
 ---
 
 ## Migration & Compatibility
@@ -314,7 +283,7 @@ Cognito AI Search v1.2.0 represents a major evolution in our AI-powered search p
 - **Environment Variables**: New configuration options available
 
 ### Migration Support
-- **Migration Guide**: Comprehensive documentation for upgrading from v1.0.0
+- **Migration Guide**: Comprehensive documentation for upgrading from v1.1.0
 - **Backward Compatibility**: Most user-facing features remain compatible
 - **Data Migration**: Automatic migration of cached data and preferences
 - **Configuration**: Enhanced configuration options with sensible defaults
@@ -324,34 +293,6 @@ Cognito AI Search v1.2.0 represents a major evolution in our AI-powered search p
 2. **Update Dependencies**: Run `pnpm install` to update packages
 3. **Configuration**: Review and update environment variables
 4. **Testing**: Verify functionality with your specific setup
-
----
-
-## Bug Fixes
-
-### Search Functionality
-- **Fixed**: Overlapping text issues in PDF generation
-- **Fixed**: Timeout issues with complex Markdown content
-- **Fixed**: Cache invalidation problems with recent searches
-- **Fixed**: Loading state inconsistencies in search results
-
-### UI/UX Issues
-- **Fixed**: Layout shifts during loading states
-- **Fixed**: Inconsistent styling across light/dark themes
-- **Fixed**: Mobile responsiveness issues
-- **Fixed**: Accessibility problems with keyboard navigation
-
-### Performance Issues
-- **Fixed**: Memory leaks in search suggestions
-- **Fixed**: Slow build times due to unused dependencies
-- **Fixed**: Cache storage inefficiencies
-- **Fixed**: Component re-rendering issues
-
-### Error Handling
-- **Fixed**: Unhandled promise rejections in API calls
-- **Fixed**: Improper error boundaries in React components
-- **Fixed**: Missing error messages for failed operations
-- **Fixed**: Inconsistent error recovery mechanisms
 
 ---
 
@@ -379,13 +320,13 @@ Cognito AI Search v1.2.0 represents a major evolution in our AI-powered search p
 
 ### Contributing Guidelines
 - **Code Style**: ESLint and Prettier configuration included
-- **Testing**: Component testing infrastructure available
+- **Testing Infrastructure**: Playwright visual regression testing for Storybook stories
 - **Documentation**: Comprehensive component and API documentation
 - **Pull Requests**: Clear guidelines for contributions
 
 ### Technical Stack
 - **Frontend**: Next.js 15, React 18, TypeScript 5
-- **Styling**: Tailwind CSS 3, CSS Variables, Custom Animations
+- **Styling**: Tailwind CSS 4, CSS Variables, Custom Animations
 - **Search**: SearXNG integration for privacy-focused search
 - **AI**: Ollama integration for local AI processing
 - **Deployment**: Docker support, self-hosted infrastructure
@@ -400,56 +341,17 @@ Cognito AI Search v1.2.0 represents a major evolution in our AI-powered search p
 - Testing and feedback on new features
 - Code reviews and optimization suggestions
 
-### Technology Partners
-- **SearXNG**: Privacy-focused search engine integration
-- **Ollama**: Local AI model hosting and processing
-- **Next.js**: React framework for production applications
-- **Tailwind CSS**: Utility-first CSS framework
+### Special Thanks
+- Contributors who helped identify and resolve cross-browser compatibility issues
+- Users who provided feedback on the new design system
+- Community members who tested the performance improvements
 
 ---
 
-## Support & Resources
+## Summary
 
-### Documentation
-- Getting Started: [HOWTO.md](HOWTO.md) - Complete setup and configuration guide
-- Component Guide: [COMPONENT_GUIDE.md](COMPONENT_GUIDE.md) - UI component usage documentation
-- Migration Guide: [MIGRATION_EXAMPLES.md](MIGRATION_EXAMPLES.md) - Upgrade instructions and examples
-- Contributing: [CONTRIBUTING.md](CONTRIBUTING.md) - Development and contribution guidelines
+Cognito AI Search v1.2.0 delivers a transformative update that significantly enhances user experience, performance, and maintainability. With the new holographic shard design system, 50% faster build times, comprehensive bug fixes, and advanced error handling, this release represents a major step forward in providing a truly private, powerful, and polished AI search experience.
 
-### Community
-- **GitHub Issues**: Report bugs and request features
-- **Discussions**: Community support and feature discussions
-- **Documentation**: Comprehensive guides and examples
-- **Examples**: Sample configurations and use cases
+The combination of visual enhancements, performance optimizations, and architectural improvements makes v1.2.0 the most stable and feature-rich version of Cognito AI Search to date.
 
-### Technical Support
-- **Self-Hosted Setup**: Complete deployment documentation
-- **Configuration**: Environment variable and service setup
-- **Troubleshooting**: Common issues and solutions
-- **Performance**: Optimization guides and best practices
-
----
-
-## Looking Ahead
-
-### Roadmap for v1.3.0
-- **Enhanced AI Capabilities**: Multi-modal AI support and advanced analysis
-- **Performance Optimization**: Further caching and speed improvements
-- **Mobile Experience**: Enhanced mobile interface and potential native app
-- **Advanced Features**: Custom AI models and enhanced personalization
-
-### Long-term Vision
-- **Enterprise Features**: Advanced deployment and management tools
-- **API Ecosystem**: Public APIs for third-party integrations
-- **Plugin System**: Extensible architecture for custom functionality
-- **Global Deployment**: Enhanced support for distributed deployments
-
----
-
-**Thank you for using Cognito AI Search v1.2.0!**
-
-For the latest updates, documentation, and community discussions, visit our [GitHub repository](https://github.com/kekePower/cognito-ai-search).
-
----
-
-*Cognito AI Search - Private, AI-Enhanced Search for the Modern Web*
+{{ ... }}

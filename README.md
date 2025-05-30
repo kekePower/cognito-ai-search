@@ -1,18 +1,21 @@
-# 🔍 Cognito AI Search v1.1.0: Your Private Gateway to Information
+# 🔍 Cognito AI Search v1.2.0: Your Private Gateway to Information
 
 Cognito AI Search offers a secure and private way to find information and get answers. It's designed for individuals who value their privacy and want more control over their digital footprint. This tool brings together the power of a local AI assistant and a private web search engine, all running on your own hardware, ensuring your data stays with you.
 
 In an online world where tracking is common, Cognito AI Search provides an alternative. It allows you to explore the web and interact with artificial intelligence without concerns about your search history or personal data being collected or analyzed by third parties.
 
-![Cognito AI Search Screenshot](https://kekepower.com/images/cognito-ai-search-screenshot-inner.jpg "Cognito AI Search Screenshot")
+![Cognito AI Search Screenshot](https://kekepower.com/images/cognito-ai-search-screenshot-1.2.0.png "Cognito AI Search Screenshot")
 
-## ✨ What's New in v1.1.0
+## ✨ What's New in v1.2.0
 
-🎨 **Complete UI/UX Redesign**: Modern interface with gradient animations, dark/light themes, and polished interactions  
-🚀 **Enhanced Performance**: Smart caching, optimized search flow, and faster response times  
-🔍 **Intelligent Search**: AI-powered query optimization and smart search suggestions  
-📱 **Responsive Design**: Beautiful experience across all devices with improved accessibility  
-🛠️ **Robust Architecture**: Modular codebase with custom hooks and enhanced error handling
+🎨 **Holographic Shard Design**: Revolutionary crystalline UI with angular shapes, neon accents, and glass morphism effects  
+🚀 **50% Faster Performance**: Build time reduced from 4.0s to 2.0s with 68% fewer components and optimized dependencies  
+🔍 **Enhanced Search Experience**: 200 AI-focused suggestions, improved error handling, and professional PDF export with LaTeX support  
+📱 **Perfect Cross-Browser Support**: Firefox compatibility fixes and consistent styling across all browsers  
+🛠️ **Modular Architecture**: Complete codebase restructuring with TypeScript enhancements and clean separation of concerns  
+🌈 **Dual Theme Support**: Beautiful light mode with warm cream tones and enhanced dark mode with neon aesthetics  
+⚡ **Advanced Caching**: Intelligent caching system with automatic cleanup and improved performance  
+🎯 **Clean Error Handling**: Contextual error messages with professional styling and clear recovery options
 
 ## What Can Cognito AI Search Do For You?
 
@@ -64,7 +67,8 @@ docker run -d \
 
 **Available Tags:**
 - `kekepower/cognito-ai-search:latest` - Latest stable release
-- `kekepower/cognito-ai-search:1.1.0` - Specific version tags
+- `kekepower/cognito-ai-search:1.2.0` - Current stable version
+- `kekepower/cognito-ai-search:1.1.0` - Previous version
 
 **Key Environment Variables:**
 - `OLLAMA_API_URL` - URL to your Ollama instance
