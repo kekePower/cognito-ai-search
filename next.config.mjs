@@ -38,8 +38,8 @@ const nextConfig = {
     serverActions: {
       allowedOrigins: ['localhost:3000'],
     },
-    // Enable optimized bundle splitting
-    optimizeCss: true,
+    // Disable CSS optimization to avoid critters dependency
+    // optimizeCss: true,
   },
 }
 
