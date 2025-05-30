@@ -1,6 +1,6 @@
-# Cognito AI Search v1.1.0 - Technical Documentation
+# Cognito AI Search v1.2.0 - Technical Documentation
 
-This document contains detailed technical information about setting up and configuring Cognito AI Search v1.0.x. For a general overview, please see the [README.md](../README.md).
+This document contains detailed technical information about setting up and configuring Cognito AI Search v1.2.0. For a general overview, please see the [README.md](../README.md).
 
 ## Table of Contents
 - [Prerequisites](#prerequisites)
@@ -11,14 +11,14 @@ This document contains detailed technical information about setting up and confi
 - [Production Deployment](#production-deployment)
 - [Docker Deployment](#docker-deployment)
 - [IPv6 Support Configuration](#ipv6-support-configuration)
-- [New Features in v1.0.0](#new-features-in-v100)
+- [New Features in v1.2.0](#new-features-in-v120)
 - [Troubleshooting](#troubleshooting)
 
 ## Prerequisites
 
 - Node.js 18+ and npm/yarn/pnpm
 - Self-hosted SearXNG instance (or public instance URL)
-- Ollama installed and running with desired models
+- Ollama v0.9.0+ installed and running with desired models
 - (Optional) Redis for caching (recommended for SearXNG)
 
 ## Environment Setup
@@ -40,10 +40,12 @@ NEXT_PUBLIC_APP_URL=http://localhost:3000
 
 ### Recommended Model Configuration
 
-For optimal performance in v1.0.0, we recommend:
+For optimal performance in v1.2.0, we recommend:
 - **Model**: `phi4-mini:3.8b-q8_0` (fast and efficient)
 - **Max Tokens**: `100` (quick responses)
 - **Alternative**: `mistral` or `llama3` for more detailed responses
+
+**Important**: Ollama version 0.9.0 or higher is required due to the 'think: false' parameter support introduced in this version.
 
 ## SearXNG Configuration
 
@@ -79,27 +81,50 @@ For optimal performance in v1.0.0, we recommend:
 ## Ollama Setup
 
 1. Install Ollama from [ollama.ai](https://ollama.ai/)
-2. Pull your preferred model:
+2. **Ensure you have Ollama v0.9.0 or higher** - check with `ollama --version`
+3. Pull your preferred model:
    ```bash
    ollama pull mistral
    # or
    ollama pull llama3
    ```
-3. Start the Ollama server
+4. Start the Ollama server
+
+**Note**: Cognito AI Search v1.2.0 requires Ollama v0.9.0+ due to the 'think: false' parameter. Older versions are not supported.
 
 ## Development
+
+### Environment Setup
+
+**Important**: Before running any commands, you must set up your environment configuration:
+
+1. Copy the example environment file:
+   ```bash
+   cp env.example .env.local
+   ```
+
+2. Edit `.env.local` with your actual configuration values:
+   ```bash
+   # Required: Update these with your actual service URLs
+   SEARXNG_API_URL=http://your-searxng-instance:port
+   OLLAMA_API_URL=http://your-ollama-instance:11434
+   DEFAULT_OLLAMA_MODEL=phi4-mini:3.8b-q8_0
+   AI_RESPONSE_MAX_TOKENS=100
+   ```
+
+### Development Commands
 
 ```bash
 # Install dependencies
 pnpm install
 
-# Start development server
+# Start development server (requires .env.local)
 pnpm dev
 
-# Build for production
+# Build for production (requires .env.local)
 pnpm build
 
-# Run production server
+# Run production server (requires .env.local)
 pnpm start
 
 # Lint code
@@ -113,12 +138,20 @@ pnpm type-check
 
 ### Building for Production
 
-1. Ensure all dependencies are installed:
+**Important**: Ensure your `.env.local` file is configured before building.
+
+1. Copy and configure environment file (if not already done):
+   ```bash
+   cp env.example .env.local
+   # Edit .env.local with your production values
+   ```
+
+2. Ensure all dependencies are installed:
    ```bash
    pnpm install
    ```
 
-2. Create a production build:
+3. Create a production build:
    ```bash
    pnpm build
    ```
@@ -198,7 +231,7 @@ docker run -d \
 
 **Available Docker Hub Tags:**
 - `kekepower/cognito-ai-search:latest` - Latest stable release
-- `kekepower/cognito-ai-search:1.1.0` - Specific version tags
+- `kekepower/cognito-ai-search:1.2.0` - Specific version tags
 
 **Environment Variables:**
 - `OLLAMA_API_URL`: URL for your Ollama instance
@@ -246,7 +279,7 @@ docker run -d -p 3000:3000 \
   -e AI_RESPONSE_MAX_TOKENS=1200 \
   -e NODE_ENV=production \
   -e PORT=3000 \
-  cognito-ai-search
+  cognito-ai-search # Your built image name
 ```
 
 -   `-d`: Run the container in detached mode (in the background).
@@ -395,37 +428,42 @@ Once configured and running, you can access Cognito AI Search using the IPv6 add
 
 Replace `<ipv6_address_of_host>` with the actual IPv6 address.
 
-## New Features in v1.0.x
+## New Features in v1.2.0
 
-### 🎨 Modern UI/UX
-- **Dark/Light Theme**: Automatic theme detection with manual toggle
-- **Gradient Animations**: Beautiful input field animations (single run, not looping)
-- **Glass Morphism**: Modern backdrop blur effects throughout the interface
-- **Responsive Design**: Optimized for all device sizes
+### 🎨 Holographic Shard Design System
+- **Crystalline Aesthetics**: Sharp angular components with polygon clip-paths
+- **Neon Color Scheme**: Cyan, magenta, and blue neon accents with dynamic glow effects
+- **Glass Morphism**: Enhanced transparency effects with backdrop blur
+- **Dual Theme Support**: Beautiful light mode with warm cream tones and enhanced dark mode
 
-### 🚀 Enhanced Performance
-- **Smart Caching**: Search results cached locally for 24 hours
-- **Query Optimization**: AI-powered search query enhancement
-- **Async Loading**: Search results display immediately, AI responses load in background
-- **Health Checks**: Automatic service availability verification
+### 🚀 Performance & Architecture
+- **50% Faster Builds**: Reduced build time from 4.0s to 2.0s
+- **Component Optimization**: Removed 38 unused UI components (68% reduction)
+- **Dependency Cleanup**: Eliminated 31 unused dependencies
+- **Modular Architecture**: Complete API layer restructuring with centralized types
 
-### 🔍 Intelligent Search Features
-- **Search Suggestions**: Dynamic suggestions with refresh capability
-- **Recent Searches**: Persistent search history with individual removal
-- **Optimized Queries**: AI enhances search terms for better results
-- **Fallback Mechanisms**: Graceful degradation when services are unavailable
+### 🔍 Enhanced Search Experience
+- **Next.js 15 Forms**: Modern form handling with better performance
+- **PDF Export**: Professional PDF generation with LaTeX support
+- **200 AI Suggestions**: Organized into 16 technical categories
+- **Intelligent Error Handling**: Clean error system with contextual messages
 
 ### 🛠️ Technical Improvements
-- **Custom Hooks**: `useSearch` and `useSearchSuggestions` for state management
-- **Modular API**: Separated concerns with dedicated API utilities
-- **TypeScript**: Full type safety throughout the application
-- **Error Handling**: Comprehensive error management with user-friendly messages
+- **TypeScript Excellence**: Comprehensive type safety across all modules
+- **Ollama Integration**: Enhanced with 'think: false' parameter (requires v0.9.0+)
+- **Caching Strategy**: Intelligent caching with expiration and cleanup
+- **Cross-Browser Compatibility**: Firefox-specific fixes for consistent appearance
 
-### 📱 User Experience
-- **Loading States**: Clear visual feedback during operations
-- **Smooth Transitions**: Polished animations and micro-interactions
-- **Accessibility**: Improved keyboard navigation and screen reader support
-- **Mobile Optimized**: Touch-friendly interface with responsive design
+### 📱 User Experience Enhancements
+- **Sparkles Icon**: Modern AI-appropriate branding
+- **Vibrant Colors**: Enhanced visibility in light mode
+- **No Page Scrolling**: Optimized spacing for viewport-contained content
+- **Visual Polish**: Fixed hydration issues and text readjustment problems
+
+### 🔒 Security & Privacy
+- **No Tracking**: Continued commitment to zero tracking and data collection
+- **Local Processing**: All AI processing remains on local infrastructure
+- **Enhanced Validation**: Improved input validation and secure error handling
 
 ## Troubleshooting
 
@@ -438,6 +476,7 @@ Replace `<ipv6_address_of_host>` with the actual IPv6 address.
 
 2. **Ollama connection issues**
    - Make sure Ollama server is running
+   - **Verify you have Ollama v0.9.0 or higher** - check with `ollama --version`
    - Verify the API URL and port in your environment variables
    - Check if the specified model is downloaded
 
