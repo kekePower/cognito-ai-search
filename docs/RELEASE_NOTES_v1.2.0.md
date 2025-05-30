@@ -281,6 +281,7 @@ Cognito AI Search v1.2.0 represents a major evolution in our AI-powered search p
 - **Component API**: Some internal component APIs have changed (see migration guide)
 - **CSS Classes**: Updated Tailwind class names for consistency
 - **Environment Variables**: New configuration options available
+- **Ollama Version Requirement**: Minimum Ollama version 0.9.0 required due to 'think: false' parameter support
 
 ### Migration Support
 - **Migration Guide**: Comprehensive documentation for upgrading from v1.1.0
@@ -291,8 +292,9 @@ Cognito AI Search v1.2.0 represents a major evolution in our AI-powered search p
 ### Upgrade Path
 1. **Backup Data**: Export any important search history or preferences
 2. **Update Dependencies**: Run `pnpm install` to update packages
-3. **Configuration**: Review and update environment variables
-4. **Testing**: Verify functionality with your specific setup
+3. **Update Ollama**: Ensure Ollama is version 0.9.0 or higher
+4. **Configuration**: Review and update environment variables
+5. **Testing**: Verify functionality with your specific setup
 
 ---
 
@@ -302,11 +304,13 @@ Cognito AI Search v1.2.0 represents a major evolution in our AI-powered search p
 - **Search Engine Limits**: Performance depends on SearXNG instance configuration
 - **AI Model Constraints**: Response quality depends on local Ollama model capabilities
 - **Browser Storage**: Limited by browser local storage quotas
+- **Ollama Compatibility**: No backward compatibility for Ollama versions below 0.9.0
 
 ### Planned Improvements
 - **Advanced AI Features**: Multi-modal AI support and enhanced analysis
 - **Performance Optimization**: Further caching and optimization improvements
 - **Mobile App**: Native mobile application development
+- **Ollama Backward Compatibility**: Consider adding version detection and fallback support in future releases
 
 ---
 
@@ -328,7 +332,7 @@ Cognito AI Search v1.2.0 represents a major evolution in our AI-powered search p
 - **Frontend**: Next.js 15, React 18, TypeScript 5
 - **Styling**: Tailwind CSS 4, CSS Variables, Custom Animations
 - **Search**: SearXNG integration for privacy-focused search
-- **AI**: Ollama integration for local AI processing
+- **AI**: Ollama integration for local AI processing (minimum version 0.9.0)
 - **Deployment**: Docker support, self-hosted infrastructure
 
 ---
