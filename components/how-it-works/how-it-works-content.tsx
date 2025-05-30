@@ -251,20 +251,20 @@ export function HowItWorksContent() {
               <div className="flex items-center gap-3 mb-3">
                 <Sparkles className="h-6 w-6 text-blue-600 dark:text-blue-400" />
                 <SectionHeader
-                  title="Smart Suggestions"
+                  title="Holographic Design System"
                   size="md"
                   className="mb-0"
                 />
               </div>
               <p className="text-sm mb-3">
-                Get inspired with 6 curated search suggestions from our collection of 200+ diverse AI-related topics. 
-                Each suggestion is carefully crafted to help you explore fascinating areas of artificial intelligence.
+                Experience the future with our crystalline holographic interface featuring sharp angular components, 
+                neon color schemes, and glass morphism effects that create an immersive search environment.
               </p>
               <ul className="space-y-1 text-sm">
-                <li>• 200+ curated AI topics</li>
-                <li>• 6 suggestions per visit</li>
-                <li>• Covers cutting-edge AI research</li>
-                <li>• Perfect for learning and exploration</li>
+                <li>• Crystalline UI with angular components</li>
+                <li>• Neon cyan/magenta/blue color palette</li>
+                <li>• Glass morphism with backdrop blur</li>
+                <li>• Dynamic glow effects and animations</li>
               </ul>
             </div>
 
@@ -272,20 +272,62 @@ export function HowItWorksContent() {
               <div className="flex items-center gap-3 mb-3">
                 <Zap className="h-6 w-6 text-green-600 dark:text-green-400" />
                 <SectionHeader
-                  title="Polished Interface"
+                  title="Performance Excellence"
                   size="md"
                   className="mb-0"
                 />
               </div>
               <p className="text-sm mb-3">
-                Every detail has been carefully crafted for a premium experience. From smooth animations to 
-                pixel-perfect alignment, the interface feels responsive and professional.
+                Built for speed with 50% faster builds, optimized codebase with 68% fewer components, 
+                and enhanced caching for lightning-fast search responses.
               </p>
               <ul className="space-y-1 text-sm">
-                <li>• Smooth fade-in transitions</li>
-                <li>• Elegant loading animations</li>
-                <li>• Responsive design</li>
-                <li>• Dark/light theme support</li>
+                <li>• 50% faster builds (4.0s → 2.0s)</li>
+                <li>• 68% reduction in UI components</li>
+                <li>• Enhanced caching system</li>
+                <li>• Optimized request handling</li>
+              </ul>
+            </div>
+            
+            <div className="p-6 bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 rounded-lg border border-purple-200 dark:border-purple-800">
+              <div className="flex items-center gap-3 mb-3">
+                <Database className="h-6 w-6 text-purple-600 dark:text-purple-400" />
+                <SectionHeader
+                  title="Advanced Features"
+                  size="md"
+                  className="mb-0"
+                />
+              </div>
+              <p className="text-sm mb-3">
+                Export search results to PDF with LaTeX support, enjoy 200+ AI-focused search suggestions, 
+                and experience seamless Next.js 15 form integration.
+              </p>
+              <ul className="space-y-1 text-sm">
+                <li>• PDF export with LaTeX formatting</li>
+                <li>• 200+ curated AI search topics</li>
+                <li>• Next.js 15 form integration</li>
+                <li>• Enhanced error handling</li>
+              </ul>
+            </div>
+
+            <div className="p-6 bg-gradient-to-br from-cyan-50 to-teal-50 dark:from-cyan-900/20 dark:to-teal-900/20 rounded-lg border border-cyan-200 dark:border-cyan-800">
+              <div className="flex items-center gap-3 mb-3">
+                <Shield className="h-6 w-6 text-cyan-600 dark:text-cyan-400" />
+                <SectionHeader
+                  title="Cross-Platform Support"
+                  size="md"
+                  className="mb-0"
+                />
+              </div>
+              <p className="text-sm mb-3">
+                Enjoy consistent experience across all browsers with Firefox compatibility fixes, 
+                IPv6 Docker support, and warm cream light mode alongside enhanced dark mode.
+              </p>
+              <ul className="space-y-1 text-sm">
+                <li>• Cross-browser compatibility</li>
+                <li>• IPv6 Docker configuration</li>
+                <li>• Warm cream light mode</li>
+                <li>• Enhanced dark mode with neon effects</li>
               </ul>
             </div>
           </div>
@@ -329,12 +371,14 @@ export function HowItWorksContent() {
                 />
                 <p className="mb-2">
                   Ollama runs large language models locally on your hardware, ensuring your conversations never leave your infrastructure.
+                  <strong className="text-amber-600 dark:text-amber-400"> Requires Ollama v0.9.0+ for compatibility with advanced features.</strong>
                 </p>
                 <ul className="text-sm space-y-1 ml-4">
                   <li>• Supports Llama, Mistral, CodeLlama, and many other models</li>
                   <li>• Runs entirely on your hardware (CPU or GPU)</li>
                   <li>• No internet connection required for AI responses</li>
                   <li>• Models can be customized and fine-tuned</li>
+                  <li>• Uses 'think: false' parameter for optimized responses</li>
                 </ul>
               </div>
               
@@ -347,8 +391,10 @@ export function HowItWorksContent() {
                 <ul className="text-sm space-y-1 ml-4">
                   <li>• <strong>Frontend:</strong> Next.js 15, TypeScript, Tailwind CSS</li>
                   <li>• <strong>Search:</strong> SearXNG metasearch engine</li>
-                  <li>• <strong>AI:</strong> Ollama with local language models</li>
-                  <li>• <strong>Deployment:</strong> Docker, Node.js or static hosting</li>
+                  <li>• <strong>AI:</strong> Ollama v0.9.0+ with local language models</li>
+                  <li>• <strong>Deployment:</strong> Docker with IPv6 support, Node.js or static hosting</li>
+                  <li>• <strong>Performance:</strong> 50% faster builds, optimized component architecture</li>
+                  <li>• <strong>Design:</strong> Holographic shard system with crystalline aesthetics</li>
                 </ul>
               </div>
               

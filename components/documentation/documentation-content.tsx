@@ -75,44 +75,77 @@ export function DocumentationContent() {
           
           <div className="grid md:grid-cols-2 gap-6 mb-8 not-prose">
             <div className="p-6 bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
-              <h3 className="text-lg font-semibold mb-3 text-blue-900 dark:text-blue-100">🎨 Complete UI/UX Redesign</h3>
+              <h3 className="text-lg font-semibold mb-3 text-blue-900 dark:text-blue-100">✨ Holographic Shard Design System</h3>
               <ul className="space-y-2 text-sm text-blue-800 dark:text-blue-200">
-                <li>• Modern interface with gradient animations</li>
-                <li>• Dark/light theme support</li>
-                <li>• Polished interactions and transitions</li>
-                <li>• Pixel-perfect icon and text alignment</li>
+                <li>• Crystalline UI with sharp angular components</li>
+                <li>• Neon color scheme with cyan/magenta/blue accents</li>
+                <li>• Glass morphism with backdrop blur effects</li>
+                <li>• Dynamic glow effects and polygon clip-paths</li>
               </ul>
             </div>
             
             <div className="p-6 bg-gradient-to-br from-green-50 to-blue-50 dark:from-green-900/20 dark:to-blue-900/20 rounded-lg border border-green-200 dark:border-green-800">
-              <h3 className="text-lg font-semibold mb-3 text-green-900 dark:text-green-100">🚀 Enhanced Performance</h3>
+              <h3 className="text-lg font-semibold mb-3 text-green-900 dark:text-green-100">🚀 Performance & Architecture</h3>
               <ul className="space-y-2 text-sm text-green-800 dark:text-green-200">
-                <li>• Smart caching and request deduplication</li>
-                <li>• Optimized search flow</li>
-                <li>• Faster response times</li>
-                <li>• Improved error handling</li>
+                <li>• 50% faster builds (4.0s → 2.0s)</li>
+                <li>• 68% reduction in UI components (57 → 19)</li>
+                <li>• Removed 31 unused dependencies</li>
+                <li>• Enhanced caching and request deduplication</li>
               </ul>
             </div>
             
             <div className="p-6 bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 rounded-lg border border-purple-200 dark:border-purple-800">
-              <h3 className="text-lg font-semibold mb-3 text-purple-900 dark:text-purple-100">🔍 Intelligent Search</h3>
+              <h3 className="text-lg font-semibold mb-3 text-purple-900 dark:text-purple-100">📄 Enhanced Search Experience</h3>
               <ul className="space-y-2 text-sm text-purple-800 dark:text-purple-200">
-                <li>• AI-powered query optimization</li>
-                <li>• 200+ curated search suggestions</li>
-                <li>• Smart search result processing</li>
-                <li>• Enhanced relevance scoring</li>
+                <li>• PDF export with advanced LaTeX support</li>
+                <li>• 200+ AI-focused search suggestions</li>
+                <li>• Next.js 15 Form integration</li>
+                <li>• Clean error handling with retry functionality</li>
               </ul>
             </div>
             
             <div className="p-6 bg-gradient-to-br from-orange-50 to-red-50 dark:from-orange-900/20 dark:to-red-900/20 rounded-lg border border-orange-200 dark:border-orange-800">
-              <h3 className="text-lg font-semibold mb-3 text-orange-900 dark:text-orange-100">🛠️ Robust Architecture</h3>
+              <h3 className="text-lg font-semibold mb-3 text-orange-900 dark:text-orange-100">🔧 Technical Improvements</h3>
               <ul className="space-y-2 text-sm text-orange-800 dark:text-orange-200">
-                <li>• Modular component architecture</li>
-                <li>• Custom React hooks</li>
-                <li>• TypeScript throughout</li>
-                <li>• Comprehensive error boundaries</li>
+                <li>• Ollama 'think: false' parameter support</li>
+                <li>• IPv6 Docker support configuration</li>
+                <li>• Cross-browser compatibility fixes</li>
+                <li>• Modular architecture with TypeScript</li>
               </ul>
             </div>
+            
+            <div className="p-6 bg-gradient-to-br from-cyan-50 to-teal-50 dark:from-cyan-900/20 dark:to-teal-900/20 rounded-lg border border-cyan-200 dark:border-cyan-800">
+              <h3 className="text-lg font-semibold mb-3 text-cyan-900 dark:text-cyan-100">🎨 User Experience</h3>
+              <ul className="space-y-2 text-sm text-cyan-800 dark:text-cyan-200">
+                <li>• Warm cream light mode with crystalline aesthetics</li>
+                <li>• Enhanced dark mode with neon effects</li>
+                <li>• Sparkles icon replacing brain emoji</li>
+                <li>• Eliminated page scrolling with optimized spacing</li>
+              </ul>
+            </div>
+            
+            <div className="p-6 bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-indigo-900/20 dark:to-purple-900/20 rounded-lg border border-indigo-200 dark:border-indigo-800">
+              <h3 className="text-lg font-semibold mb-3 text-indigo-900 dark:text-indigo-100">🔒 Security & Privacy</h3>
+              <ul className="space-y-2 text-sm text-indigo-800 dark:text-indigo-200">
+                <li>• Enhanced input validation and error handling</li>
+                <li>• Secure storage with automatic cleanup</li>
+                <li>• No tracking, complete local processing</li>
+                <li>• Improved content security policies</li>
+              </ul>
+            </div>
+          </div>
+          
+          <div className="bg-amber-50 dark:bg-amber-900/20 rounded-lg p-6 border border-amber-200 dark:border-amber-800 mb-6">
+            <h3 className="text-lg font-semibold mb-3 text-amber-900 dark:text-amber-100 flex items-center gap-2">
+              <span className="text-xl">⚠️</span>
+              Breaking Changes in v1.2.0
+            </h3>
+            <ul className="space-y-2 text-sm text-amber-800 dark:text-amber-200">
+              <li>• <strong>Ollama v0.9.0+ Required:</strong> Due to 'think: false' parameter support</li>
+              <li>• <strong>Environment Variables:</strong> New configuration options available</li>
+              <li>• <strong>Component APIs:</strong> Some internal component APIs have changed</li>
+              <li>• <strong>CSS Classes:</strong> Updated Tailwind class names for consistency</li>
+            </ul>
           </div>
         </section>
 
@@ -131,7 +164,7 @@ export function DocumentationContent() {
             <ul className="space-y-2">
               <li>• <strong>Node.js 18+</strong> and npm/yarn/pnpm</li>
               <li>• <strong>SearXNG instance</strong> (self-hosted or public URL)</li>
-              <li>• <strong>Ollama</strong> installed with desired AI models</li>
+              <li>• <strong>Ollama v0.9.0+</strong> installed with desired AI models</li>
               <li>• <strong>Redis</strong> (optional, recommended for caching)</li>
             </ul>
           </div>

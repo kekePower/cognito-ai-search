@@ -301,15 +301,21 @@ Cognito AI Search v1.2.0 represents a major evolution in our AI-powered search p
 ## Known Issues & Limitations
 
 ### Current Limitations
+- **Light Mode Implementation**: Light mode is partially implemented with warm cream aesthetics but may have inconsistencies across some components. Full light mode completion is planned for v1.2.1
 - **Search Engine Limits**: Performance depends on SearXNG instance configuration
 - **AI Model Constraints**: Response quality depends on local Ollama model capabilities
 - **Browser Storage**: Limited by browser local storage quotas
 - **Ollama Compatibility**: No backward compatibility for Ollama versions below 0.9.0
 
+### Known Bugs
+- **Light Mode Styling**: Some UI components may not display optimally in light mode, particularly in complex nested components
+- **Theme Transition**: Occasional flash during theme switching on slower devices
+- **Firefox Light Mode**: Minor color inconsistencies in Firefox light mode for certain gradient elements
+
 ### Planned Improvements
+- **Light Mode Completion**: Full light mode implementation with comprehensive testing across all components (targeted for v1.2.1)
 - **Advanced AI Features**: Multi-modal AI support and enhanced analysis
 - **Performance Optimization**: Further caching and optimization improvements
-- **Mobile App**: Native mobile application development
 - **Ollama Backward Compatibility**: Consider adding version detection and fallback support in future releases
 
 ---
