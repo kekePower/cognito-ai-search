@@ -45,9 +45,9 @@ export function getApiConfig(): ApiConfig {
   if (isNaN(ollamaTimeoutMs) || ollamaTimeoutMs <= 0) {
     console.warn(
       `Invalid or missing OLLAMA_TIMEOUT_MS (value: "${ollamaTimeoutMsInput}"). ` +
-      `Using default: 120000 ms.`
+      `Using default: 180000 ms.`
     );
-    ollamaTimeoutMs = 120000;
+    ollamaTimeoutMs = 180000;
   }
 
   // All required string variables are guaranteed to be non-null and non-empty here

@@ -46,8 +46,6 @@ things to do in Paris
 Constraint (for internal processing):
 
     Optimized queries should not exceed 32 words.
-    
-/no_think
 
 User Query: "{USER_QUERY}"
 Your Output:`
@@ -186,7 +184,8 @@ export async function generateAIResponse(
         temperature: 0.7,
         top_p: 0.9,
       },
-    }
+      think: false, // Always disable thinking indicator
+    };
 
     const controller = new AbortController()
     const timeoutId = setTimeout(() => controller.abort(), timeout)

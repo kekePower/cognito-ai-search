@@ -19,6 +19,7 @@ type OllamaRequest = {
   prompt: string
   stream: boolean
   options: OllamaRequestOptions
+  think?: boolean; // Add think property for controlling model's thought process output
 }
 
 const OPTIMIZATION_PROMPT_TEMPLATE = `You are an AI Search Query Optimization Engine. Your sole task is to process an input search query and return a single, effective search query string.
@@ -67,8 +68,6 @@ things to do in Paris
 Constraint (for internal processing):
 
     Optimized queries should not exceed 32 words.
-    
-/no_think
 
 User Query: "{USER_QUERY}"
 Your Output:`
@@ -112,7 +111,12 @@ async function getOptimizedQuery(
   ollamaModel: string,
   timeoutMs: number,
 ): Promise<string> {
-  const prompt = OPTIMIZATION_PROMPT_TEMPLATE.replace("{USER_QUERY}", originalQuery)
+  let prompt = OPTIMIZATION_PROMPT_TEMPLATE.replace("{USER_QUERY}", originalQuery)
+
+  // Special emphasized instructions for deepseek model family
+  if (ollamaModel.startsWith('deepseek-r1')) {
+    prompt += "\n\nIMPORTANT: Your response MUST be a SINGLE line. It MUST NOT exceed 32 words. ONLY the optimized query string. NO other text, NO explanations, NO thought process. SINGLE LINE, MAX 32 WORDS. VIOLATING THIS WILL RESULT IN FAILURE.";
+  }
 
   try {
     const ollamaRequestBody: OllamaRequest = {
@@ -120,10 +124,11 @@ async function getOptimizedQuery(
       prompt: prompt,
       stream: false,
       options: {
-        num_predict: 60, // Max 32 words, ~1.5-2 tokens per word on average + buffer
-        temperature: 0.2, // Low temperature for more deterministic/focused output
+        num_predict: 100, // Max tokens for optimized query
+        temperature: 0.2, // Low temperature for deterministic output
         top_p: 0.5, // Further constrains token selection
       },
+      think: false, // Instruct Ollama to not output its thinking process
     }
 
     const controller = new AbortController()

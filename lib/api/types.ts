@@ -24,6 +24,7 @@ export interface OllamaRequest {
   prompt: string
   stream: boolean
   options: OllamaRequestOptions
+  think?: boolean;
 }
 
 export interface OllamaResponse {
