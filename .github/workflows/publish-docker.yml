@@ -9,6 +9,7 @@ jobs:
   build-and-push-to-dockerhub:
     name: Build and Push to Docker Hub
     runs-on: ubuntu-latest # Use a standard Linux environment for the job
+    environment: DockerCI
 
     steps:
       - name: Checkout code
