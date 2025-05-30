@@ -2,6 +2,7 @@ name: Publish Docker Image to Docker Hub
 
 # This workflow will trigger when a new Release is "published" in your GitHub repository.
 on:
+  workflow_dispatch: # Allows manual triggering of the workflow from the GitHub Actions tab
   release:
     types: [published] # Triggers only when you hit the "Publish release" button on GitHub
 
