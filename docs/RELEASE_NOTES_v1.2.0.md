@@ -177,8 +177,11 @@ Cognito AI Search v1.2.0 represents a major evolution in our AI-powered search p
 #### Bundle Optimization
 - **Dependency Audit**: Comprehensive analysis and removal of unused packages
 - **Component Cleanup**: Removed 38 unused UI components from the codebase
+- **Deprecated Dependencies**: Removed deprecated `critters@0.0.25` package by disabling experimental CSS optimization
+- **Package Updates**: Updated all packages to latest versions (Next.js 15.3.3, TailwindCSS 4.1.8, Zod 3.25.41)
 - **Build Process**: Optimized build configuration for faster compilation
 - **Code Splitting**: Better module boundaries for improved loading performance
+- **Dependency Tree**: Cleaner dependency management with zero deprecation warnings
 
 #### Caching Strategy
 - **Local Storage**: Enhanced browser storage management with expiration
@@ -282,6 +285,7 @@ Cognito AI Search v1.2.0 represents a major evolution in our AI-powered search p
 - **CSS Classes**: Updated Tailwind class names for consistency
 - **Environment Variables**: New configuration options available
 - **Ollama Version Requirement**: Minimum Ollama version 0.9.0 required due to 'think: false' parameter support
+- **CSS Optimization**: Disabled experimental CSS optimization feature to remove deprecated critters dependency
 
 ### Migration Support
 - **Migration Guide**: Comprehensive documentation for upgrading from v1.1.0
