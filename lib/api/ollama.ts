@@ -1,6 +1,8 @@
-import { OllamaRequest, OllamaResponse } from './types'
+import { OllamaRequest, OllamaResponse } from './types';
+import { getApiConfig } from './config';
 
-const OPTIMIZATION_PROMPT_TEMPLATE = `You are an AI Search Query Optimization Engine. Your sole task is to process an input search query and return a single, effective search query string.
+const OPTIMIZATION_PROMPT_TEMPLATE = `/no_think
+You are an AI Search Query Optimization Engine. Your sole task is to process an input search query and return a single, effective search query string.
 
 Internal Guiding Principles (for your decision-making process only, not for output):
 
@@ -98,8 +100,16 @@ export async function getOptimizedQuery(
   timeoutMs?: number
 ): Promise<string> {
   try {
-    // Use provided timeout or default to 120 seconds
-    const timeout = timeoutMs || 120000
+    // Determine the timeout to use
+    let timeoutToUse: number;
+    if (typeof timeoutMs === 'number' && timeoutMs > 0) {
+      // If a valid timeout is explicitly passed, use it
+      timeoutToUse = timeoutMs;
+    } else {
+      // Otherwise, fall back to the globally configured timeout
+      const config = getApiConfig();
+      timeoutToUse = config.ollamaTimeoutMs;
+    }
     
     const prompt = OPTIMIZATION_PROMPT_TEMPLATE.replace('{USER_QUERY}', originalQuery)
     
@@ -112,10 +122,11 @@ export async function getOptimizedQuery(
         temperature: 0.2,
         top_p: 0.5,
       },
+      think: false, // Explicitly disable thinking indicator
     }
 
     const controller = new AbortController()
-    const timeoutId = setTimeout(() => controller.abort(), timeout)
+    const timeoutId = setTimeout(() => controller.abort(), timeoutToUse);
 
     const response = await fetch(`${ollamaApiUrl}/api/generate`, {
       method: 'POST',
@@ -172,8 +183,16 @@ export async function generateAIResponse(
   timeoutMs?: number
 ): Promise<string> {
   try {
-    // Use provided timeout or default to 120 seconds
-    const timeout = timeoutMs || 120000
+    // Determine the timeout to use
+    let timeoutToUse: number;
+    if (typeof timeoutMs === 'number' && timeoutMs > 0) {
+      // If a valid timeout is explicitly passed, use it
+      timeoutToUse = timeoutMs;
+    } else {
+      // Otherwise, fall back to the globally configured timeout
+      const config = getApiConfig();
+      timeoutToUse = config.ollamaTimeoutMs;
+    }
     
     const requestBody: OllamaRequest = {
       model: ollamaModel,
@@ -188,7 +207,7 @@ export async function generateAIResponse(
     };
 
     const controller = new AbortController()
-    const timeoutId = setTimeout(() => controller.abort(), timeout)
+    const timeoutId = setTimeout(() => controller.abort(), timeoutToUse);
 
     const response = await fetch(`${ollamaApiUrl}/api/generate`, {
       method: 'POST',

@@ -32,6 +32,9 @@ ENV AI_RESPONSE_MAX_TOKENS=${AI_RESPONSE_MAX_TOKENS}
 # Set Node.js options to increase memory for the build process
 ENV NODE_OPTIONS=--max-old-space-size=4096
 
+# Disable Next.js telemetry
+RUN pnpm exec next telemetry disable
+
 # Build the Next.js application
 RUN pnpm build
 
