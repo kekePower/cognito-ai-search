@@ -63,55 +63,55 @@
 
   :root.light {
     /* Light Mode Base Colors - Soft warm tones, no pure white */
-    --background: 30 25% 94%;  /* Warm cream background */
-    --foreground: 240 10% 12%;  /* Deep charcoal for text */
-    --card: 30 20% 92%;  /* Slightly darker cream for cards */
-    --card-foreground: 240 10% 12%;
-    --popover: 30 20% 92%;
-    --popover-foreground: 240 10% 12%;
-    --primary: 195 85% 35%;  /* Softer cyan for light mode */
+    --background: 30 25% 96%;  /* Lighter warm cream background for better contrast */
+    --foreground: 240 15% 8%;  /* Darker text for better readability */
+    --card: 30 20% 94%;  /* Slightly darker cream for cards */
+    --card-foreground: 240 15% 8%;
+    --popover: 30 20% 94%;
+    --popover-foreground: 240 15% 8%;
+    --primary: 195 100% 40%;  /* Brighter cyan for light mode */
     --primary-foreground: 0 0% 98%;
-    --secondary: 30 15% 85%;  /* Warm gray */
-    --secondary-foreground: 240 10% 12%;
-    --muted: 30 15% 85%;
-    --muted-foreground: 240 8% 35%;
-    --accent: 195 85% 35%;
+    --secondary: 30 12% 88%;  /* Warmer gray with better contrast */
+    --secondary-foreground: 240 15% 8%;
+    --muted: 30 12% 88%;
+    --muted-foreground: 240 10% 30%;  /* Darker muted text for readability */
+    --accent: 195 100% 40%;
     --accent-foreground: 0 0% 98%;
     --destructive: 0 84% 50%;
     --destructive-foreground: 0 0% 98%;
-    --border: 30 15% 82%;  /* Warm border color */
-    --input: 30 15% 88%;  /* Light warm input background */
-    --ring: 195 85% 35%;
+    --border: 30 12% 78%;  /* More visible border color */
+    --input: 30 15% 92%;  /* Light warm input background */
+    --ring: 195 100% 40%;
     
     /* Light Mode Secondary Color Scale */
-    --secondary-50: 30 15% 97%;
-    --secondary-100: 30 15% 94%;
-    --secondary-200: 30 15% 88%;
-    --secondary-700: 30 15% 45%;
-    --secondary-800: 30 15% 35%;
-    --secondary-900: 30 15% 25%;
-    --secondary-950: 30 15% 15%;
+    --secondary-50: 30 15% 98%;
+    --secondary-100: 30 15% 96%;
+    --secondary-200: 30 15% 90%;
+    --secondary-700: 30 15% 40%;
+    --secondary-800: 30 15% 30%;
+    --secondary-900: 30 15% 20%;
+    --secondary-950: 30 15% 10%;
     
     /* Light Mode Text Colors */
-    --text-primary: 240 10% 12%;
-    --text-secondary: 240 8% 25%;
-    --text-muted: 240 6% 40%;
-    --text-subtle: 240 5% 50%;
-    --text-disabled: 240 4% 65%;
+    --text-primary: 240 15% 8%;
+    --text-secondary: 240 12% 20%;
+    --text-muted: 240 8% 35%;
+    --text-subtle: 240 6% 45%;
+    --text-disabled: 240 4% 60%;
     --text-inverse: 0 0% 98%;
-    --text-accent: 195 85% 35%;
-    --text-success: 142 71% 35%;
-    --text-warning: 38 92% 40%;
-    --text-error: 0 84% 45%;
+    --text-accent: 195 100% 40%;
+    --text-success: 142 71% 30%;
+    --text-warning: 38 92% 35%;
+    --text-error: 0 84% 40%;
     
-    /* Light Mode Glass & Effects */
-    --glass-bg: 30 20% 94%;  /* Soft cream glass background */
-    --glass-border: 30 15% 75%;  /* Warm glass border */
-    --neon-cyan: 280 85% 60%;  /* Purple for light mode */
-    --neon-magenta: 330 85% 65%;  /* Pink/magenta */
-    --neon-blue: 270 70% 55%;  /* Purple-blue */
-    --shimmer-1: 280 85% 60%;
-    --shimmer-2: 330 85% 65%;
+    /* Light Mode Glass & Effects - Using cyan/blue instead of purple/pink */
+    --glass-bg: 30 20% 96%;  /* Lighter glass background */
+    --glass-border: 30 12% 70%;  /* More visible glass border */
+    --neon-cyan: 195 100% 45%;  /* Bright cyan for light mode */
+    --neon-magenta: 195 80% 50%;  /* Blue-cyan instead of magenta */
+    --neon-blue: 220 100% 55%;  /* Bright blue */
+    --shimmer-1: 195 100% 45%;
+    --shimmer-2: 220 100% 55%;
   }
 
   /* Base styles with geometric background - Now using better dark mode */
@@ -148,15 +148,15 @@
   /* Light mode body background */
   .light body {
     background: 
-      radial-gradient(circle at 20% 50%, rgba(6, 182, 212, 0.08) 0%, transparent 50%),
-      radial-gradient(circle at 80% 20%, rgba(236, 72, 153, 0.08) 0%, transparent 50%),
-      radial-gradient(circle at 40% 80%, rgba(59, 130, 246, 0.06) 0%, transparent 50%),
+      radial-gradient(circle at 20% 50%, rgba(34, 211, 238, 0.06) 0%, transparent 50%),
+      radial-gradient(circle at 80% 20%, rgba(59, 130, 246, 0.06) 0%, transparent 50%),
+      radial-gradient(circle at 40% 80%, rgba(6, 182, 212, 0.04) 0%, transparent 50%),
       linear-gradient(135deg, 
-        hsl(30, 25%, 91%) 0%, 
-        hsl(30, 30%, 93%) 25%, 
-        hsl(30, 25%, 92%) 50%, 
-        hsl(30, 30%, 94%) 75%, 
-        hsl(30, 25%, 91%) 100%
+        hsl(30, 25%, 94%) 0%, 
+        hsl(30, 30%, 96%) 25%, 
+        hsl(30, 25%, 95%) 50%, 
+        hsl(30, 30%, 97%) 75%, 
+        hsl(30, 25%, 94%) 100%
       );
   }
 
@@ -181,8 +181,8 @@
   /* Light mode geometric pattern */
   .light body::before {
     background-image: 
-      linear-gradient(45deg, transparent 48%, rgba(6, 182, 212, 0.03) 49%, rgba(6, 182, 212, 0.03) 51%, transparent 52%),
-      linear-gradient(-45deg, transparent 48%, rgba(236, 72, 153, 0.03) 49%, rgba(236, 72, 153, 0.03) 51%, transparent 52%);
+      linear-gradient(45deg, transparent 48%, rgba(34, 211, 238, 0.025) 49%, rgba(34, 211, 238, 0.025) 51%, transparent 52%),
+      linear-gradient(-45deg, transparent 48%, rgba(59, 130, 246, 0.025) 49%, rgba(59, 130, 246, 0.025) 51%, transparent 52%);
     animation: shimmer-light 25s ease-in-out infinite;
   }
 
@@ -198,13 +198,13 @@
   }
 
   .light .glass-panel {
-    background: hsl(var(--glass-bg) / 0.25);
+    background: hsl(var(--glass-bg) / 0.35);
     backdrop-filter: blur(20px);
-    border: 1px solid hsl(var(--glass-border) / 0.5);
+    border: 1px solid hsl(var(--glass-border) / 0.6);
     box-shadow: 
-      0 4px 6px -1px rgba(0, 0, 0, 0.05),
-      0 2px 4px -2px rgba(0, 0, 0, 0.03),
-      inset 0 1px 2px 0 rgba(255, 255, 255, 0.5);
+      0 4px 6px -1px rgba(0, 0, 0, 0.08),
+      0 2px 4px -2px rgba(0, 0, 0, 0.05),
+      inset 0 1px 2px 0 rgba(255, 255, 255, 0.7);
   }
 
   .glass-panel-solid {
@@ -381,10 +381,30 @@
   .light input[type="text"],
   .light input[type="email"],
   .light input[type="search"],
-  .light textarea {
-    background: hsl(var(--input));
+  .light input[type="password"],
+  .light textarea,
+  .light select {
+    background-color: hsl(var(--input));
     border: 1px solid hsl(var(--border));
     color: hsl(var(--foreground));
+    transition: all 0.2s ease;
+  }
+
+  .light input[type="text"]:focus,
+  .light input[type="search"]:focus,
+  .light input[type="email"]:focus,
+  .light input[type="password"]:focus,
+  .light textarea:focus,
+  .light select:focus {
+    border-color: hsl(var(--primary));
+    box-shadow: 0 0 0 2px hsl(var(--primary) / 0.2);
+    outline: none;
+  }
+
+  .light input::placeholder,
+  .light textarea::placeholder {
+    color: hsl(var(--muted-foreground));
+    opacity: 0.8;
   }
 
   input[type="text"]:focus,
@@ -455,14 +475,14 @@
     transition: all 0.3s ease;
   }
 
-  /* Light mode glow effects - purple/pink gradient */
+  /* Light mode glow effects - cyan/blue gradient */
   .light .search-result-card-wrapper::before {
-    background: linear-gradient(90deg, transparent 0%, rgba(168, 85, 247, 0.5) 20%, rgba(236, 72, 153, 0.5) 80%, transparent 100%);
+    background: linear-gradient(90deg, transparent 0%, rgba(34, 211, 238, 0.6) 20%, rgba(59, 130, 246, 0.6) 80%, transparent 100%);
     filter: blur(1px);
   }
 
   .light .search-result-card-wrapper::after {
-    background: linear-gradient(90deg, transparent 0%, rgba(236, 72, 153, 0.3) 20%, rgba(168, 85, 247, 0.3) 80%, transparent 100%);
+    background: linear-gradient(90deg, transparent 0%, rgba(59, 130, 246, 0.4) 20%, rgba(34, 211, 238, 0.4) 80%, transparent 100%);
     filter: blur(1px);
   }
 
@@ -489,16 +509,16 @@
   /* Light mode hover */
   .light .search-result-card-wrapper:hover::before {
     height: 4px;
-    background: linear-gradient(90deg, transparent 0%, rgba(168, 85, 247, 0.7) 20%, rgba(236, 72, 153, 0.7) 80%, transparent 100%);
+    background: linear-gradient(90deg, transparent 0%, rgba(34, 211, 238, 0.8) 20%, rgba(59, 130, 246, 0.8) 80%, transparent 100%);
     filter: blur(2px);
-    box-shadow: 0 0 20px rgba(168, 85, 247, 0.4);
+    box-shadow: 0 0 20px rgba(34, 211, 238, 0.4);
   }
 
   .light .search-result-card-wrapper:hover::after {
     height: 4px;
-    background: linear-gradient(90deg, transparent 0%, rgba(236, 72, 153, 0.5) 20%, rgba(168, 85, 247, 0.5) 80%, transparent 100%);
+    background: linear-gradient(90deg, transparent 0%, rgba(59, 130, 246, 0.6) 20%, rgba(34, 211, 238, 0.6) 80%, transparent 100%);
     filter: blur(2px);
-    box-shadow: 0 0 15px rgba(236, 72, 153, 0.3);
+    box-shadow: 0 0 15px rgba(59, 130, 246, 0.3);
   }
 
   .search-result-card-wrapper:hover .search-result-card {
@@ -506,7 +526,7 @@
   }
 
   .light .search-result-card-wrapper:hover .search-result-card {
-    box-shadow: 0 4px 20px rgba(168, 85, 247, 0.1);
+    box-shadow: 0 4px 20px rgba(34, 211, 238, 0.1);
   }
   
   /* Search input gradient text */
@@ -535,5 +555,36 @@
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
+  }
+
+  /* Light mode button styling */
+  .light button {
+    transition: all 0.2s ease;
+  }
+
+  .light button:hover {
+    transform: translateY(-1px);
+  }
+
+  /* Light mode card and container styling */
+  .light .card,
+  .light [class*="card"] {
+    background: hsl(var(--card));
+    border: 1px solid hsl(var(--border));
+    color: hsl(var(--card-foreground));
+  }
+
+  /* Light mode text hierarchy */
+  .light h1, .light h2, .light h3, .light h4, .light h5, .light h6 {
+    color: hsl(var(--foreground));
+    font-weight: 600;
+  }
+
+  .light p {
+    color: hsl(var(--text-secondary));
+  }
+
+  .light .text-muted {
+    color: hsl(var(--muted-foreground));
   }
 }

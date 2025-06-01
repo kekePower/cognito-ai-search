@@ -1,0 +1,158 @@
+/* Cross-browser compatibility fixes for Cognito AI Search */
+/* General fixes that apply to all browsers */
+
+/* CSS Reset and Normalization */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* Ensure consistent font rendering across browsers */
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* Consistent focus behavior */
+*:focus {
+  outline: none;
+}
+
+*:focus-visible {
+  outline: 2px solid hsl(var(--primary));
+  outline-offset: 2px;
+}
+
+/* Consistent button behavior */
+button {
+  cursor: pointer;
+  border: none;
+  background: none;
+  font-family: inherit;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* Consistent input behavior */
+input,
+textarea,
+select {
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+}
+
+/* Prevent zoom on iOS */
+@media screen and (max-width: 768px) {
+  input[type="text"],
+  input[type="search"],
+  input[type="email"],
+  input[type="password"],
+  textarea {
+    font-size: 16px;
+  }
+}
+
+/* Consistent backdrop-filter fallback */
+.glass-panel {
+  /* Fallback for browsers that don't support backdrop-filter */
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+@supports (backdrop-filter: blur(20px)) {
+  .glass-panel {
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+  }
+}
+
+/* Consistent animation performance */
+.animate-shimmer,
+.animate-pulse,
+[class*="animate-"] {
+  will-change: transform, opacity;
+  transform: translateZ(0);
+}
+
+/* Consistent text selection */
+::selection {
+  background: hsl(var(--primary) / 0.2);
+  color: hsl(var(--foreground));
+}
+
+::-moz-selection {
+  background: hsl(var(--primary) / 0.2);
+  color: hsl(var(--foreground));
+}
+
+/* Consistent placeholder styling */
+::placeholder {
+  color: hsl(var(--muted-foreground));
+  opacity: 1;
+}
+
+::-webkit-input-placeholder {
+  color: hsl(var(--muted-foreground));
+  opacity: 1;
+}
+
+::-moz-placeholder {
+  color: hsl(var(--muted-foreground));
+  opacity: 1;
+}
+
+:-ms-input-placeholder {
+  color: hsl(var(--muted-foreground));
+  opacity: 1;
+}
+
+/* Consistent scrollbar base styles */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: hsl(var(--border)) hsl(var(--muted));
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .light {
+    --border: 30 12% 60%;
+    --muted-foreground: 240 10% 20%;
+  }
+  
+  .dark {
+    --border: 217 32% 40%;
+    --muted-foreground: 215 20% 80%;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Print styles */
+@media print {
+  .glass-panel {
+    background: white !important;
+    backdrop-filter: none !important;
+    border: 1px solid #ccc !important;
+  }
+  
+  .light body,
+  .dark body {
+    background: white !important;
+    color: black !important;
+  }
+}

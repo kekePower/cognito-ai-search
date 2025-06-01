@@ -185,7 +185,7 @@ cd cognito-ai-search
 pnpm install
 
 # Create environment file
-cp .env.example .env.local
+cp env.example .env.local
 
 # Start development server
 pnpm dev`}

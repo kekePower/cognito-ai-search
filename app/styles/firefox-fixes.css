@@ -1,0 +1,444 @@
+/* Firefox-specific color fixes - exact Chrome color matching */
+
+@-moz-document url-prefix() {
+  /* Remove global filters - they affect too much */
+  
+  /* Force exact color rendering */
+  html.light * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+  
+  /* Comprehensive background color overrides with exact Chrome values */
+  html.light .bg-blue-50,
+  html.light div.bg-blue-50,
+  html.light section.bg-blue-50 {
+    background-color: #eff6ff !important;
+    background: #eff6ff !important;
+  }
+  
+  html.light .bg-blue-100,
+  html.light div.bg-blue-100,
+  html.light section.bg-blue-100 {
+    background-color: #dbeafe !important;
+    background: #dbeafe !important;
+  }
+  
+  html.light .bg-blue-200,
+  html.light div.bg-blue-200,
+  html.light section.bg-blue-200 {
+    background-color: #bfdbfe !important;
+    background: #bfdbfe !important;
+  }
+  
+  html.light .bg-green-50,
+  html.light div.bg-green-50,
+  html.light section.bg-green-50 {
+    background-color: #f0fdf4 !important;
+    background: #f0fdf4 !important;
+  }
+  
+  html.light .bg-green-100,
+  html.light div.bg-green-100,
+  html.light section.bg-green-100 {
+    background-color: #dcfce7 !important;
+    background: #dcfce7 !important;
+  }
+  
+  html.light .bg-green-200,
+  html.light div.bg-green-200,
+  html.light section.bg-green-200 {
+    background-color: #bbf7d0 !important;
+    background: #bbf7d0 !important;
+  }
+  
+  html.light .bg-purple-50,
+  html.light div.bg-purple-50,
+  html.light section.bg-purple-50 {
+    background-color: #faf5ff !important;
+    background: #faf5ff !important;
+  }
+  
+  html.light .bg-purple-100,
+  html.light div.bg-purple-100,
+  html.light section.bg-purple-100 {
+    background-color: #f3e8ff !important;
+    background: #f3e8ff !important;
+  }
+  
+  html.light .bg-purple-200,
+  html.light div.bg-purple-200,
+  html.light section.bg-purple-200 {
+    background-color: #ddd6fe !important;
+    background: #ddd6fe !important;
+  }
+  
+  html.light .bg-pink-50,
+  html.light div.bg-pink-50,
+  html.light section.bg-pink-50 {
+    background-color: #fdf2f8 !important;
+    background: #fdf2f8 !important;
+  }
+  
+  html.light .bg-pink-100,
+  html.light div.bg-pink-100,
+  html.light section.bg-pink-100 {
+    background-color: #fce7f3 !important;
+    background: #fce7f3 !important;
+  }
+  
+  html.light .bg-pink-200,
+  html.light div.bg-pink-200,
+  html.light section.bg-pink-200 {
+    background-color: #fbcfe8 !important;
+    background: #fbcfe8 !important;
+  }
+  
+  html.light .bg-amber-50,
+  html.light div.bg-amber-50,
+  html.light section.bg-amber-50 {
+    background-color: #fffbeb !important;
+    background: #fffbeb !important;
+  }
+  
+  html.light .bg-amber-100,
+  html.light div.bg-amber-100,
+  html.light section.bg-amber-100 {
+    background-color: #fef3c7 !important;
+    background: #fef3c7 !important;
+  }
+  
+  html.light .bg-amber-200,
+  html.light div.bg-amber-200,
+  html.light section.bg-amber-200 {
+    background-color: #fde68a !important;
+    background: #fde68a !important;
+  }
+  
+  html.light .bg-yellow-50,
+  html.light div.bg-yellow-50,
+  html.light section.bg-yellow-50 {
+    background-color: #fefce8 !important;
+    background: #fefce8 !important;
+  }
+  
+  html.light .bg-yellow-100,
+  html.light div.bg-yellow-100,
+  html.light section.bg-yellow-100 {
+    background-color: #fef9c3 !important;
+    background: #fef9c3 !important;
+  }
+  
+  html.light .bg-yellow-200,
+  html.light div.bg-yellow-200,
+  html.light section.bg-yellow-200 {
+    background-color: #fef08a !important;
+    background: #fef08a !important;
+  }
+  
+  html.light .bg-red-50,
+  html.light div.bg-red-50,
+  html.light section.bg-red-50 {
+    background-color: #fef2f2 !important;
+    background: #fef2f2 !important;
+  }
+  
+  html.light .bg-red-100,
+  html.light div.bg-red-100,
+  html.light section.bg-red-100 {
+    background-color: #fee2e2 !important;
+    background: #fee2e2 !important;
+  }
+  
+  html.light .bg-orange-50,
+  html.light div.bg-orange-50,
+  html.light section.bg-orange-50 {
+    background-color: #fff7ed !important;
+    background: #fff7ed !important;
+  }
+  
+  html.light .bg-orange-100,
+  html.light div.bg-orange-100,
+  html.light section.bg-orange-100 {
+    background-color: #ffedd5 !important;
+    background: #ffedd5 !important;
+  }
+  
+  html.light .bg-cyan-50,
+  html.light div.bg-cyan-50,
+  html.light section.bg-cyan-50 {
+    background-color: #ecfeff !important;
+    background: #ecfeff !important;
+  }
+  
+  html.light .bg-cyan-100,
+  html.light div.bg-cyan-100,
+  html.light section.bg-cyan-100 {
+    background-color: #cffafe !important;
+    background: #cffafe !important;
+  }
+  
+  html.light .bg-teal-50,
+  html.light div.bg-teal-50,
+  html.light section.bg-teal-50 {
+    background-color: #f0fdfa !important;
+    background: #f0fdfa !important;
+  }
+  
+  html.light .bg-teal-100,
+  html.light div.bg-teal-100,
+  html.light section.bg-teal-100 {
+    background-color: #ccfbf1 !important;
+    background: #ccfbf1 !important;
+  }
+  
+  html.light .bg-indigo-50,
+  html.light div.bg-indigo-50,
+  html.light section.bg-indigo-50 {
+    background-color: #eef2ff !important;
+    background: #eef2ff !important;
+  }
+  
+  html.light .bg-indigo-100,
+  html.light div.bg-indigo-100,
+  html.light section.bg-indigo-100 {
+    background-color: #e0e7ff !important;
+    background: #e0e7ff !important;
+  }
+  
+  /* Text color overrides with exact Chrome values */
+  html.light .text-blue-600 {
+    color: #2563eb !important;
+  }
+  
+  html.light .text-blue-700 {
+    color: #1d4ed8 !important;
+  }
+  
+  html.light .text-blue-800 {
+    color: #1e40af !important;
+  }
+  
+  html.light .text-blue-900 {
+    color: #1e3a8a !important;
+  }
+  
+  html.light .text-green-600 {
+    color: #16a34a !important;
+  }
+  
+  html.light .text-green-700 {
+    color: #15803d !important;
+  }
+  
+  html.light .text-green-800 {
+    color: #166534 !important;
+  }
+  
+  html.light .text-green-900 {
+    color: #14532d !important;
+  }
+  
+  html.light .text-purple-600 {
+    color: #9333ea !important;
+  }
+  
+  html.light .text-purple-700 {
+    color: #7c3aed !important;
+  }
+  
+  html.light .text-purple-800 {
+    color: #6b21a8 !important;
+  }
+  
+  html.light .text-purple-900 {
+    color: #581c87 !important;
+  }
+  
+  html.light .text-pink-600 {
+    color: #db2777 !important;
+  }
+  
+  html.light .text-pink-700 {
+    color: #be185d !important;
+  }
+  
+  html.light .text-pink-800 {
+    color: #9d174d !important;
+  }
+  
+  html.light .text-pink-900 {
+    color: #831843 !important;
+  }
+  
+  html.light .text-amber-600 {
+    color: #d97706 !important;
+  }
+  
+  html.light .text-amber-700 {
+    color: #b45309 !important;
+  }
+  
+  html.light .text-amber-800 {
+    color: #92400e !important;
+  }
+  
+  html.light .text-amber-900 {
+    color: #78350f !important;
+  }
+  
+  html.light .text-red-600 {
+    color: #dc2626 !important;
+  }
+  
+  html.light .text-red-700 {
+    color: #b91c1c !important;
+  }
+  
+  html.light .text-red-800 {
+    color: #991b1b !important;
+  }
+  
+  html.light .text-red-900 {
+    color: #7f1d1d !important;
+  }
+  
+  html.light .text-orange-600 {
+    color: #ea580c !important;
+  }
+  
+  html.light .text-orange-700 {
+    color: #c2410c !important;
+  }
+  
+  html.light .text-orange-800 {
+    color: #9a3412 !important;
+  }
+  
+  html.light .text-orange-900 {
+    color: #7c2d12 !important;
+  }
+  
+  html.light .text-cyan-600 {
+    color: #0891b2 !important;
+  }
+  
+  html.light .text-cyan-700 {
+    color: #0e7490 !important;
+  }
+  
+  html.light .text-cyan-800 {
+    color: #155e75 !important;
+  }
+  
+  html.light .text-cyan-900 {
+    color: #164e63 !important;
+  }
+  
+  html.light .text-teal-600 {
+    color: #0d9488 !important;
+  }
+  
+  html.light .text-teal-700 {
+    color: #0f766e !important;
+  }
+  
+  html.light .text-teal-800 {
+    color: #115e59 !important;
+  }
+  
+  html.light .text-teal-900 {
+    color: #134e4a !important;
+  }
+  
+  html.light .text-indigo-600 {
+    color: #4f46e5 !important;
+  }
+  
+  html.light .text-indigo-700 {
+    color: #4338ca !important;
+  }
+  
+  html.light .text-indigo-800 {
+    color: #3730a3 !important;
+  }
+  
+  html.light .text-indigo-900 {
+    color: #312e81 !important;
+  }
+  
+  /* Warning/Alert box fixes for better contrast */
+  html.light .bg-yellow-50 {
+    background-color: #fefce8 !important;
+    background: #fefce8 !important;
+  }
+  
+  html.light .bg-yellow-100 {
+    background-color: #fef9c3 !important;
+    background: #fef9c3 !important;
+  }
+  
+  html.light .bg-yellow-200 {
+    background-color: #fef08a !important;
+    background: #fef08a !important;
+  }
+  
+  /* Fix yellow text on yellow background issue */
+  html.light .text-yellow-600 {
+    color: #ca8a04 !important;
+  }
+  
+  html.light .text-yellow-700 {
+    color: #a16207 !important;
+  }
+  
+  html.light .text-yellow-800 {
+    color: #854d0e !important;
+  }
+  
+  html.light .text-yellow-900 {
+    color: #713f12 !important;
+  }
+  
+  /* Ensure warning boxes have proper dark text */
+  html.light .bg-yellow-50 *,
+  html.light .bg-yellow-100 *,
+  html.light .bg-yellow-200 * {
+    color: #713f12 !important;
+  }
+  
+  /* Override any yellow text in warning boxes */
+  html.light [class*="bg-yellow"] .text-yellow-500,
+  html.light [class*="bg-yellow"] .text-yellow-400,
+  html.light [class*="bg-yellow"] .text-yellow-300 {
+    color: #713f12 !important;
+  }
+  
+  /* Border color overrides */
+  html.light .border-blue-200 {
+    border-color: #bfdbfe !important;
+  }
+  
+  html.light .border-green-200 {
+    border-color: #bbf7d0 !important;
+  }
+  
+  html.light .border-purple-200 {
+    border-color: #ddd6fe !important;
+  }
+  
+  html.light .border-pink-200 {
+    border-color: #fbcfe8 !important;
+  }
+  
+  html.light .border-amber-200 {
+    border-color: #fde68a !important;
+  }
+  
+  /* Force Firefox to use exact color rendering */
+  html.light {
+    -moz-color-adjust: exact !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+}

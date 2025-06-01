@@ -1,12 +1,15 @@
 import type React from "react"
-import type { Metadata, Viewport } from "next"
-import { Toaster } from "sonner"
-import { Providers } from "@/components/providers"
-import { Footer } from "@/components/footer"
+import type { Metadata, Viewport } from 'next'
+import { Providers } from '@/components/providers'
+import { Toaster } from 'sonner'
+import { Footer } from '@/components/footer'
+import "./globals.css"
+import "./styles/browser-compatibility.css"
+import "./styles/firefox-fixes.css"
+import "./styles/chrome-fixes.css"
 import { cn } from "@/lib/utils"
 import { GeistSans } from "geist/font/sans"
 import { GeistMono } from "geist/font/mono"
-import "@/app/globals.css"
 
 export const metadata: Metadata = {
   title: {
