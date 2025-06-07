@@ -1398,8 +1398,29 @@
   color: #93c5fd !important; /* blue-300 */
 }
 
+/* CHROME FLICKER FIX: Aggressively disable transitions/animations for theme changes */
+/* This targets WebKit/Blink browsers (Chrome, Safari, Edge, Opera) */
+@media screen and (-webkit-min-device-pixel-ratio:0) and (min-resolution:.001dpcm) {
+  html,
+  body,
+  html *,
+  body * {
+    transition-property: none !important;
+    transition-duration: 0s !important;
+    transition-timing-function: step-start !important;
+    transition-delay: 0s !important;
+    animation-name: none !important;
+    animation-duration: 0s !important;
 
+    transition: none !important;
+    animation: none !important;
+  }
 
+  html, body {
+    transition-property: color, background-color, background, border-color, opacity, transform !important;
+    transition-duration: 0s !important;
+  }
+}
 
 /* What's New: Holographic Shard Design System (Pink/Rose Gradient) */
 .dark a[class*="from-pink-50"][class*="to-rose-50"] {
