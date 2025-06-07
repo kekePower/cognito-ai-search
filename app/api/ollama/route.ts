@@ -23,17 +23,6 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(response, { status: 503 })
     }
     
-    // Check if Ollama server is healthy before proceeding
-    const isHealthy = await checkOllamaHealth(config.ollamaApiUrl)
-    if (!isHealthy) {
-      console.error('[Ollama API] Server health check failed')
-      const response: AIResponse = {
-        response: '',
-        error: 'AI assistant is currently unavailable. Please check that your Ollama server is running and accessible.'
-      }
-      return NextResponse.json(response, { status: 503 })
-    }
-    
     const requestBody = await request.json()
     const { prompt, model = config.defaultOllamaModel } = requestBody
 
@@ -45,20 +34,40 @@ export async function POST(request: NextRequest) {
 
     // Create system prompt
     const systemPrompt = `/no_think
-You are an advanced AI assistant integrated into a search engine. Your primary goal is to provide the most accurate, comprehensive, and helpful responses to user queries. Follow these guidelines:
+You are an advanced AI assistant integrated into a search engine. Your primary goal is to provide the most accurate, comprehensive, and helpful responses to user queries. Strive to deliver expert-level explanations and insights. Follow these guidelines:
 
-1. Be concise but thorough in your responses
-2. Break down complex information into clear, easy-to-understand points
-3. Provide relevant context and background information when helpful
-4. If a question is unclear, ask for clarification
-5. When appropriate, include examples, step-by-step explanations, or relevant data
-6. Always maintain a helpful and professional tone
-7. If you're unsure about something, acknowledge it rather than guessing
-8. Format your response in clear, readable markdown. Use proper headings (e.g., ## Heading, ### Subheading). For lists, use standard markdown for bulleted lists (* item or - item) and ordered lists (e.g., 1. item, 2. item). CRITICALLY IMPORTANT: Ensure each list item's marker and text are on the SAME line (e.g., "1. First item" NOT "1.\nFirst item"). Use fenced code blocks (\`\`\`language\ncode\n\`\`\`) for code snippets when applicable.
-9. Write a minimum of 500 words and no more than 800 words
-10. IMPORTANT: Keep your response concise and focus on the most relevant information
+1.  **Content Depth & Structure:**
+    *   Provide thorough, in-depth, and comprehensive answers.
+    *   Break down complex information into clear, logically structured sections using Markdown headings (##, ###).
+    *   Offer relevant context, background information, and detailed explanations.
+    *   When appropriate, include examples, step-by-step instructions, or relevant data.
+    *   Utilize Markdown tables, blockquotes, and other formatting elements to enhance clarity and presentation when beneficial.
 
-Current query: ${prompt}`
+2.  **Accuracy & Tone:**
+    *   Ensure all information is accurate and up-to-date.
+    *   If a question is unclear or ambiguous, ask for clarification.
+    *   Always maintain a helpful, objective, and professional tone.
+    *   If you're unsure about something or if information is speculative, acknowledge it.
+
+3.  **Markdown Formatting Specifics:**
+    *   Use standard Markdown for bulleted lists (* item or - item) and ordered lists (e.g., 1. item, a. item).
+    *   CRITICALLY IMPORTANT for lists: Each list item's marker (e.g., "1.", "a.") AND its corresponding text MUST be on the SAME line.
+        *   CORRECT Example:
+            \\\`\\\`\\\`
+            1. First item.
+            a. Sub-item alpha.
+            \\\`\\\`\\\`
+        *   INCORRECT Example (DO NOT DO THIS):
+            \\\`\\\`\\\`
+            1.
+            First item.
+            \\\`\\\`\\\`
+    *   Use fenced code blocks (\`\`\`language\\ncode\\n\`\`\`) for code snippets.
+
+4.  **Focus & Relevance:**
+    *   Ensure your response directly addresses the user's query, focusing on the most relevant information to provide a complete answer.
+
+Current query: ${prompt}`;
 
     // Generate AI response
     const aiResponse = await generateAIResponse(
@@ -118,17 +127,6 @@ export async function GET(request: NextRequest) {
       const response: AIResponse = {
         response: '',
         error: 'AI assistant configuration is incomplete. Please check your environment setup.'
-      }
-      return NextResponse.json(response, { status: 503 })
-    }
-    
-    // Check if Ollama server is healthy before proceeding
-    const isHealthy = await checkOllamaHealth(config.ollamaApiUrl)
-    if (!isHealthy) {
-      console.error('[Ollama API] Server health check failed')
-      const response: AIResponse = {
-        response: '',
-        error: 'AI assistant is currently unavailable. Please check that your Ollama server is running and accessible.'
       }
       return NextResponse.json(response, { status: 503 })
     }

@@ -73,38 +73,38 @@
     --popover-foreground: 240 10% 12%;
     --primary: 195 85% 35%;  /* Softer cyan for light mode */
     --primary-foreground: 0 0% 98%;
-    --secondary: 30 15% 85%;  /* Warm gray */
-    --secondary-foreground: 240 10% 12%;
-    --muted: 30 15% 85%;
-    --muted-foreground: 240 8% 35%;
-    --accent: 195 85% 35%;
+    --secondary: 30 12% 88%;  /* Warmer gray with better contrast */
+    --secondary-foreground: 240 15% 8%;
+    --muted: 30 12% 88%;
+    --muted-foreground: 240 10% 30%;  /* Darker muted text for readability */
+    --accent: 195 100% 40%;
     --accent-foreground: 0 0% 98%;
     --destructive: 0 84% 50%;
     --destructive-foreground: 0 0% 98%;
-    --border: 30 15% 82%;  /* Warm border color */
-    --input: 30 15% 88%;  /* Light warm input background */
-    --ring: 195 85% 35%;
+    --border: 30 12% 78%;  /* More visible border color */
+    --input: 30 15% 92%;  /* Light warm input background */
+    --ring: 195 100% 40%;
     
     /* Light Mode Secondary Color Scale */
-    --secondary-50: 30 15% 97%;
-    --secondary-100: 30 15% 94%;
-    --secondary-200: 30 15% 88%;
-    --secondary-700: 30 15% 45%;
-    --secondary-800: 30 15% 35%;
-    --secondary-900: 30 15% 25%;
-    --secondary-950: 30 15% 15%;
+    --secondary-50: 30 15% 98%;
+    --secondary-100: 30 15% 96%;
+    --secondary-200: 30 15% 90%;
+    --secondary-700: 30 15% 40%;
+    --secondary-800: 30 15% 30%;
+    --secondary-900: 30 15% 20%;
+    --secondary-950: 30 15% 10%;
     
     /* Light Mode Text Colors */
-    --text-primary: 240 10% 12%;
-    --text-secondary: 240 8% 25%;
-    --text-muted: 240 6% 40%;
-    --text-subtle: 240 5% 50%;
-    --text-disabled: 240 4% 65%;
+    --text-primary: 240 15% 8%;
+    --text-secondary: 240 12% 20%;
+    --text-muted: 240 8% 35%;
+    --text-subtle: 240 6% 45%;
+    --text-disabled: 240 4% 60%;
     --text-inverse: 0 0% 98%;
-    --text-accent: 195 85% 35%;
-    --text-success: 142 71% 35%;
-    --text-warning: 38 92% 40%;
-    --text-error: 0 84% 45%;
+    --text-accent: 195 100% 40%;
+    --text-success: 142 71% 30%;
+    --text-warning: 38 92% 35%;
+    --text-error: 0 84% 40%;
     
     /* Light Mode Glass & Effects */
     --glass-opacity: 0.85; /* Increased opacity for light mode glass for better readability */
@@ -117,7 +117,6 @@
     --neon-blue: 270 70% 55%;  /* Purple-blue (v1.2.0 value) */
     --shimmer-1: 280 85% 60%;
     --shimmer-2: 330 85% 65%;
-
   }
 
 /* Dedicated classes for light mode pills with desired vibrant colors - with !important */
@@ -168,11 +167,11 @@
     background-image: radial-gradient(ellipse at 70% 80%, hsl(var(--neon-cyan-soft-bg) / 0.08) 0%, transparent 70%),
                       radial-gradient(ellipse at 30% 90%, hsl(var(--neon-magenta-soft-bg) / 0.08) 0%, transparent 70%),
       linear-gradient(135deg, 
-        hsl(30, 25%, 91%) 0%, 
-        hsl(30, 30%, 93%) 25%, 
-        hsl(30, 25%, 92%) 50%, 
-        hsl(30, 30%, 94%) 75%, 
-        hsl(30, 25%, 91%) 100%
+        hsl(30, 25%, 94%) 0%, 
+        hsl(30, 30%, 96%) 25%, 
+        hsl(30, 25%, 95%) 50%, 
+        hsl(30, 30%, 97%) 75%, 
+        hsl(30, 25%, 94%) 100%
       );
     color: hsl(var(--foreground)) !important; /* Ensure light mode text color is applied */
   }
@@ -213,13 +212,13 @@
   }
 
   .light .glass-panel {
-    background: hsl(var(--glass-bg) / 0.25);
+    background: hsl(var(--glass-bg) / 0.35);
     backdrop-filter: blur(20px);
-    border: 1px solid hsl(var(--glass-border) / 0.5);
+    border: 1px solid hsl(var(--glass-border) / 0.6);
     box-shadow: 
-      0 4px 6px -1px rgba(0, 0, 0, 0.05),
-      0 2px 4px -2px rgba(0, 0, 0, 0.03),
-      inset 0 1px 2px 0 rgba(255, 255, 255, 0.5);
+      0 4px 6px -1px rgba(0, 0, 0, 0.08),
+      0 2px 4px -2px rgba(0, 0, 0, 0.05),
+      inset 0 1px 2px 0 rgba(255, 255, 255, 0.7);
   }
 
   .glass-panel-solid {
@@ -290,11 +289,11 @@
   }
 
   /* Smooth theme transition wrapper */
-  * {
+  /* * {
     transition: background-color 0.5s cubic-bezier(0.4, 0, 0.2, 1), 
                 border-color 0.5s cubic-bezier(0.4, 0, 0.2, 1),
                 color 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-  }
+  } */
 
   /* Smooth scrolling */
   html {
@@ -303,7 +302,7 @@
   }
 
   /* Shimmer animation for background */
-  @keyframes shimmer {
+  /* @keyframes shimmer {
     0%, 100% {
       opacity: 1;
       transform: translateX(0) translateY(0);
@@ -320,10 +319,10 @@
       opacity: 0.8;
       transform: translateX(5px) translateY(-10px);
     }
-  }
+  } */
 
   /* Light mode shimmer animation */
-  @keyframes shimmer-light {
+  /* @keyframes shimmer-light {
     0%, 100% {
       opacity: 0.7;
       transform: translateX(0) translateY(0);
@@ -340,7 +339,7 @@
       opacity: 0.6;
       transform: translateX(-10px) translateY(5px);
     }
-  }
+  } */
 
   /* Glow animation for neon elements */
   @keyframes neon-glow {
@@ -396,10 +395,30 @@
   .light input[type="text"],
   .light input[type="email"],
   .light input[type="search"],
-  .light textarea {
-    background: hsl(var(--input));
+  .light input[type="password"],
+  .light textarea,
+  .light select {
+    background-color: hsl(var(--input));
     border: 1px solid hsl(var(--border));
     color: hsl(var(--foreground));
+    transition: all 0.2s ease;
+  }
+
+  .light input[type="text"]:focus,
+  .light input[type="search"]:focus,
+  .light input[type="email"]:focus,
+  .light input[type="password"]:focus,
+  .light textarea:focus,
+  .light select:focus {
+    border-color: hsl(var(--primary));
+    box-shadow: 0 0 0 2px hsl(var(--primary) / 0.2);
+    outline: none;
+  }
+
+  .light input::placeholder,
+  .light textarea::placeholder {
+    color: hsl(var(--muted-foreground));
+    opacity: 0.8;
   }
 
   input[type="text"]:focus,
@@ -470,14 +489,14 @@
     transition: all 0.3s ease;
   }
 
-  /* Light mode glow effects - purple/pink gradient */
+  /* Light mode glow effects - cyan/blue gradient */
   .light .search-result-card-wrapper::before {
-    background: linear-gradient(90deg, transparent 0%, rgba(168, 85, 247, 0.5) 20%, rgba(236, 72, 153, 0.5) 80%, transparent 100%);
+    background: linear-gradient(90deg, transparent 0%, rgba(34, 211, 238, 0.6) 20%, rgba(59, 130, 246, 0.6) 80%, transparent 100%);
     filter: blur(1px);
   }
 
   .light .search-result-card-wrapper::after {
-    background: linear-gradient(90deg, transparent 0%, rgba(236, 72, 153, 0.3) 20%, rgba(168, 85, 247, 0.3) 80%, transparent 100%);
+    background: linear-gradient(90deg, transparent 0%, rgba(59, 130, 246, 0.4) 20%, rgba(34, 211, 238, 0.4) 80%, transparent 100%);
     filter: blur(1px);
   }
 
@@ -504,16 +523,16 @@
   /* Light mode hover */
   .light .search-result-card-wrapper:hover::before {
     height: 4px;
-    background: linear-gradient(90deg, transparent 0%, rgba(168, 85, 247, 0.7) 20%, rgba(236, 72, 153, 0.7) 80%, transparent 100%);
+    background: linear-gradient(90deg, transparent 0%, rgba(34, 211, 238, 0.8) 20%, rgba(59, 130, 246, 0.8) 80%, transparent 100%);
     filter: blur(2px);
-    box-shadow: 0 0 20px rgba(168, 85, 247, 0.4);
+    box-shadow: 0 0 20px rgba(34, 211, 238, 0.4);
   }
 
   .light .search-result-card-wrapper:hover::after {
     height: 4px;
-    background: linear-gradient(90deg, transparent 0%, rgba(236, 72, 153, 0.5) 20%, rgba(168, 85, 247, 0.5) 80%, transparent 100%);
+    background: linear-gradient(90deg, transparent 0%, rgba(59, 130, 246, 0.6) 20%, rgba(34, 211, 238, 0.6) 80%, transparent 100%);
     filter: blur(2px);
-    box-shadow: 0 0 15px rgba(236, 72, 153, 0.3);
+    box-shadow: 0 0 15px rgba(59, 130, 246, 0.3);
   }
 
   .search-result-card-wrapper:hover .search-result-card {
@@ -521,7 +540,7 @@
   }
 
   .light .search-result-card-wrapper:hover .search-result-card {
-    box-shadow: 0 4px 20px rgba(168, 85, 247, 0.1);
+    box-shadow: 0 4px 20px rgba(34, 211, 238, 0.1);
   }
   
   /* Search input gradient text */
@@ -550,6 +569,37 @@
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
+  }
+
+  /* Light mode button styling */
+  .light button {
+    transition: all 0.2s ease;
+  }
+
+  .light button:hover {
+    transform: translateY(-1px);
+  }
+
+  /* Light mode card and container styling */
+  .light .card,
+  .light [class*="card"] {
+    background: hsl(var(--card));
+    border: 1px solid hsl(var(--border));
+    color: hsl(var(--card-foreground));
+  }
+
+  /* Light mode text hierarchy */
+  .light h1, .light h2, .light h3, .light h4, .light h5, .light h6 {
+    color: hsl(var(--foreground));
+    font-weight: 600;
+  }
+
+  .light p {
+    color: hsl(var(--text-secondary));
+  }
+
+  .light .text-muted {
+    color: hsl(var(--muted-foreground));
   }
 }
 
