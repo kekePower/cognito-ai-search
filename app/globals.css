@@ -598,9 +598,9 @@
 
 /* Ensure light mode variables are picked up correctly for key elements */
 .light .prose th {
-  border-bottom-color: hsl(var(--text-accent)); /* Use text-accent for better contrast in light mode */
+  border-bottom-color: hsl(262, 75%, 58%); /* Vibrant purple border, matches accent theme */
 }
 
 .light .prose td:first-child {
-  color: hsl(var(--text-accent)); /* Uses light mode --text-accent */
+  color: hsl(262, 65%, 48%); /* Darker purple for better contrast */
 }
