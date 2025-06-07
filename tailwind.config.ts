@@ -1,4 +1,6 @@
-import type { Config } from "tailwindcss"
+import type { Config } from "tailwindcss";
+import tailwindcssAnimate from "tailwindcss-animate";
+import tailwindcssTypography from "@tailwindcss/typography";
 
 const config: Config = {
   darkMode: "class",
@@ -89,6 +91,15 @@ const config: Config = {
           2: "hsl(var(--shimmer-2))",
         },
       },
+      typography: ({ theme }: { theme: any }) => ({
+        invert: {
+          css: {
+            '--tw-prose-body': theme('colors.gray.100'),
+            '--tw-prose-captions': theme('colors.gray.300'),
+            '--tw-prose-bullets': theme('colors.gray.300'),
+          },
+        },
+      }),
       spacing: {
         '18': '4.5rem',
         '88': '22rem',
@@ -215,6 +226,7 @@ const config: Config = {
         "pulse-shadow-white": "pulse-shadow-white 2s cubic-bezier(0.4, 0, 0.6, 1) infinite",
         "spin-slow": "spin 3s linear infinite",
         "border-spin": "spin 3s linear infinite",
+        spin: "spin 1s linear infinite",
         "border-sweep-in": "border-sweep-in 0.3s ease-out forwards",
         "border-sweep-out": "border-sweep-out 0.3s ease-out forwards",
         "border-pulse": "border-pulse 4s ease-in-out infinite",
@@ -225,7 +237,7 @@ const config: Config = {
       },
     },
   },
-  plugins: [require("tailwindcss-animate"), require("@tailwindcss/typography")],
+  plugins: [tailwindcssAnimate, tailwindcssTypography],
 }
 
 export default config

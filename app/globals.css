@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+
+
 @layer base {
   :root {
     /* Geist Font Variables */
@@ -63,13 +65,13 @@
 
   :root.light {
     /* Light Mode Base Colors - Soft warm tones, no pure white */
-    --background: 30 25% 96%;  /* Lighter warm cream background for better contrast */
-    --foreground: 240 15% 8%;  /* Darker text for better readability */
-    --card: 30 20% 94%;  /* Slightly darker cream for cards */
-    --card-foreground: 240 15% 8%;
-    --popover: 30 20% 94%;
-    --popover-foreground: 240 15% 8%;
-    --primary: 195 100% 40%;  /* Brighter cyan for light mode */
+    --background: hsl(280, 15%, 97%); /* Aiming for lighter/less saturated in Firefox, was lavender/pinkish white background */
+    --foreground: 240 10% 12%;  /* Deep charcoal for text */
+    --card: 30 20% 92%;  /* Slightly darker cream for cards */
+    --card-foreground: 240 10% 12%;
+    --popover: 30 20% 92%;
+    --popover-foreground: 240 10% 12%;
+    --primary: 195 85% 35%;  /* Softer cyan for light mode */
     --primary-foreground: 0 0% 98%;
     --secondary: 30 12% 88%;  /* Warmer gray with better contrast */
     --secondary-foreground: 240 15% 8%;
@@ -104,15 +106,31 @@
     --text-warning: 38 92% 35%;
     --text-error: 0 84% 40%;
     
-    /* Light Mode Glass & Effects - Using cyan/blue instead of purple/pink */
-    --glass-bg: 30 20% 96%;  /* Lighter glass background */
-    --glass-border: 30 12% 70%;  /* More visible glass border */
-    --neon-cyan: 195 100% 45%;  /* Bright cyan for light mode */
-    --neon-magenta: 195 80% 50%;  /* Blue-cyan instead of magenta */
-    --neon-blue: 220 100% 55%;  /* Bright blue */
-    --shimmer-1: 195 100% 45%;
-    --shimmer-2: 220 100% 55%;
+    /* Light Mode Glass & Effects */
+    --glass-opacity: 0.85; /* Increased opacity for light mode glass for better readability */
+    --glass-bg: hsl(280, 10%, 97%); /* Aiming for lighter/less saturated glass in Firefox, was lavender/pinkish glass background */
+    --glass-border: 30 15% 75%;  /* Warm glass border */
+    --neon-cyan: 280 85% 60%;  /* Purple for light mode (v1.2.0 value) */
+    --neon-magenta: 330 85% 65%;  /* Pink/magenta (v1.2.0 value) */
+    --neon-cyan-soft-bg: hsl(280, 40%, 70%); /* Softer purple for background gradient */
+    --neon-magenta-soft-bg: hsl(330, 45%, 75%); /* Softer pink/magenta for background gradient */
+    --neon-blue: 270 70% 55%;  /* Purple-blue (v1.2.0 value) */
+    --shimmer-1: 280 85% 60%;
+    --shimmer-2: 330 85% 65%;
   }
+
+/* Dedicated classes for light mode pills with desired vibrant colors - with !important */
+.light .pill-version-light {
+  background-color: hsl(260, 80%, 70%) !important;    /* Vibrant Purple Background */
+  color: hsl(260, 80%, 96%) !important;              /* Light Purple Text */
+  border-color: hsl(260, 80%, 55%) !important;       /* Stronger Purple Border */
+}
+
+.light .pill-latest-light {
+  background-color: hsl(145, 65%, 55%) !important;    /* Vibrant Green Background */
+  color: hsl(145, 65%, 96%) !important;              /* Light Green Text */
+  border-color: hsl(145, 65%, 40%) !important;       /* Stronger Green Border */
+}
 
   /* Base styles with geometric background - Now using better dark mode */
   body {
@@ -124,17 +142,16 @@
     text-rendering: optimizeLegibility;
     font-family: var(--font-sans);
     min-height: 100vh;
-    transition: background 0.5s cubic-bezier(0.4, 0, 0.2, 1), 
-                color 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    /* transition: background 0.5s cubic-bezier(0.4, 0, 0.2, 1), 
+                color 0.5s cubic-bezier(0.4, 0, 0.2, 1); */ /* DEBUG: Disabled */
     position: relative;
     overflow-x: hidden;
   }
 
   /* Body background */
   body {
-    background: 
-      radial-gradient(circle at 20% 50%, rgba(0, 255, 255, 0.05) 0%, transparent 50%),
-      radial-gradient(circle at 80% 20%, rgba(255, 0, 255, 0.05) 0%, transparent 50%),
+    background-image: radial-gradient(ellipse at 20% 20%, hsl(var(--neon-cyan) / 0.12) 0%, transparent 70%),
+                      radial-gradient(ellipse at 80% 30%, hsl(var(--neon-magenta) / 0.1) 0%, transparent 70%),
       radial-gradient(circle at 40% 80%, rgba(0, 100, 255, 0.03) 0%, transparent 50%),
       linear-gradient(135deg, 
         hsl(250, 20%, 8%) 0%, 
@@ -147,10 +164,8 @@
 
   /* Light mode body background */
   .light body {
-    background: 
-      radial-gradient(circle at 20% 50%, rgba(34, 211, 238, 0.06) 0%, transparent 50%),
-      radial-gradient(circle at 80% 20%, rgba(59, 130, 246, 0.06) 0%, transparent 50%),
-      radial-gradient(circle at 40% 80%, rgba(6, 182, 212, 0.04) 0%, transparent 50%),
+    background-image: radial-gradient(ellipse at 70% 80%, hsl(var(--neon-cyan-soft-bg) / 0.08) 0%, transparent 70%),
+                      radial-gradient(ellipse at 30% 90%, hsl(var(--neon-magenta-soft-bg) / 0.08) 0%, transparent 70%),
       linear-gradient(135deg, 
         hsl(30, 25%, 94%) 0%, 
         hsl(30, 30%, 96%) 25%, 
@@ -158,6 +173,7 @@
         hsl(30, 30%, 97%) 75%, 
         hsl(30, 25%, 94%) 100%
       );
+    color: hsl(var(--foreground)) !important; /* Ensure light mode text color is applied */
   }
 
   /* Geometric pattern overlay */
@@ -175,15 +191,13 @@
     background-position: 0 0, 30px 30px;
     pointer-events: none;
     z-index: -1;
-    /* animation: shimmer 20s ease-in-out infinite; */
   }
 
   /* Light mode geometric pattern */
   .light body::before {
     background-image: 
-      linear-gradient(45deg, transparent 48%, rgba(34, 211, 238, 0.025) 49%, rgba(34, 211, 238, 0.025) 51%, transparent 52%),
-      linear-gradient(-45deg, transparent 48%, rgba(59, 130, 246, 0.025) 49%, rgba(59, 130, 246, 0.025) 51%, transparent 52%);
-    /* animation: shimmer-light 25s ease-in-out infinite; */
+      linear-gradient(45deg, transparent 48%, rgba(6, 182, 212, 0.03) 49%, rgba(6, 182, 212, 0.03) 51%, transparent 52%),
+      linear-gradient(-45deg, transparent 48%, rgba(236, 72, 153, 0.03) 49%, rgba(236, 72, 153, 0.03) 51%, transparent 52%);
   }
 
   /* Glass panel styles */
@@ -587,4 +601,1410 @@
   .light .text-muted {
     color: hsl(var(--muted-foreground));
   }
+}
+
+/* Custom Markdown Table Styles */
+
+.prose table {
+  width: 100%;
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+  border-collapse: collapse;
+  font-size: 0.875rem; /* Equivalent to text-sm */
+  line-height: 1.25rem;
+  border: 1px solid hsl(var(--glass-border) / 0.5);
+  border-radius: var(--radius); /* Uses your existing --radius variable */
+  overflow: hidden; /* Ensures border-radius clips content correctly */
+  background-color: hsl(var(--glass-bg) / 0.3); /* Subtle glass background */
+}
+
+.prose th,
+.prose td {
+  padding-left: 1rem; /* Equivalent to px-4 */
+  padding-right: 1rem; /* Equivalent to px-4 */
+  padding-top: 0.75rem; /* Equivalent to py-3 */
+  padding-bottom: 0.75rem; /* Equivalent to py-3 */
+  text-align: left;
+  border-bottom: 1px solid hsl(var(--glass-border) / 0.3);
+}
+
+.prose th {
+  font-weight: 600; /* Equivalent to font-semibold */
+  letter-spacing: 0.05em; /* Equivalent to tracking-wider */
+  text-transform: uppercase;
+  color: hsl(var(--text-primary));
+  background-color: hsl(var(--glass-bg) / 0.5); /* Slightly more opaque header background */
+  border-bottom: 2px solid hsl(var(--neon-cyan)); /* Neon accent for header bottom border */
+}
+
+/* Style for the first column (e.g., 'Feature', 'Purpose') */
+.prose td:first-child {
+  font-weight: 500; /* Equivalent to font-medium */
+  color: hsl(var(--text-accent)); /* Use accent color for feature names */
+  width: 30%; /* Give the first column a bit more defined width */
+}
+
+.prose td {
+  color: hsl(var(--text-secondary)); /* Text color for data cells */
+}
+
+/* Remove bottom border from the last row of the table body and header */
+.prose thead tr:last-child th,
+.prose tbody tr:last-child td {
+  border-bottom-width: 0;
+}
+
+/* Optional: Hover effect on table body rows */
+.prose tbody tr:hover {
+  background-color: hsl(var(--glass-bg) / 0.2); /* Subtle hover for dark mode */
+}
+
+.light .prose tbody tr:hover {
+  background-color: hsl(var(--glass-bg) / var(--glass-opacity)); /* Subtle hover for light mode */
+}
+
+/* Ensure light mode variables are picked up correctly for key elements */
+
+/* Force light mode text colors for specific card type (e.g., Holographic Shard Design) */
+/* Addresses Firefox issue where dark:text-* classes were incorrectly applied in light mode. */
+.light div[class*="from-blue-50"][class*="to-purple-50"] h3.text-blue-900 {
+  color: #1e3a8a !important; /* Tailwind blue-900 */
+}
+
+.light div[class*="from-blue-50"][class*="to-purple-50"] ul.text-blue-800,
+.light div[class*="from-blue-50"][class*="to-purple-50"] ul.text-blue-800 li {
+  color: #1e40af !important; /* Tailwind blue-800 */
+}
+/* End of card-specific text color fix */
+
+/* Quick Navigation Card Type: Quick Start (Blue) - based on documentation-content.tsx */
+.light a[class*="bg-blue-50"] h3.text-blue-900 {
+  color: #1e3a8a !important; /* Tailwind blue-900 */
+}
+.light a[class*="bg-blue-50"] p.text-blue-800 {
+  color: #1e40af !important; /* Tailwind blue-800 */
+}
+/* Quick Navigation Card Type: Configuration (Purple) */
+.light a[class*="bg-purple-50"] h3.text-purple-900 {
+  color: #581c87 !important; /* Tailwind purple-900 */
+}
+.light a[class*="bg-purple-50"] p.text-purple-800 {
+  color: #6b21a8 !important; /* Tailwind purple-800 */
+}
+
+/* Quick Navigation Card Type: Contributing (Green) */
+.light a[class*="bg-green-50"] h3.text-green-900 {
+  color: #14532d !important; /* Tailwind green-900 */
+}
+.light a[class*="bg-green-50"] p.text-green-800 {
+  color: #166534 !important; /* Tailwind green-800 */
+}
+
+/* 'What's New' Card Type: Performance & Architecture (Green/Blue Gradient) */
+.light div[class*="from-green-50"][class*="to-blue-50"] h3.text-green-900 {
+  color: #14532d !important; /* Tailwind green-900 */
+}
+.light div[class*="from-green-50"][class*="to-blue-50"] ul.text-green-800,
+.light div[class*="from-green-50"][class*="to-blue-50"] ul.text-green-800 li {
+  color: #166534 !important; /* Tailwind green-800 */
+}
+
+/* 'What's New' Card Type: Enhanced Search Experience (Purple/Pink Gradient) */
+.light div[class*="from-purple-50"][class*="to-pink-50"] h3.text-purple-900 {
+  color: #581c87 !important; /* Tailwind purple-900 */
+}
+.light div[class*="from-purple-50"][class*="to-pink-50"] ul.text-purple-800,
+.light div[class*="from-purple-50"][class*="to-pink-50"] ul.text-purple-800 li {
+  color: #6b21a8 !important; /* Tailwind purple-800 */
+}
+
+/* 'What's New' Card Type: Technical Improvements (Orange/Red Gradient) */
+.light div[class*="from-orange-50"][class*="to-red-50"] h3.text-orange-900 {
+  color: #7c2d12 !important; /* Tailwind orange-900 */
+}
+.light div[class*="from-orange-50"][class*="to-red-50"] ul.text-orange-800,
+.light div[class*="from-orange-50"][class*="to-red-50"] ul.text-orange-800 li {
+  color: #9a3412 !important; /* Tailwind orange-800 */
+}
+
+/* 'What's New' Card Type: User Experience (Cyan/Teal Gradient) */
+.light div[class*="from-cyan-50"][class*="to-teal-50"] h3.text-cyan-900 {
+  color: #164e63 !important; /* Tailwind cyan-900 */
+}
+.light div[class*="from-cyan-50"][class*="to-teal-50"] ul.text-cyan-800,
+.light div[class*="from-cyan-50"][class*="to-teal-50"] ul.text-cyan-800 li {
+  color: #155e75 !important; /* Tailwind cyan-800 */
+}
+
+/* 'What's New' Card Type: Security & Privacy (Indigo/Purple Gradient) */
+.light div[class*="from-indigo-50"][class*="to-purple-50"] h3.text-indigo-900 {
+  color: #312e81 !important; /* Tailwind indigo-900 */
+}
+.light div[class*="from-indigo-50"][class*="to-purple-50"] ul.text-indigo-800,
+.light div[class*="from-indigo-50"][class*="to-purple-50"] ul.text-indigo-800 li {
+  color: #3730a3 !important; /* Tailwind indigo-800 */
+}
+
+/* 'Breaking Changes' Card Type (Amber Solid Background) */
+.light div[class*="bg-amber-50"] h3.text-amber-900 {
+  color: #78350f !important; /* Tailwind amber-900 */
+}
+.light div[class*="bg-amber-50"] ul.text-amber-800,
+.light div[class*="bg-amber-50"] ul.text-amber-800 li {
+  color: #92400e !important; /* Tailwind amber-800 */
+}
+
+/* 'Prerequisites' Card Type (Secondary-50 Solid Background) */
+.light div[class*="bg-secondary-50"] h3 {
+  color: hsl(var(--foreground)) !important; /* Default dark text */
+}
+.light div[class*="bg-secondary-50"] ul li,
+.light div[class*="bg-secondary-50"] ul li strong {
+  color: hsl(var(--foreground)) !important; /* Default dark text, including strong elements */
+}
+
+/* 'Informational Note' Block (Blue Solid Background) */
+.light div[class*="bg-blue-50"]:not(a) p.text-blue-800 { /* Ensure it's not the Quick Nav link */
+  color: #1e40af !important; /* Tailwind blue-800 */
+}
+
+/* Docker Section: Quick Start with Docker Hub (Blue/Cyan Gradient) */
+.light div[class*="from-blue-50"][class*="to-cyan-50"]:not([class*="from-secondary-50"]) h3.text-blue-900,
+.light div[class*="from-blue-50"][class*="to-cyan-50"]:not([class*="from-secondary-50"]) h4.text-blue-900 { /* Also covers SearXNG Setup card */
+  color: #1e3a8a !important; /* Tailwind blue-900 */
+}
+.light div[class*="from-blue-50"][class*="to-cyan-50"]:not([class*="from-secondary-50"]) p.text-blue-800,
+.light div[class*="from-blue-50"][class*="to-cyan-50"]:not([class*="from-secondary-50"]) ul.text-blue-800 li { /* Also covers SearXNG Setup card */
+  color: #1e40af !important; /* Tailwind blue-800 */
+}
+
+/* Docker Section: Available Tags (Green/Emerald Gradient) */
+.light div[class*="from-green-50"][class*="to-emerald-50"] h4.text-green-900 {
+  color: #14532d !important; /* Tailwind green-900 */
+}
+.light div[class*="from-green-50"][class*="to-emerald-50"] ul.text-green-800 li {
+  color: #166534 !important; /* Tailwind green-800 */
+}
+
+/* Docker Section: Key Environment Variables (Purple/Pink Gradient) - Uses existing rule for from-purple-50 to-pink-50 */
+/* This also covers Configuration Section: Ollama Configuration card */
+
+/* Docker Section: Automatic Updates note (Yellow Solid Background) */
+.light div[class*="bg-yellow-50"] p.text-yellow-800 {
+  color: #854d0e !important; /* Tailwind yellow-800 */
+}
+
+/* Configuration Section: Deployment Options cards (Secondary-50 Solid Background) */
+.light div[class*="bg-secondary-50"][class*="dark:bg-secondary-800/50"] h4 { /* Targeting the specific ones for Deployment Options */
+  color: hsl(var(--foreground)) !important; /* Default dark text */
+}
+/* p.text-muted-foreground should adapt correctly, but we watch it */
+
+/* Architecture Section: How It All Works Together (Secondary-50/Blue Gradient) */
+.light div[class*="from-secondary-50"][class*="to-blue-50"] h3 {
+  color: hsl(var(--foreground)) !important; /* Default dark text */
+}
+.light div[class*="from-secondary-50"][class*="to-blue-50"] p,
+.light div[class*="from-secondary-50"][class*="to-blue-50"] ul li {
+  color: hsl(var(--foreground)) !important; /* Default dark text */
+}
+
+/* Architecture Section: Frontend card (Blue Solid Background) - Uses existing rule for bg-blue-50 */
+
+/* Architecture Section: Search Engine card (Green Solid Background) - Uses existing rule for bg-green-50 */
+
+/* Refinement for Purple/Pink Gradient Cards (h4 elements) */
+.light div[class*="from-purple-50"][class*="to-pink-50"] h4.text-purple-900 {
+  color: #581c87 !important; /* Tailwind purple-900 */
+}
+
+/* Refinement for Solid Blue Background Divs (e.g., Architecture Frontend card) */
+.light div[class*="bg-blue-50"]:not(a) h4.text-blue-900 {
+  color: #1e3a8a !important; /* Tailwind blue-900 */
+}
+.light div[class*="bg-blue-50"]:not(a) ul.text-blue-800 li {
+  color: #1e40af !important; /* Tailwind blue-800 */
+}
+
+/* Refinement for Solid Green Background Divs (e.g., Architecture Search Engine card) */
+.light div[class*="bg-green-50"]:not(a) h4.text-green-900 {
+  color: #14532d !important; /* Tailwind green-900 */
+}
+.light div[class*="bg-green-50"]:not(a) ul.text-green-800 li {
+  color: #166534 !important; /* Tailwind green-800 */
+}
+
+/* Architecture: AI Processing card (Purple Solid Background) */
+.light div[class*="bg-purple-50"]:not(a) h4.text-purple-900 {
+  color: #581c87 !important; /* Tailwind purple-900 */
+}
+.light div[class*="bg-purple-50"]:not(a) ul.text-purple-800 li {
+  color: #6b21a8 !important; /* Tailwind purple-800 */
+}
+
+/* Architecture: Infrastructure card (Orange Solid Background) - Covered by existing .light div[class*="from-orange-50"][class*="to-red-50"] or similar, but let's be specific for solid orange */
+.light div[class*="bg-orange-50"]:not(a) h4.text-orange-900 {
+  color: #7c2d12 !important; /* Tailwind orange-900 */
+}
+.light div[class*="bg-orange-50"]:not(a) ul.text-orange-800 li,
+.light div[class*="bg-orange-50"]:not(a) p.text-orange-800 {
+  color: #9a3412 !important; /* Tailwind orange-800 */
+}
+
+/* Contributing: Join Our Mission (Green/Emerald Gradient) - h3 and p */
+.light div[class*="from-green-50"][class*="to-emerald-50"] h3.text-green-900 {
+  color: #14532d !important; /* Tailwind green-900 */
+}
+.light div[class*="from-green-50"][class*="to-emerald-50"] p.text-green-800 {
+  color: #166534 !important; /* Tailwind green-800 */
+}
+/* Spans with bg-green-100 text-green-800 should be fine */
+
+/* Contributing: Fork & Branch (Blue/Indigo Gradient) */
+.light div[class*="from-blue-50"][class*="to-indigo-50"] h4.text-blue-900 {
+  color: #1e3a8a !important; /* Tailwind blue-900 */
+}
+.light div[class*="from-blue-50"][class*="to-indigo-50"] p.text-blue-800 {
+  color: #1e40af !important; /* Tailwind blue-800 */
+}
+
+/* Contributing: Code Quality (Purple/Pink Gradient) - Covered by existing rules */
+
+/* Contributing: Pull Request (Green/Teal Gradient) */
+.light div[class*="from-green-50"][class*="to-teal-50"] h4.text-green-900 {
+  color: #14532d !important; /* Tailwind green-900 */
+}
+.light div[class*="from-green-50"][class*="to-teal-50"] p.text-green-800,
+.light div[class*="from-green-50"][class*="to-teal-50"] ul.text-green-800 li {
+  color: #166534 !important; /* Tailwind green-800 */
+}
+
+/* Contributing: Reporting Issues (Orange Solid Background) - Covered by specific solid orange rule above */
+
+/* Contributing: Feature Requests (Indigo Solid Background) */
+.light div[class*="bg-indigo-50"]:not(a) h4.text-indigo-900 {
+  color: #312e81 !important; /* Tailwind indigo-900 */
+}
+.light div[class*="bg-indigo-50"]:not(a) p.text-indigo-800,
+.light div[class*="bg-indigo-50"]:not(a) ul.text-indigo-800 li {
+  color: #3730a3 !important; /* Tailwind indigo-800 */
+}
+
+/* Contributing: Code Style Guidelines (Blue/Purple Gradient) - h4 and h5 */
+.light div[class*="from-blue-50"][class*="to-purple-50"] h4.text-blue-900 {
+  color: #1e3a8a !important; /* Tailwind blue-900 */
+}
+.light div[class*="from-blue-50"][class*="to-purple-50"] h5.text-blue-800 {
+  color: #1e40af !important; /* Tailwind blue-800 */
+}
+
+/* Contributing: Code Style Guidelines (Blue/Purple Gradient) - ul lists */
+.light div[class*="from-blue-50"][class*="to-purple-50"] ul[class*="text-blue-700"] li {
+  color: #1e40af !important; /* Tailwind blue-800, ensuring sufficient contrast */
+}
+
+/* Additional Resources Section: Cards (bg-secondary-50) - h3 elements */
+.light a[class*="bg-secondary-50"] h3 {
+  color: hsl(var(--foreground)) !important; /* Default dark text */
+}
+
+/* End of all card-specific text color fixes */
+
+/* Dark mode specific style overrides for cards (Chrome Fixes) */
+
+/* Quick Navigation Cards (Blue a tags: Quick Start, Configuration, Contributing) */
+.dark a[class*="bg-blue-50"][class*="dark:bg-blue-900/20"] {
+  background-color: rgba(30, 58, 138, 0.2) !important; /* blue-900/20 */
+  background-image: none !important;
+  border-color: #1e40af !important; /* blue-800 */
+  filter: none !important;
+  color-scheme: dark !important;
+}
+.dark a[class*="bg-blue-50"][class*="dark:bg-blue-900/20"] h3[class*="text-blue-900"] {
+  color: #dbeafe !important; /* blue-100 */
+}
+.dark a[class*="bg-blue-50"][class*="dark:bg-blue-900/20"] p[class*="text-blue-800"] {
+  color: #bfdbfe !important; /* blue-200 */
+}
+
+/* Prerequisites Card (Blue Solid Div) */
+.dark div[class*="bg-blue-50"][class*="dark:bg-blue-900/20"] {
+  background-color: rgba(30, 58, 138, 0.2) !important; /* blue-900/20 */
+  background-image: none !important;
+  border-color: #1e3a8a !important; /* blue-800 */
+  filter: none !important;
+  color-scheme: dark !important;
+}
+.dark a[class*="bg-blue-50"] h3[class*="text-blue-900"] {
+  color: #dbeafe !important; /* blue-100 */
+}
+.dark a[class*="bg-blue-50"] p[class*="text-blue-800"] {
+  color: #bfdbfe !important; /* blue-200 */
+}
+
+/* Quick Navigation Card Type: Configuration (Purple) */
+.dark a[class*="bg-purple-50"][class*="dark:bg-purple-900/20"] {
+  background-color: rgba(88, 28, 135, 0.2) !important; /* purple-900/20 */
+  background-image: none !important;
+  border-color: #6b21a8 !important; /* purple-800 */
+  filter: none !important;
+  color-scheme: dark !important;
+}
+.dark a[class*="bg-purple-50"][class*="dark:bg-purple-900/20"] h3[class*="text-purple-900"] {
+  color: #f3e8ff !important; /* purple-100 */
+}
+.dark a[class*="bg-purple-50"][class*="dark:bg-purple-900/20"] p[class*="text-purple-800"] {
+  color: #e9d5ff !important; /* purple-200 */
+}
+
+/* Quick Navigation Card Type: Contributing (Green) */
+.dark a[class*="bg-green-50"][class*="dark:bg-green-900/20"] {
+  background-color: rgba(20, 83, 45, 0.2) !important; /* green-900/20 */
+  background-image: none !important;
+  border-color: #166534 !important; /* green-800 */
+  filter: none !important;
+  color-scheme: dark !important;
+}
+.dark a[class*="bg-green-50"][class*="dark:bg-green-900/20"] h3[class*="text-green-900"] {
+  color: #dcfce7 !important; /* green-100 */
+}
+.dark a[class*="bg-green-50"][class*="dark:bg-green-900/20"] p[class*="text-green-800"] {
+  color: #bbf7d0 !important; /* green-200 */
+}
+
+/* What's New: Holographic Shard Design System (Blue/Purple Gradient) */
+.dark div[class*="from-blue-50"][class*="to-purple-50"][class*="dark:from-blue-900/20"][class*="dark:to-purple-900/20"] {
+  background-color: rgba(30, 58, 138, 0.2) !important; /* blue-900/20 as base */
+  background-image: linear-gradient(to bottom right, rgba(30, 58, 138, 0.2), rgba(88, 28, 135, 0.2)) !important; /* blue-900/20 to purple-900/20 */
+  border-color: #1e3a8a !important; /* blue-800 */
+  filter: none !important;
+  color-scheme: dark !important;
+}
+.dark div[class*="from-blue-50"][class*="to-purple-50"][class*="dark:from-blue-900/20"][class*="dark:to-purple-900/20"] h3[class*="text-blue-900"] {
+  color: #dbeafe !important; /* blue-100 */
+}
+.dark div[class*="from-blue-50"][class*="to-purple-50"][class*="dark:from-blue-900/20"][class*="dark:to-purple-900/20"] ul[class*="dark:text-blue-200"] li {
+  color: #bfdbfe !important; /* blue-200 */
+}
+
+/* What's New: Performance & Architecture (Green/Blue Gradient) */
+.dark div[class*="from-green-50"][class*="to-blue-50"][class*="dark:from-green-900/20"][class*="dark:to-blue-900/20"] {
+  background-color: rgba(22, 101, 52, 0.2) !important; /* green-900/20 as base */
+  background-image: linear-gradient(to bottom right, rgba(22, 101, 52, 0.2), rgba(30, 58, 138, 0.2)) !important; /* green-900/20 to blue-900/20 */
+  border-color: #166534 !important; /* green-800 */
+  filter: none !important;
+  color-scheme: dark !important;
+}
+.dark div[class*="from-green-50"][class*="to-blue-50"][class*="dark:from-green-900/20"][class*="dark:to-blue-900/20"] h3[class*="text-green-900"] {
+  color: #dcfce7 !important; /* green-100 */
+}
+.dark div[class*="from-green-50"][class*="to-blue-50"][class*="dark:from-green-900/20"][class*="dark:to-blue-900/20"] ul[class*="dark:text-green-200"] li {
+  color: #bbf7d0 !important; /* green-200 */
+}
+
+/* What's New: Enhanced Search Experience (Purple/Pink Gradient) */
+.dark div[class*="from-purple-50"][class*="to-pink-50"][class*="dark:from-purple-900/20"][class*="dark:to-pink-900/20"] {
+  background-color: rgba(88, 28, 135, 0.2) !important; /* purple-900/20 as base */
+  background-image: linear-gradient(to bottom right, rgba(88, 28, 135, 0.2), rgba(131, 24, 67, 0.2)) !important; /* purple-900/20 to pink-900/20 */
+  border-color: #6b21a8 !important; /* purple-800 */
+  filter: none !important;
+  color-scheme: dark !important;
+}
+.dark div[class*="from-purple-50"][class*="to-pink-50"][class*="dark:from-purple-900/20"][class*="dark:to-pink-900/20"] h3[class*="text-purple-900"] {
+  color: #f3e8ff !important; /* purple-100 */
+}
+.dark div[class*="from-purple-50"][class*="to-pink-50"][class*="dark:from-purple-900/20"][class*="dark:to-pink-900/20"] h4[class*="text-purple-900"] {
+  color: #f3e8ff !important; /* purple-100 */
+}
+.dark div[class*="from-purple-50"][class*="to-pink-50"][class*="dark:from-purple-900/20"][class*="dark:to-pink-900/20"] ul[class*="dark:text-purple-200"] li {
+  color: #e9d5ff !important; /* purple-200 */
+}
+
+
+/* What's New: Technical Improvements (Orange/Red Gradient) */
+.dark div[class*="from-orange-50"][class*="to-red-50"][class*="dark:from-orange-900/20"][class*="dark:to-red-900/20"] {
+  background-color: rgba(124, 45, 18, 0.2) !important; /* orange-900/20 as base */
+  background-image: linear-gradient(to bottom right, rgba(124, 45, 18, 0.2), rgba(127, 29, 29, 0.2)) !important; /* orange-900/20 to red-900/20 */
+  border-color: #c2410c !important; /* orange-800 */
+  filter: none !important;
+  color-scheme: dark !important;
+}
+.dark div[class*="from-orange-50"][class*="to-red-50"][class*="dark:from-orange-900/20"][class*="dark:to-red-900/20"] h3[class*="dark:text-orange-100"] {
+  color: #ffedd5 !important; /* orange-100 */
+}
+.dark div[class*="from-orange-50"][class*="to-red-50"][class*="dark:from-orange-900/20"][class*="dark:to-red-900/20"] ul[class*="dark:text-orange-200"] li {
+  color: #fed7aa !important; /* orange-200 */
+}
+
+
+/* What's New: User Experience (Cyan/Teal Gradient) */
+.dark div[class*="from-cyan-50"][class*="to-teal-50"][class*="dark:from-cyan-900/20"][class*="dark:to-teal-900/20"] {
+  background-color: rgba(20, 83, 100, 0.2) !important; /* cyan-900/20 as base */
+  background-image: linear-gradient(to bottom right, rgba(20, 83, 100, 0.2), rgba(19, 78, 74, 0.2)) !important; /* cyan-900/20 to teal-900/20 */
+  border-color: #0e7490 !important; /* cyan-800 */
+  filter: none !important;
+  color-scheme: dark !important;
+}
+.dark div[class*="from-cyan-50"][class*="to-teal-50"][class*="dark:from-cyan-900/20"][class*="dark:to-teal-900/20"] h3[class*="dark:text-cyan-100"] {
+  color: #cffafe !important; /* cyan-100 */
+}
+.dark div[class*="from-cyan-50"][class*="to-teal-50"][class*="dark:from-cyan-900/20"][class*="dark:to-teal-900/20"] ul[class*="dark:text-cyan-200"] li {
+  color: #a5f3fc !important; /* cyan-200 */
+}
+
+
+/* What's New: Security & Privacy (Indigo/Purple Gradient) */
+.dark div[class*="from-indigo-50"][class*="to-purple-50"][class*="dark:from-indigo-900/20"][class*="dark:to-purple-900/20"] {
+  background-color: rgba(55, 48, 163, 0.2) !important; /* indigo-900/20 as base */
+  background-image: linear-gradient(to bottom right, rgba(55, 48, 163, 0.2), rgba(88, 28, 135, 0.2)) !important; /* indigo-900/20 to purple-900/20 */
+  border-color: #3730a3 !important; /* indigo-800 */
+  filter: none !important;
+  color-scheme: dark !important;
+}
+.dark div[class*="from-indigo-50"][class*="to-purple-50"][class*="dark:from-indigo-900/20"][class*="dark:to-purple-900/20"] h3[class*="dark:text-indigo-100"] {
+  color: #e0e7ff !important; /* indigo-100 */
+}
+.dark div[class*="from-indigo-50"][class*="to-purple-50"][class*="dark:from-indigo-900/20"][class*="dark:to-purple-900/20"] ul[class*="dark:text-indigo-200"] li {
+  color: #c7d2fe !important; /* indigo-200 */
+}
+
+/* What's New: Breaking Changes (Amber) */
+.dark div[class*="bg-amber-50"][class*="dark:bg-amber-900/20"] {
+  background-color: rgba(120, 53, 15, 0.2) !important; /* amber-900/20 */
+  border-color: #92400e !important; /* amber-800 */
+  filter: none !important;
+  color-scheme: dark !important;
+}
+.dark div[class*="bg-amber-50"][class*="dark:bg-amber-900/20"] h3[class*="dark:text-amber-100"] {
+  color: #fef3c7 !important; /* amber-100 */
+}
+.dark div[class*="bg-amber-50"][class*="dark:bg-amber-900/20"] ul[class*="dark:text-amber-200"] li {
+  color: #fde68a !important; /* amber-200 */
+}
+
+/* Docker Deployment: Available Tags (Green/Emerald Gradient) */
+.dark div[class*="from-green-50"][class*="to-emerald-50"][class*="dark:from-green-900/20"][class*="dark:to-emerald-900/20"] {
+  background-color: rgba(6, 78, 59, 0.2) !important; /* Using emerald-900/20 as a base */
+  background-image: linear-gradient(to bottom right, rgba(22, 101, 52, 0.2), rgba(6, 78, 59, 0.2)) !important; /* green-900/20 to emerald-900/20 */
+  border-color: #15803d !important; /* green-800 */
+  filter: none !important;
+  color-scheme: dark !important;
+}
+.dark div[class*="from-green-50"][class*="to-emerald-50"][class*="dark:from-green-900/20"][class*="dark:to-emerald-900/20"] h4[class*="text-green-900"] {
+  color: #dcfce7 !important; /* green-100 */
+}
+.dark div[class*="from-green-50"][class*="to-emerald-50"][class*="dark:from-green-900/20"][class*="dark:to-emerald-900/20"] ul[class*="dark:text-green-200"] li {
+  color: #bbf7d0 !important; /* green-200 */
+}
+
+/* Cards with Blue/Cyan Gradient (e.g., Quick Start Docker Hub, SearXNG Setup) */
+.dark div[class*="bg-gradient-to-r"][class*="from-blue-50"][class*="to-cyan-50"][class*="dark:from-blue-900/20"][class*="dark:to-cyan-900/20"] {
+  background-color: rgba(30, 58, 138, 0.2) !important; /* blue-900/20 as base */
+  background-image: linear-gradient(to right, rgba(30, 58, 138, 0.2), rgba(20, 83, 100, 0.2)) !important; /* blue-900/20 to cyan-900/20 */
+  border-color: #1e40af !important; /* blue-800 */
+  filter: none !important;
+  color-scheme: dark !important;
+}
+.dark div[class*="bg-gradient-to-r"][class*="from-blue-50"][class*="to-cyan-50"][class*="dark:from-blue-900/20"][class*="dark:to-cyan-900/20"] h3[class*="dark:text-blue-100"],
+.dark div[class*="bg-gradient-to-r"][class*="from-blue-50"][class*="to-cyan-50"][class*="dark:from-blue-900/20"][class*="dark:to-cyan-900/20"] h4[class*="dark:text-blue-100"] {
+  color: #dbeafe !important; /* blue-100 */
+}
+.dark div[class*="bg-gradient-to-r"][class*="from-blue-50"][class*="to-cyan-50"][class*="dark:from-blue-900/20"][class*="dark:to-cyan-900/20"] p[class*="dark:text-blue-200"],
+.dark div[class*="bg-gradient-to-r"][class*="from-blue-50"][class*="to-cyan-50"][class*="dark:from-blue-900/20"][class*="dark:to-cyan-900/20"] ul[class*="dark:text-blue-200"] li {
+  color: #bfdbfe !important; /* blue-200 */
+}
+
+/* Important Callout Box (Blue) */
+.dark div[class*="bg-blue-50"][class*="dark:bg-blue-900/20"][class*="rounded-lg"][class*="p-4"] {
+  background-color: rgba(30, 58, 138, 0.2) !important; /* blue-900/20 */
+  border-color: #1e40af !important; /* blue-800 */
+  filter: none !important;
+  color-scheme: dark !important;
+}
+
+/* Icon container within Important Callout */
+.dark div[class*="bg-blue-50"][class*="dark:bg-blue-900/20"][class*="rounded-lg"][class*="p-4"] div[class*="flex-shrink-0"][class*="bg-blue-100"][class*="dark:bg-blue-900/40"][class*="rounded-full"] {
+  background-color: rgba(30, 58, 138, 0.4) !important; /* blue-900/40 */
+}
+
+/* Icon text ("!") within Important Callout */
+.dark div[class*="bg-blue-50"][class*="dark:bg-blue-900/20"][class*="rounded-lg"][class*="p-4"] span[class*="text-blue-600"][class*="dark:text-blue-400"] {
+  color: #93c5fd !important; /* blue-400 */
+}
+
+/* Paragraph text within Important Callout */
+.dark div[class*="bg-blue-50"][class*="dark:bg-blue-900/20"][class*="rounded-lg"][class*="p-4"] p[class*="text-blue-800"][class*="dark:text-blue-200"] {
+  color: #bfdbfe !important; /* blue-200 */
+}
+/* Ensure strong tag within the paragraph also gets the color */
+.dark div[class*="bg-blue-50"][class*="dark:bg-blue-900/20"][class*="rounded-lg"][class*="p-4"] p[class*="text-blue-800"][class*="dark:text-blue-200"] strong {
+  color: #bfdbfe !important; /* blue-200, same as paragraph */
+}
+
+/* Automatic Updates Callout Box (Yellow) */
+.dark div[class*="bg-yellow-50"][class*="dark:bg-yellow-900/20"][class*="rounded-lg"][class*="p-4"] {
+  background-color: rgba(113, 63, 18, 0.2) !important; /* amber-900/20 */
+  border-color: #92400e !important; /* amber-800 */
+  filter: none !important;
+  color-scheme: dark !important;
+}
+
+/* Icon container within Yellow Callout */
+.dark div[class*="bg-yellow-50"][class*="dark:bg-yellow-900/20"][class*="rounded-lg"][class*="p-4"] div[class*="flex-shrink-0"][class*="bg-yellow-100"][class*="dark:bg-yellow-900/40"][class*="rounded-full"] {
+  background-color: rgba(113, 63, 18, 0.4) !important; /* amber-900/40 */
+}
+
+/* Icon text ("🔄") within Yellow Callout */
+.dark div[class*="bg-yellow-50"][class*="dark:bg-yellow-900/20"][class*="rounded-lg"][class*="p-4"] span[class*="text-yellow-600"][class*="dark:text-yellow-400"] {
+  color: #fcd34d !important; /* amber-400 */
+}
+
+/* Paragraph text within Yellow Callout */
+.dark div[class*="bg-yellow-50"][class*="dark:bg-yellow-900/20"][class*="rounded-lg"][class*="p-4"] p[class*="text-yellow-800"][class*="dark:text-yellow-200"] {
+  color: #fef08a !important; /* amber-200 */
+}
+/* Ensure strong tag within the paragraph also gets the color */
+.dark div[class*="bg-yellow-50"][class*="dark:bg-yellow-900/20"][class*="rounded-lg"][class*="p-4"] p[class*="text-yellow-800"][class*="dark:text-yellow-200"] strong {
+  color: #fef08a !important; /* amber-200, same as paragraph */
+}
+
+
+/* Configuration: SearXNG Setup Card (Blue/Cyan Gradient /20 opacity) */
+/* Container background and border */
+.dark div[class*="dark:from-blue-900/20"][class*="dark:to-cyan-900/20"][class*="border-blue-200"][class*="dark:border-blue-800"] {
+  background-image: linear-gradient(to bottom right, rgba(30, 58, 138, 0.2), rgba(22, 78, 99, 0.2)) !important; /* blue-900/20 to cyan-900/20 */
+  border-color: #1e3a8a !important; /* blue-800 */
+  filter: none !important;
+  color-scheme: dark !important;
+}
+
+/* Icon color */
+.dark div[class*="dark:from-blue-900/20"][class*="dark:to-cyan-900/20"] svg[class*="text-blue-600"][class*="dark:text-blue-400"] {
+  color: #93c5fd !important; /* blue-400 */
+}
+
+/* Heading color */
+.dark div[class*="dark:from-blue-900/20"][class*="dark:to-cyan-900/20"] h4[class*="font-semibold"][class*="text-blue-900"][class*="dark:text-blue-100"] {
+  color: #dbeafe !important; /* blue-100 */
+}
+
+/* Paragraph text color */
+.dark div[class*="dark:from-blue-900/20"][class*="dark:to-cyan-900/20"] p[class*="text-sm"][class*="text-blue-800"][class*="dark:text-blue-200"] {
+  color: #bfdbfe !important; /* blue-200 */
+}
+
+/* List items color */
+.dark div[class*="dark:from-blue-900/20"][class*="dark:to-cyan-900/20"] ul[class*="text-sm"][class*="text-blue-800"][class*="dark:text-blue-200"] li {
+  color: #bfdbfe !important; /* blue-200 */
+}
+
+
+/* Configuration: Ollama Configuration Card (Purple/Pink Gradient /20 opacity) */
+/* Container background and border */
+.dark div[class*="dark:from-purple-900/20"][class*="dark:to-pink-900/20"][class*="border-purple-200"][class*="dark:border-purple-800"] {
+  background-image: linear-gradient(to bottom right, rgba(88, 28, 135, 0.2), rgba(131, 24, 67, 0.2)) !important; /* purple-900/20 to pink-900/20 */
+  border-color: #6b21a8 !important; /* purple-800 */
+  filter: none !important;
+  color-scheme: dark !important;
+}
+
+/* Icon color */
+.dark div[class*="dark:from-purple-900/20"][class*="dark:to-pink-900/20"] svg[class*="text-purple-600"][class*="dark:text-purple-400"] {
+  color: #c084fc !important; /* purple-400 */
+}
+
+/* Heading color */
+.dark div[class*="dark:from-purple-900/20"][class*="dark:to-pink-900/20"] h4[class*="font-semibold"][class*="text-purple-900"][class*="dark:text-purple-100"] {
+  color: #f3e8ff !important; /* purple-100 */
+}
+
+/* Paragraph text color */
+.dark div[class*="dark:from-purple-900/20"][class*="dark:to-pink-900/20"] p[class*="text-sm"][class*="text-purple-800"][class*="dark:text-purple-200"] {
+  color: #e9d5ff !important; /* purple-200 */
+}
+
+/* List items color */
+.dark div[class*="dark:from-purple-900/20"][class*="dark:to-pink-900/20"] ul[class*="text-sm"][class*="text-purple-800"][class*="dark:text-purple-200"] li {
+  color: #e9d5ff !important; /* purple-200 */
+}
+
+/* Strong tag within list items color */
+.dark div[class*="dark:from-purple-900/20"][class*="dark:to-pink-900/20"] ul[class*="text-sm"][class*="text-purple-800"][class*="dark:text-purple-200"] li strong {
+  color: #e9d5ff !important; /* purple-200, same as list item */
+}
+
+
+/* Architecture: How It All Works Together Card (Secondary-800/50 to Blue-900/20 Gradient) */
+/* Container background and border */
+.dark div[class*="dark:from-secondary-800/50"][class*="dark:to-blue-900/20"][class*="dark:border-secondary-700"] {
+  background-image: linear-gradient(to bottom right, hsla(240, 3.7%, 15%, 0.5), rgba(30, 58, 138, 0.2)) !important;
+  border-color: hsl(var(--secondary-700)) !important; /* Using HSL variable */
+  filter: none !important;
+  color-scheme: dark !important;
+}
+
+/* Heading h3 color */
+.dark div[class*="dark:from-secondary-800/50"][class*="dark:to-blue-900/20"] h3[class*="text-lg"] {
+  color: hsl(var(--text-primary)) !important; /* Or a specific light color like #FFFFFF */
+}
+
+/* Paragraph text color */
+.dark div[class*="dark:from-secondary-800/50"][class*="dark:to-blue-900/20"] p {
+  color: hsl(var(--text-secondary)) !important; /* Or a specific light color like #E2E8F0 */
+}
+
+/* List items color */
+.dark div[class*="dark:from-secondary-800/50"][class*="dark:to-blue-900/20"] ul li {
+  color: hsl(var(--text-secondary)) !important; /* Or a specific light color like #E2E8F0 */
+}
+
+/* Strong tag within list items color */
+.dark div[class*="dark:from-secondary-800/50"][class*="dark:to-blue-900/20"] ul li strong {
+  color: hsl(var(--text-secondary)) !important; /* Consistent with list item text */
+}
+
+
+/* Contributing: Join Our Mission Card (Green/Emerald Gradient /20 opacity) */
+/* Container background and border */
+.dark div[class*="dark:from-green-900/20"][class*="dark:to-emerald-900/20"][class*="dark:border-green-800"] {
+  background-image: linear-gradient(to bottom right, rgba(20, 83, 45, 0.2), rgba(6, 78, 59, 0.2)) !important; /* green-900/20 to emerald-900/20 */
+  border-color: rgb(22, 101, 52) !important; /* green-800 */
+  filter: none !important;
+  color-scheme: dark !important;
+}
+
+/* Heading h3 color */
+.dark div[class*="dark:from-green-900/20"][class*="dark:to-emerald-900/20"] h3[class*="dark:text-green-100"] {
+  color: rgb(220, 252, 231) !important; /* green-100 */
+}
+
+/* Paragraph text color */
+.dark div[class*="dark:from-green-900/20"][class*="dark:to-emerald-900/20"] p[class*="dark:text-green-200"] {
+  color: rgb(187, 247, 208) !important; /* green-200 */
+}
+
+/* Pill background color */
+.dark div[class*="dark:from-green-900/20"][class*="dark:to-emerald-900/20"] span[class*="dark:bg-green-900/40"] {
+  background-color: rgba(20, 83, 45, 0.4) !important; /* green-900/40 */
+}
+
+/* Pill text color */
+.dark div[class*="dark:from-green-900/20"][class*="dark:to-emerald-900/20"] span[class*="dark:text-green-200"] {
+  color: rgb(187, 247, 208) !important; /* green-200 */
+}
+
+
+/* Contributing: Fork & Branch Card (Blue/Indigo Gradient /20 opacity) */
+/* Container background and border */
+.dark div[class*="dark:from-blue-900/20"][class*="dark:to-indigo-900/20"][class*="dark:border-blue-800"] {
+  background-image: linear-gradient(to bottom right, rgba(30, 58, 138, 0.2), rgba(49, 46, 129, 0.2)) !important; /* blue-900/20 to indigo-900/20 */
+  border-color: rgb(30, 64, 175) !important; /* blue-800 */
+  filter: none !important;
+  color-scheme: dark !important;
+}
+
+/* Numbered circle background */
+.dark div[class*="dark:from-blue-900/20"][class*="dark:to-indigo-900/20"] div[class*="dark:bg-blue-900/40"][class*="rounded-full"] {
+  background-color: rgba(30, 58, 138, 0.4) !important; /* blue-900/40 */
+}
+
+/* Number text in circle */
+.dark div[class*="dark:from-blue-900/20"][class*="dark:to-indigo-900/20"] div[class*="dark:bg-blue-900/40"][class*="rounded-full"] span[class*="dark:text-blue-400"] {
+  color: rgb(96, 165, 250) !important; /* blue-400 */
+}
+
+/* Heading h4 color */
+.dark div[class*="dark:from-blue-900/20"][class*="dark:to-indigo-900/20"] h4[class*="dark:text-blue-100"] {
+  color: rgb(219, 234, 254) !important; /* blue-100 */
+}
+
+/* Paragraph text color */
+.dark div[class*="dark:from-blue-900/20"][class*="dark:to-indigo-900/20"] p[class*="dark:text-blue-200"] {
+  color: rgb(191, 219, 254) !important; /* blue-200 */
+}
+
+/* Inline code background in paragraph */
+.dark div[class*="dark:from-blue-900/20"][class*="dark:to-indigo-900/20"] p code[class*="dark:bg-blue-900/40"] {
+  background-color: rgba(30, 58, 138, 0.4) !important; /* blue-900/40 */
+}
+
+/* Inline code text in paragraph (inherits dark:text-blue-200 from p, but explicit override for robustness) */
+.dark div[class*="dark:from-blue-900/20"][class*="dark:to-indigo-900/20"] p code[class*="dark:bg-blue-900/40"] {
+  color: rgb(191, 219, 254) !important; /* blue-200 */
+}
+
+/* Code block container background */
+.dark div[class*="dark:from-blue-900/20"][class*="dark:to-indigo-900/20"] div[class*="p-3"][class*="dark:bg-blue-900/40"] {
+  background-color: rgba(30, 58, 138, 0.4) !important; /* blue-900/40 */
+}
+
+/* Code text in code block */
+.dark div[class*="dark:from-blue-900/20"][class*="dark:to-indigo-900/20"] div[class*="p-3"][class*="dark:bg-blue-900/40"] code[class*="dark:text-blue-200"] {
+  color: rgb(191, 219, 254) !important; /* blue-200 */
+}
+
+
+/* Contributing: Code Quality Card (Purple/Pink Gradient /20 opacity) */
+/* Container background and border */
+.dark div[class*="dark:from-purple-900/20"][class*="dark:to-pink-900/20"][class*="dark:border-purple-800"] {
+  background-image: linear-gradient(to bottom right, rgba(88, 28, 135, 0.2), rgba(131, 24, 67, 0.2)) !important;
+  border-color: rgb(107, 33, 168) !important;
+  filter: none !important;
+  color-scheme: dark !important;
+}
+
+/* Numbered circle background */
+.dark div[class*="dark:from-purple-900/20"][class*="dark:to-pink-900/20"] div[class*="flex-shrink-0"][class*="dark:bg-purple-900/40"] {
+  background-color: rgba(88, 28, 135, 0.4) !important;
+}
+
+/* Number text in circle */
+.dark div[class*="dark:from-purple-900/20"][class*="dark:to-pink-900/20"] div[class*="flex-shrink-0"][class*="dark:bg-purple-900/40"] span {
+  color: rgb(192, 132, 252) !important; /* purple-400 */
+}
+
+/* Heading h4 color */
+.dark div[class*="dark:from-purple-900/20"][class*="dark:to-pink-900/20"] h4 {
+  color: rgb(243, 232, 255) !important; /* purple-100 */
+}
+
+/* Paragraph text color */
+.dark div[class*="dark:from-purple-900/20"][class*="dark:to-pink-900/20"] p {
+  color: rgb(233, 213, 255) !important; /* purple-200 */
+}
+
+/* List items color */
+.dark div[class*="dark:from-purple-900/20"][class*="dark:to-pink-900/20"] ul li {
+  color: rgb(233, 213, 255) !important; /* purple-200 */
+}
+
+
+/* Contributing: Pull Request Card (Green/Teal Gradient /20 opacity) */
+/* Container background and border */
+.dark div[class*="dark:from-green-900/20"][class*="dark:to-teal-900/20"][class*="dark:border-green-800"] {
+  background-image: linear-gradient(to bottom right, rgba(20, 83, 45, 0.2), rgba(19, 78, 74, 0.2)) !important;
+  border-color: rgb(22, 101, 52) !important;
+  filter: none !important;
+  color-scheme: dark !important;
+}
+
+/* Numbered circle background */
+.dark div[class*="dark:from-green-900/20"][class*="dark:to-teal-900/20"] div[class*="flex-shrink-0"][class*="dark:bg-green-900/40"] {
+  background-color: rgba(20, 83, 45, 0.4) !important;
+}
+
+/* Number text in circle */
+.dark div[class*="dark:from-green-900/20"][class*="dark:to-teal-900/20"] div[class*="flex-shrink-0"][class*="dark:bg-green-900/40"] span {
+  color: rgb(74, 222, 128) !important; /* green-400 */
+}
+
+/* Heading h4 color */
+.dark div[class*="dark:from-green-900/20"][class*="dark:to-teal-900/20"] h4 {
+  color: rgb(220, 252, 231) !important; /* green-100 */
+}
+
+/* Paragraph text color */
+.dark div[class*="dark:from-green-900/20"][class*="dark:to-teal-900/20"] p {
+  color: rgb(187, 247, 208) !important; /* green-200 */
+}
+
+/* List items color */
+.dark div[class*="dark:from-green-900/20"][class*="dark:to-teal-900/20"] ul li {
+  color: rgb(187, 247, 208) !important; /* green-200 */
+}
+
+/* Architecture: Frontend Card (Blue) */
+.dark div[class*="bg-blue-50"][class*="dark:bg-blue-900/20"] ul[class*="dark:text-blue-200"] li {
+  color: #bfdbfe !important; /* blue-200 */
+}
+
+/* Architecture: Search Engine Card (Green) */
+.dark div[class*="bg-green-50"][class*="dark:bg-green-900/20"] ul[class*="dark:text-green-200"] li {
+  color: #bbf7d0 !important; /* green-200 */
+}
+
+/* Architecture: AI Processing Card (Purple) */
+.dark div[class*="bg-purple-50"][class*="dark:bg-purple-900/20"] ul[class*="dark:text-purple-200"] li {
+  color: #e9d5ff !important; /* purple-200 */
+}
+
+/* Architecture: Infrastructure Card (Orange) */
+.dark div[class*="bg-orange-50"][class*="dark:bg-orange-900/20"] ul[class*="dark:text-orange-200"] li {
+  color: #fed7aa !important; /* orange-200 */
+}
+
+/* Contributing: Pull Request Card (Green/Teal Gradient) */
+.dark div[class*="from-green-50"][class*="to-teal-50"][class*="dark:from-green-900/20"][class*="dark:to-teal-900/20"] ul[class*="dark:text-green-200"] li {
+  color: #bbf7d0 !important; /* green-200 */
+}
+
+/* Contributing: Feature Requests Card (Indigo) */
+.dark div[class*="bg-indigo-50"][class*="dark:bg-indigo-900/20"] ul[class*="dark:text-indigo-200"] li {
+  color: #c7d2fe !important; /* indigo-200 */
+}
+
+/* Contributing: Code Style Guidelines Card (Blue/Purple Gradient) */
+.dark div[class*="from-blue-50"][class*="to-purple-50"][class*="dark:from-blue-900/20"][class*="dark:to-purple-900/20"] ul[class*="dark:text-blue-300"] li {
+  color: #93c5fd !important; /* blue-300 */
+}
+
+/* CHROME FLICKER FIX: Aggressively disable transitions/animations for theme changes */
+/* This targets WebKit/Blink browsers (Chrome, Safari, Edge, Opera) */
+@media screen and (-webkit-min-device-pixel-ratio:0) and (min-resolution:.001dpcm) {
+  html,
+  body,
+  html *,
+  body * {
+    transition-property: none !important;
+    transition-duration: 0s !important;
+    transition-timing-function: step-start !important;
+    transition-delay: 0s !important;
+    animation-name: none !important;
+    animation-duration: 0s !important;
+
+    transition: none !important;
+    animation: none !important;
+  }
+
+  html, body {
+    transition-property: color, background-color, background, border-color, opacity, transform !important;
+    transition-duration: 0s !important;
+  }
+}
+
+/* What's New: Holographic Shard Design System (Pink/Rose Gradient) */
+.dark a[class*="from-pink-50"][class*="to-rose-50"] {
+  background-color: rgba(131, 24, 67, 0.5) !important; /* pink-900/50 as base */
+  background-image: linear-gradient(to bottom right, rgba(131, 24, 67, 0.5), rgba(159, 18, 57, 0.5)) !important; /* pink-900/50 to rose-800/50 */
+  border-color: #be185d !important; /* pink-700 */
+  filter: none !important;
+  color-scheme: dark !important;
+}
+.dark a[class*="from-pink-50"][class*="to-rose-50"] h3[class*="text-pink-900"] {
+  color: #fce7f3 !important; /* pink-100 */
+}
+.dark a[class*="from-pink-50"][class*="to-rose-50"] ul li[class*="text-pink-800"] {
+  color: #fbcfe8 !important; /* pink-200 */
+}
+/* What's New: Technical Improvements (Orange/Red Gradient) */
+.dark div[class*="from-orange-50"][class*="to-red-50"][class*="dark:from-orange-900/20"][class*="dark:to-red-900/20"] {
+  background-color: rgba(124, 45, 18, 0.2) !important; /* orange-900/20 as base */
+  background-image: linear-gradient(to bottom right, rgba(124, 45, 18, 0.2), rgba(127, 29, 29, 0.2)) !important; /* orange-900/20 to red-900/20 */
+  border-color: #9a3412 !important; /* orange-800 */
+  filter: none !important;
+  color-scheme: dark !important;
+}
+.dark div[class*="from-orange-50"][class*="to-red-50"][class*="dark:from-orange-900/20"][class*="dark:to-red-900/20"] h3[class*="text-orange-900"] {
+  color: #fff7ed !important; /* orange-100 */
+}
+.dark div[class*="from-orange-50"][class*="to-red-50"][class*="dark:from-orange-900/20"][class*="dark:to-red-900/20"] ul li[class*="text-orange-800"] {
+  color: #ffedd5 !important; /* orange-200 */
+}
+
+/* What's New: User Experience (Cyan/Teal Gradient) */
+.dark div[class*="from-cyan-50"][class*="to-teal-50"][class*="dark:from-cyan-900/20"][class*="dark:to-teal-900/20"] {
+  background-color: rgba(22, 78, 99, 0.2) !important; /* cyan-900/20 as base */
+  background-image: linear-gradient(to bottom right, rgba(22, 78, 99, 0.2), rgba(19, 78, 74, 0.2)) !important; /* cyan-900/20 to teal-900/20 */
+  border-color: #0e7490 !important; /* cyan-800 */
+  filter: none !important;
+  color-scheme: dark !important;
+}
+.dark div[class*="from-cyan-50"][class*="to-teal-50"][class*="dark:from-cyan-900/20"][class*="dark:to-teal-900/20"] h3[class*="text-cyan-900"] {
+  color: #ecfeff !important; /* cyan-100 */
+}
+.dark div[class*="from-cyan-50"][class*="to-teal-50"][class*="dark:from-cyan-900/20"][class*="dark:to-teal-900/20"] ul li[class*="text-cyan-800"] {
+  color: #cffafe !important; /* cyan-200 */
+}
+
+/* What's New: Security & Privacy (Indigo/Purple Gradient) */
+.dark div[class*="from-indigo-50"][class*="to-purple-50"] {
+  background-image: linear-gradient(to bottom right, rgba(49, 46, 129, 0.5), rgba(88, 28, 135, 0.5)) !important; /* indigo-900/50 to purple-900/50 */
+  border-color: #5b21b6 !important; /* purple-700 */
+}
+.dark div[class*="from-indigo-50"][class*="to-purple-50"] h3[class*="text-indigo-900"] {
+  color: #e0e7ff !important; /* indigo-100 */
+}
+.dark div[class*="from-indigo-50"][class*="to-purple-50"] ul li[class*="text-indigo-800"],
+.dark div[class*="from-indigo-50"][class*="to-purple-50"] ul li[class*="text-purple-800"] {
+  color: #e9d5ff !important; /* purple-200 */
+}
+
+/* Breaking Changes Card (Amber - bg-amber-900/10) */
+.dark div[class*="bg-amber-50"][class*="dark:bg-amber-900/10"] {
+  background-color: rgba(120, 53, 15, 0.1) !important; /* amber-900/10 */
+  border-color: rgba(180, 83, 9, 0.4) !important; /* amber-700/40 */
+}
+.dark div[class*="bg-amber-50"] p[class*="text-amber-900"] {
+  color: #fef3c7 !important; /* amber-100 */
+}
+.dark div[class*="bg-amber-50"] ul li strong[class*="text-amber-800"] {
+  color: #fde68a !important; /* amber-200 */
+}
+/* Ensure general list item text within this card is also light */
+.dark div[class*="bg-amber-50"][class*="dark:bg-amber-900/10"] ul li {
+  color: #fde68a !important; /* amber-200, for any text not in strong */
+}
+
+/* Getting Started: Prerequisites Card (Blue Solid Background Div) & Configuration: Core Settings Card */
+.dark div[class*="bg-blue-50"]:not(a) {
+  background-color: rgba(30, 58, 138, 0.2) !important; /* blue-900/20 or /30 - using /20 for consistency, can adjust if /30 is visually distinct */
+  border-color: #1e40af !important; /* blue-800 */
+}
+.dark div[class*="bg-blue-50"]:not(a) h4[class*="text-blue-900"] {
+  color: #dbeafe !important; /* blue-100 */
+}
+.dark div[class*="bg-blue-50"]:not(a) ul li[class*="text-blue-800"] {
+  color: #bfdbfe !important; /* blue-200 */
+}
+
+/* Getting Started: Informational Note Block (Sky Blue Solid Background Div) */
+.dark div[class*="bg-sky-50"]:not(a) {
+  background-color: rgba(12, 74, 110, 0.2) !important; /* sky-900/20 */
+  border-color: #075985 !important; /* sky-800 */
+}
+.dark div[class*="bg-sky-50"]:not(a) p[class*="text-sky-800"] {
+  color: #bae6fd !important; /* sky-200 */
+}
+
+/* Configuration: AI Integration Card & Architecture: AI Processing Card (Purple Solid Background Div) */
+.dark div[class*="bg-purple-50"]:not(a) {
+  background-color: rgba(88, 28, 135, 0.3) !important; /* purple-900/30 */
+  border-color: #6b21a8 !important; /* purple-800 */
+}
+.dark div[class*="bg-purple-50"]:not(a) h4[class*="text-purple-900"] {
+  color: #f3e8ff !important; /* purple-100 */
+}
+.dark div[class*="bg-purple-50"]:not(a) ul li[class*="text-purple-800"] {
+  color: #e9d5ff !important; /* purple-200 */
+}
+
+/* Architecture: Infrastructure Card & Contributing: Reporting Issues Card (Orange Solid Background Div) */
+.dark div[class*="bg-orange-50"]:not(a) {
+  background-color: rgba(124, 45, 18, 0.3) !important; /* orange-900/30 */
+  border-color: #9a3412 !important; /* orange-800 */
+}
+.dark div[class*="bg-orange-50"]:not(a) h4[class*="text-orange-900"] {
+  color: #fff7ed !important; /* orange-100 */
+}
+.dark div[class*="bg-orange-50"]:not(a) ul li[class*="text-orange-800"],
+.dark div[class*="bg-orange-50"]:not(a) p[class*="text-orange-800"] {
+  color: #ffedd5 !important; /* orange-200 */
+}
+
+/* Contributing: Feature Requests Card (Indigo Solid Background Div) */
+.dark div[class*="bg-indigo-50"]:not(a) {
+  background-color: rgba(49, 46, 129, 0.3) !important; /* indigo-900/30 */
+  border-color: #4338ca !important; /* indigo-800 */
+}
+.dark div[class*="bg-indigo-50"]:not(a) h4[class*="text-indigo-900"] {
+  color: #e0e7ff !important; /* indigo-100 */
+}
+.dark div[class*="bg-indigo-50"]:not(a) ul li[class*="text-indigo-800"],
+.dark div[class*="bg-indigo-50"]:not(a) p[class*="text-indigo-800"] {
+  color: #c7d2fe !important; /* indigo-200 */
+}
+
+/* Getting Started: Docker Desktop (Blue/Sky Gradient Div) */
+.dark div[class*="from-blue-50"][class*="to-sky-50"] {
+  background-image: linear-gradient(to bottom right, rgba(30, 64, 175, 0.5), rgba(14, 116, 144, 0.5)) !important; /* blue-800/50 to sky-800/50 */
+  border-color: #1d4ed8 !important; /* blue-700 */
+}
+.dark div[class*="from-blue-50"][class*="to-sky-50"] h4[class*="text-blue-900"] {
+  color: #dbeafe !important; /* blue-100 */
+}
+.dark div[class*="from-blue-50"][class*="to-sky-50"] ul li[class*="text-blue-800"] {
+  color: #bfdbfe !important; /* blue-200 */
+}
+
+/* Getting Started: Manual Setup (Purple/Fuchsia Gradient Div) */
+.dark div[class*="from-purple-50"][class*="to-fuchsia-50"] {
+  background-image: linear-gradient(to bottom right, rgba(88, 28, 135, 0.5), rgba(134, 25, 143, 0.5)) !important; /* purple-900/50 to fuchsia-800/50 */
+  border-color: #7e22ce !important; /* purple-700 */
+}
+.dark div[class*="from-purple-50"][class*="to-fuchsia-50"] h4[class*="text-purple-900"] {
+  color: #f3e8ff !important; /* purple-100 */
+}
+.dark div[class*="from-purple-50"][class*="to-fuchsia-50"] ul li[class*="text-purple-800"] {
+  color: #e9d5ff !important; /* purple-200 */
+}
+
+/* Configuration: Deployment Options (Green/Lime Gradient Div) */
+.dark div[class*="from-green-50"][class*="to-lime-50"] {
+  background-image: linear-gradient(to bottom right, rgba(22, 101, 52, 0.5), rgba(77, 124, 15, 0.5)) !important; /* green-800/50 to lime-800/50 */
+  border-color: #16a34a !important; /* green-700 */
+}
+.dark div[class*="from-green-50"][class*="to-lime-50"] h4[class*="text-green-900"] {
+  color: #dcfce7 !important; /* green-100 */
+}
+.dark div[class*="from-green-50"][class*="to-lime-50"] ul li[class*="text-green-800"] {
+  color: #bbf7d0 !important; /* green-200 */
+}
+
+/* Configuration: Automatic Updates (Teal/Cyan Gradient Div) */
+.dark div[class*="from-teal-50"][class*="to-cyan-50"] {
+  background-image: linear-gradient(to bottom right, rgba(19, 78, 74, 0.5), rgba(22, 78, 99, 0.5)) !important; /* teal-900/50 to cyan-900/50 */
+  border-color: #0d9488 !important; /* teal-700 */
+}
+.dark div[class*="from-teal-50"][class*="to-cyan-50"] h4[class*="text-teal-900"] {
+  color: #ccfbf1 !important; /* teal-100 */
+}
+.dark div[class*="from-teal-50"][class*="to-cyan-50"] ul li[class*="text-teal-800"] {
+  color: #99f6e4 !important; /* teal-200 */
+}
+
+/* Architecture: Data Flow & Contributing: Fork & Branch (Blue/Indigo Gradient Div) */
+.dark div[class*="from-blue-50"][class*="to-indigo-50"]:not(a) {
+  background-image: linear-gradient(to bottom right, rgba(30, 58, 138, 0.5), rgba(49, 46, 129, 0.5)) !important; /* blue-900/50 to indigo-900/50 */
+  border-color: #1e40af !important; /* blue-800 */
+}
+.dark div[class*="from-blue-50"][class*="to-indigo-50"]:not(a) h4[class*="text-blue-900"] {
+  color: #dbeafe !important; /* blue-100 */
+}
+.dark div[class*="from-blue-50"][class*="to-indigo-50"]:not(a) p[class*="text-blue-800"],
+.dark div[class*="from-blue-50"][class*="to-indigo-50"]:not(a) ul li[class*="text-blue-800"] {
+  color: #bfdbfe !important; /* blue-200 */
+}
+
+/* Contributing: Join Our Mission (Green/Emerald Gradient Div) */
+.dark div[class*="from-green-50"][class*="to-emerald-50"]:not(a) {
+  background-image: linear-gradient(to bottom right, rgba(20, 83, 45, 0.5), rgba(6, 78, 59, 0.5)) !important; /* green-900/50 to emerald-900/50 */
+  border-color: #10b981 !important; /* emerald-600 as -700 is very dark */
+}
+.dark div[class*="from-green-50"][class*="to-emerald-50"]:not(a) h3[class*="text-green-900"] {
+  color: #dcfce7 !important; /* green-100 */
+}
+.dark div[class*="from-green-50"][class*="to-emerald-50"]:not(a) p[class*="text-green-800"] {
+  color: #bbf7d0 !important; /* green-200 */
+}
+
+/* Contributing: Code Style Guidelines (Blue/Purple Gradient Div) */
+.dark div[class*="from-blue-50"][class*="to-purple-50"]:not(a) {
+  background-image: linear-gradient(to bottom right, rgba(30, 58, 138, 0.5), rgba(88, 28, 135, 0.5)) !important; /* blue-900/50 to purple-900/50 */
+  border-color: #6d28d9 !important; /* purple-700 */
+}
+.dark div[class*="from-blue-50"][class*="to-purple-50"]:not(a) h4[class*="text-blue-900"] {
+  color: #dbeafe !important; /* blue-100 */
+}
+.dark div[class*="from-blue-50"][class*="to-purple-50"]:not(a) h5[class*="text-blue-800"] {
+  color: #bfdbfe !important; /* blue-200 */
+}
+.dark div[class*="from-blue-50"][class*="to-purple-50"]:not(a) ul li[class*="text-blue-700"] {
+  color: #93c5fd !important; /* blue-300, slightly lighter for -700 base text */
+}
+
+/* Architecture: System Components (Slate/Gray Gradient Div) */
+.dark div[class*="from-slate-50"][class*="to-gray-50"] {
+  background-image: linear-gradient(to bottom right, rgba(51, 65, 85, 0.5), rgba(75, 85, 99, 0.5)) !important; /* slate-800/50 to gray-700/50 */
+  border-color: #334155 !important; /* slate-700 */
+}
+.dark div[class*="from-slate-50"][class*="to-gray-50"] h3[class*="text-slate-900"] {
+  color: #f1f5f9 !important; /* slate-100 */
+}
+.dark div[class*="from-slate-50"][class*="to-gray-50"] ul li[class*="text-slate-800"] {
+  color: #e2e8f0 !important; /* slate-200 */
+}
+
+/* Dark Mode Readability Fix: Important Block (Blue) */
+.dark div[class*="dark:bg-blue-900/30"] p[class*="dark:text-blue-200"] {
+  color: #dbeafe !important; /* Tailwind blue-100, was blue-200 */
+}
+
+/* Dark Mode Readability Fix: Quick Start with Docker Hub (Blue/Sky Gradient) - Paragraph text */
+.dark div[class*="dark:from-blue-800/80"][class*="dark:to-sky-700/80"] p[class*="dark:text-blue-200"] {
+  color: #eff6ff !important; /* Tailwind blue-50, was blue-200 */
+}
+
+/* Dark Mode Readability Fix: Available Tags (Green/Emerald Gradient) - List item text */
+.dark div[class*="dark:from-green-800/80"][class*="dark:to-emerald-700/80"] ul li[class*="dark:text-green-200"] {
+  color: #f0fdf4 !important; /* Tailwind green-50, was green-200 */
+}
+
+/* Dark Mode Readability Fix: Key Environment Variables (Purple/Fuchsia Gradient) - List item text */
+.dark div[class*="dark:from-purple-800/80"][class*="dark:to-fuchsia-700/80"] ul li[class*="dark:text-purple-200"] {
+  color: #faf5ff !important; /* Tailwind purple-50, was purple-200 */
+}
+
+/* Automatic Updates Card (Amber - bg-amber-900/20) */
+.dark div[class*="bg-amber-50"][class*="dark:bg-amber-900/20"] {
+  background-color: rgba(120, 53, 15, 0.2) !important; /* amber-900/20 */
+  background-image: none !important;
+  border-color: #92400e !important; /* amber-800 */
+  filter: none !important;
+  color-scheme: dark !important;
+}
+.dark div[class*="bg-amber-50"][class*="dark:bg-amber-900/20"] h3[class*="text-amber-900"] {
+  color: #fef3c7 !important; /* amber-100 */
+}
+.dark div[class*="bg-amber-50"][class*="dark:bg-amber-900/20"] ul li[class*="text-amber-800"] {
+  color: #fde68a !important; /* amber-200 */
+}
+.dark div[class*="bg-amber-50"][class*="dark:bg-amber-900/20"] ul li strong {
+  color: #fef3c7 !important; /* amber-100 for strong tags */
+}
+
+.dark div[class*="bg-amber-50"][class*="dark:bg-amber-900/20"] p[class*="dark:text-amber-300"] {
+  color: #fef3c7 !important; /* amber-100, was amber-300 */
+}
+
+/* Getting Started: Installation Card (Green - div) */
+.dark div[class*="bg-green-50"][class*="dark:bg-green-900/20"] {
+  background-color: rgba(22, 101, 52, 0.2) !important; /* green-900/20 */
+  background-image: none !important;
+  border-color: #166534 !important; /* green-800 */
+  filter: none !important;
+  color-scheme: dark !important;
+}
+.dark div[class*="bg-green-50"][class*="dark:bg-green-900/20"] h4[class*="text-green-900"] {
+  color: #dcfce7 !important; /* green-100 */
+}
+.dark div[class*="bg-green-50"][class*="dark:bg-green-900/20"] p[class*="text-green-800"] {
+  color: #bbf7d0 !important; /* green-200 */
+}
+
+/* Getting Started: Configuration Card (Sky - div) */
+.dark div[class*="bg-sky-50"][class*="dark:bg-sky-900/20"] {
+  background-color: rgba(12, 74, 110, 0.2) !important; /* sky-900/20 */
+  background-image: none !important;
+  border-color: #075985 !important; /* sky-800 */
+  filter: none !important;
+  color-scheme: dark !important;
+}
+.dark div[class*="bg-sky-50"][class*="dark:bg-sky-900/20"] h4[class*="text-sky-900"] {
+  color: #f0f9ff !important; /* sky-100 */
+}
+.dark div[class*="bg-sky-50"][class*="dark:bg-sky-900/20"] p[class*="text-sky-800"] {
+  color: #e0f2fe !important; /* sky-200 */
+}
+
+/* Getting Started: Usage Card (Violet - div) */
+.dark div[class*="bg-violet-50"][class*="dark:bg-violet-900/20"] {
+  background-color: rgba(76, 29, 149, 0.2) !important; /* violet-900/20 */
+  background-image: none !important;
+  border-color: #5b21b6 !important; /* violet-800 */
+  filter: none !important;
+  color-scheme: dark !important;
+}
+.dark div[class*="bg-violet-50"][class*="dark:bg-violet-900/20"] h4[class*="text-violet-900"] {
+  color: #ede9fe !important; /* violet-100 */
+}
+.dark div[class*="bg-violet-50"][class*="dark:bg-violet-900/20"] p[class*="text-violet-800"] {
+  color: #ddd6fe !important; /* violet-200 */
+}
+
+/* Core Concepts: Knowledge Bases Card (Rose - div) */
+.dark div[class*="bg-rose-50"][class*="dark:bg-rose-900/20"] {
+  background-color: rgba(136, 19, 55, 0.2) !important; /* rose-900/20 */
+  background-image: none !important;
+  border-color: #9f1239 !important; /* rose-800 */
+  filter: none !important;
+  color-scheme: dark !important;
+}
+.dark div[class*="bg-rose-50"][class*="dark:bg-rose-900/20"] h4[class*="text-rose-900"] {
+  color: #ffe4e6 !important; /* rose-100 */
+}
+.dark div[class*="bg-rose-50"][class*="dark:bg-rose-900/20"] p[class*="text-rose-800"] {
+  color: #fecdd3 !important; /* rose-200 */
+}
+
+/* Core Concepts: Data Ingestion Card (Fuchsia - div) */
+.dark div[class*="bg-fuchsia-50"][class*="dark:bg-fuchsia-900/20"] {
+  background-color: rgba(112, 26, 117, 0.2) !important; /* fuchsia-900/20 */
+  background-image: none !important;
+  border-color: #86198f !important; /* fuchsia-800 */
+  filter: none !important;
+  color-scheme: dark !important;
+}
+.dark div[class*="bg-fuchsia-50"][class*="dark:bg-fuchsia-900/20"] h4[class*="text-fuchsia-900"] {
+  color: #fae8ff !important; /* fuchsia-100 */
+}
+.dark div[class*="bg-fuchsia-50"][class*="dark:bg-fuchsia-900/20"] p[class*="text-fuchsia-800"] {
+  color: #f5d0fe !important; /* fuchsia-200 */
+}
+
+/* Core Concepts: Search & Retrieval Card (Pink - div) */
+.dark div[class*="bg-pink-50"][class*="dark:bg-pink-900/20"] {
+  background-color: rgba(131, 24, 67, 0.2) !important; /* pink-900/20 */
+  background-image: none !important;
+  border-color: #9d174d !important; /* pink-800 */
+  filter: none !important;
+  color-scheme: dark !important;
+}
+.dark div[class*="bg-pink-50"][class*="dark:bg-pink-900/20"] h4[class*="text-pink-900"] {
+  color: #fce7f3 !important; /* pink-100 */
+}
+.dark div[class*="bg-pink-50"][class*="dark:bg-pink-900/20"] p[class*="text-pink-800"] {
+  color: #fbcfe8 !important; /* pink-200 */
+}
+
+/* Advanced Topics: API Endpoints Card (Slate - div) */
+.dark div[class*="bg-slate-50"][class*="dark:bg-slate-900/20"] {
+  background-color: rgba(15, 23, 42, 0.2) !important; /* slate-900/20 */
+  background-image: none !important;
+  border-color: #1e293b !important; /* slate-800 */
+  filter: none !important;
+  color-scheme: dark !important;
+}
+.dark div[class*="bg-slate-50"][class*="dark:bg-slate-900/20"] h4[class*="text-slate-900"] {
+  color: #f1f5f9 !important; /* slate-100 */
+}
+.dark div[class*="bg-slate-50"][class*="dark:bg-slate-900/20"] p[class*="text-slate-800"] {
+  color: #e2e8f0 !important; /* slate-200 */
+}
+
+/* Advanced Topics: Security Considerations Card (Red - div) */
+.dark div[class*="bg-red-50"][class*="dark:bg-red-900/20"] {
+  background-color: rgba(127, 29, 29, 0.2) !important; /* red-900/20 */
+  background-image: none !important;
+  border-color: #991b1b !important; /* red-800 */
+  filter: none !important;
+  color-scheme: dark !important;
+}
+.dark div[class*="bg-red-50"][class*="dark:bg-red-900/20"] h4[class*="text-red-900"] {
+  color: #fee2e2 !important; /* red-100 */
+}
+.dark div[class*="bg-red-50"][class*="dark:bg-red-900/20"] p[class*="text-red-800"] {
+  color: #fecaca !important; /* red-200 */
+}
+
+
+/* ==========================================================================
+   How It Works Page - Purple Card ("Instant AI Analysis") Text Color Fixes
+   ========================================================================== */
+
+/* Firefox Light Mode: Make text darker for better contrast on purple background */
+@-moz-document url-prefix() {
+  /* Targets title (h3) within the purple card */
+  .how-it-works-purple-card h3[class*="text-purple-900"] {
+    color: hsl(277, 86%, 21%) !important; /* Tailwind purple-950 equivalent */
+  }
+  /* Targets paragraph (p) within the purple card */
+  .how-it-works-purple-card p[class*="text-purple-800"] {
+    color: hsl(274, 65%, 32%) !important; /* Tailwind purple-900 equivalent */
+  }
+
+  /* Targets paragraph (p) within the green card */
+  .how-it-works-green-card p[class*="text-green-800"] {
+    color: hsl(145, 70%, 21%) !important; /* Tailwind green-900 equivalent */
+  }
+
+  /* Targets paragraph (p) within the blue card */
+  .how-it-works-blue-card p[class*="text-blue-800"] {
+    color: hsl(221, 83%, 31%) !important; /* Tailwind blue-900 equivalent */
+  }
+
+  /* Targets list (ul) within the red-themed list section */
+  .how-it-works-red-list ul[class*="text-red-800"] {
+    color: hsl(0, 72%, 31%) !important; /* Tailwind red-900 equivalent */
+  }
+}
+
+/* Chrome Dark Mode: Make text lighter for better contrast on dark purple background */
+@media screen and (-webkit-min-device-pixel-ratio:0) and (min-resolution:.001dpcm) {
+  /* Targets title (h3) within the purple card in dark mode */
+  .dark .how-it-works-purple-card h3[class*="dark:text-purple-100"] {
+    color: hsl(250, 100%, 98%) !important; /* Tailwind purple-50 equivalent */
+  }
+  /* Targets paragraph (p) within the purple card in dark mode */
+  .dark .how-it-works-purple-card p[class*="dark:text-purple-200"] {
+    color: hsl(250, 83%, 96%) !important; /* Tailwind purple-100 equivalent */
+  }
+}
+
+
+/* Advanced Topics: Troubleshooting Card (Orange - div) */
+.dark div[class*="bg-orange-50"][class*="dark:bg-orange-900/20"] {
+  background-color: rgba(124, 45, 18, 0.2) !important; /* orange-900/20 */
+  background-image: none !important;
+  border-color: #9a3412 !important; /* orange-800 */
+  filter: none !important;
+  color-scheme: dark !important;
+}
+.dark div[class*="bg-orange-50"][class*="dark:bg-orange-900/20"] h4[class*="text-orange-900"] {
+  color: #fff7ed !important; /* orange-100 */
+}
+.dark div[class*="bg-orange-50"][class*="dark:bg-orange-900/20"] p[class*="text-orange-800"] {
+  color: #ffedd5 !important; /* orange-200 */
+}
+
+/* Community & Support: GitHub Discussions Card (Gray - a tag) */
+.dark a[class*="bg-gray-50"][class*="dark:bg-gray-900/20"] {
+  background-color: rgba(17, 24, 39, 0.2) !important; /* gray-900/20 */
+  background-image: none !important;
+  border-color: #1f2937 !important; /* gray-800 */
+  filter: none !important;
+  color-scheme: dark !important;
+}
+.dark a[class*="bg-gray-50"][class*="dark:bg-gray-900/20"] h4[class*="text-gray-900"] {
+  color: #f3f4f6 !important; /* gray-100 */
+}
+.dark a[class*="bg-gray-50"][class*="dark:bg-gray-900/20"] p[class*="text-gray-800"] {
+  color: #e5e7eb !important; /* gray-200 */
+}
+
+/* Community & Support: Discord Community Card (Indigo - a tag) */
+.dark a[class*="bg-indigo-50"][class*="dark:bg-indigo-900/20"] {
+  background-color: rgba(49, 46, 129, 0.2) !important; /* indigo-900/20 */
+  background-image: none !important;
+  border-color: #3730a3 !important; /* indigo-800 */
+  filter: none !important;
+  color-scheme: dark !important;
+}
+.dark a[class*="bg-indigo-50"][class*="dark:bg-indigo-900/20"] h4[class*="text-indigo-900"] {
+  color: #e0e7ff !important; /* indigo-100 */
+}
+.dark a[class*="bg-indigo-50"][class*="dark:bg-indigo-900/20"] p[class*="text-indigo-800"] {
+  color: #c7d2fe !important; /* indigo-200 */
+}
+
+/* Community & Support: Contributing Guidelines Card (Emerald - a tag) */
+.dark a[class*="bg-emerald-50"][class*="dark:bg-emerald-900/20"] {
+  background-color: rgba(6, 78, 59, 0.2) !important; /* emerald-900/20 */
+  background-image: none !important;
+  border-color: #065f46 !important; /* emerald-800 */
+  filter: none !important;
+  color-scheme: dark !important;
+}
+.dark a[class*="bg-emerald-50"][class*="dark:bg-emerald-900/20"] h4[class*="text-emerald-900"] {
+  color: #d1fae5 !important; /* emerald-100 */
+}
+.dark a[class*="bg-emerald-50"][class*="dark:bg-emerald-900/20"] p[class*="text-emerald-800"] {
+  color: #a7f3d0 !important; /* emerald-200 */
+}
+
+/* What's New: User Experience (Lime/Emerald Gradient 'a' tag) */
+.dark a[class*="from-lime-50"][class*="to-emerald-50"] {
+  background-color: rgba(77, 124, 15, 0.5) !important; /* lime-800/50 as base */
+  background-image: linear-gradient(to bottom right, rgba(77, 124, 15, 0.5), rgba(6, 78, 59, 0.5)) !important; /* lime-800/50 to emerald-900/50 */
+  border-color: #4d7c0f !important; /* lime-700 */
+  filter: none !important;
+  color-scheme: dark !important;
+}
+.dark a[class*="from-lime-50"][class*="to-emerald-50"] h3[class*="text-lime-900"] {
+  color: #f7fee7 !important; /* lime-100 */
+}
+.dark a[class*="from-lime-50"][class*="to-emerald-50"] ul li[class*="text-lime-800"] {
+  color: #ecfccb !important; /* lime-200 */
+}
+
+/* What's New: Security & Privacy (Indigo/Purple Gradient) */
+.dark div[class*="from-indigo-50"][class*="to-purple-50"][class*="dark:from-indigo-900/20"][class*="dark:to-purple-900/20"] {
+  background-color: rgba(49, 46, 129, 0.2) !important; /* indigo-900/20 as base */
+  background-image: linear-gradient(to bottom right, rgba(49, 46, 129, 0.2), rgba(88, 28, 135, 0.2)) !important; /* indigo-900/20 to purple-900/20 */
+  border-color: #3730a3 !important; /* indigo-800 */
+  filter: none !important;
+  color-scheme: dark !important;
+}
+.dark div[class*="from-indigo-50"][class*="to-purple-50"][class*="dark:from-indigo-900/20"][class*="dark:to-purple-900/20"] h3[class*="text-indigo-900"] {
+  color: #e0e7ff !important; /* indigo-100 */
+}
+.dark div[class*="from-indigo-50"][class*="to-purple-50"][class*="dark:from-indigo-900/20"][class*="dark:to-purple-900/20"] ul li[class*="text-indigo-800"] {
+  color: #c7d2fe !important; /* indigo-200 */
+}
+/* End of Dark mode specific style overrides for cards */
+.light .prose th {
+  border-bottom-color: hsl(262, 75%, 58%); /* Vibrant purple border, matches accent theme */
+}
+
+.light .prose td:first-child {
+  color: hsl(262, 65%, 48%); /* Darker purple for better contrast */
 }
