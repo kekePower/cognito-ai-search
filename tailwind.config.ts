@@ -91,6 +91,15 @@ const config: Config = {
           2: "hsl(var(--shimmer-2))",
         },
       },
+      typography: ({ theme }: { theme: any }) => ({
+        invert: {
+          css: {
+            '--tw-prose-body': theme('colors.gray.100'),
+            '--tw-prose-captions': theme('colors.gray.300'),
+            '--tw-prose-bullets': theme('colors.gray.300'),
+          },
+        },
+      }),
       spacing: {
         '18': '4.5rem',
         '88': '22rem',

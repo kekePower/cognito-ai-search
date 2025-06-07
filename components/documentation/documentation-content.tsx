@@ -24,10 +24,10 @@ export function DocumentationContent() {
         />
         
         <div className="flex items-center gap-3 mb-6">
-          <span className="px-3 py-1 bg-blue-100 dark:bg-blue-900/40 text-blue-800 dark:text-blue-200 rounded-full text-sm font-medium border border-blue-200 dark:border-blue-800">
+          <span className="px-3 py-1 rounded-full text-sm font-medium border pill-version-light dark:bg-blue-900/40 dark:text-blue-200 dark:border-blue-800">
             v{packageJson.version}
           </span>
-          <span className="px-3 py-1 bg-green-100 dark:bg-green-900/40 text-green-800 dark:text-green-200 rounded-full text-sm font-medium border border-green-200 dark:border-green-800">
+          <span className="px-3 py-1 rounded-full text-sm font-medium border pill-latest-light dark:bg-green-900/40 dark:text-green-200 dark:border-green-800">
             Latest
           </span>
         </div>
