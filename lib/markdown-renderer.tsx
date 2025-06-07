@@ -51,13 +51,17 @@ const CodeComponent = ({ node, inline, className, children, ...props }: CodeProp
  * Markdown renderer component with enhanced styling and plugins
  */
 export function MarkdownRenderer({ content, isDarkMode = false, className = '' }: MarkdownRendererProps) {
+  const containerClasses = markdownStyles.container; // Use predefined prose styles
   return (
-    <div className={`markdown-content ${className}`}>
+    <div className={`${containerClasses} markdown-content ${className}`}>
       <ReactMarkdown
         remarkPlugins={[remarkGfm, remarkMath]}
         rehypePlugins={[[rehypeKatex, { throwOnError: false, errorColor: '#FF5733' }]]}
         components={{
           code: CodeComponent,
+          // Table elements will now be styled by @tailwindcss/typography and globals.css
+          // table, thead, th, td custom components removed.
+          
           // Enhanced heading styles
           h1: ({ children }) => (
             <h1 className="text-2xl font-bold mb-4 mt-6 first:mt-0 bg-gradient-to-r from-[hsl(var(--neon-cyan))] via-[hsl(var(--neon-magenta))] to-[hsl(var(--neon-blue))] bg-clip-text text-transparent
@@ -111,29 +115,8 @@ export function MarkdownRenderer({ content, isDarkMode = false, className = '' }
               {children}
             </blockquote>
           ),
-          // Enhanced table styles
-          table: ({ children }) => (
-            <div className="overflow-x-auto mb-4">
-              <table className="min-w-full border border-border/20 rounded-lg overflow-hidden">
-                {children}
-              </table>
-            </div>
-          ),
-          thead: ({ children }) => (
-            <thead className="bg-muted/50">
-              {children}
-            </thead>
-          ),
-          th: ({ children }) => (
-            <th className="px-4 py-2 text-left font-semibold border-b border-border/20">
-              {children}
-            </th>
-          ),
-          td: ({ children }) => (
-            <td className="px-4 py-2 border-b border-border/10">
-              {children}
-            </td>
-          ),
+
+          // Custom table, thead, th, td components were here and have been removed.
           // Enhanced link styles
           a: ({ children, href }) => (
             <a 

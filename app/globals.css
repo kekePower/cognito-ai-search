@@ -175,7 +175,6 @@
     background-position: 0 0, 30px 30px;
     pointer-events: none;
     z-index: -1;
-    animation: shimmer 20s ease-in-out infinite;
   }
 
   /* Light mode geometric pattern */
@@ -183,7 +182,6 @@
     background-image: 
       linear-gradient(45deg, transparent 48%, rgba(6, 182, 212, 0.03) 49%, rgba(6, 182, 212, 0.03) 51%, transparent 52%),
       linear-gradient(-45deg, transparent 48%, rgba(236, 72, 153, 0.03) 49%, rgba(236, 72, 153, 0.03) 51%, transparent 52%);
-    animation: shimmer-light 25s ease-in-out infinite;
   }
 
   /* Glass panel styles */
@@ -536,4 +534,73 @@
     background-clip: text;
     -webkit-text-fill-color: transparent;
   }
+}
+
+/* Custom Markdown Table Styles */
+
+.prose table {
+  width: 100%;
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+  border-collapse: collapse;
+  font-size: 0.875rem; /* Equivalent to text-sm */
+  line-height: 1.25rem;
+  border: 1px solid hsl(var(--glass-border) / 0.5);
+  border-radius: var(--radius); /* Uses your existing --radius variable */
+  overflow: hidden; /* Ensures border-radius clips content correctly */
+  background-color: hsl(var(--glass-bg) / 0.3); /* Subtle glass background */
+}
+
+.prose th,
+.prose td {
+  padding-left: 1rem; /* Equivalent to px-4 */
+  padding-right: 1rem; /* Equivalent to px-4 */
+  padding-top: 0.75rem; /* Equivalent to py-3 */
+  padding-bottom: 0.75rem; /* Equivalent to py-3 */
+  text-align: left;
+  border-bottom: 1px solid hsl(var(--glass-border) / 0.3);
+}
+
+.prose th {
+  font-weight: 600; /* Equivalent to font-semibold */
+  letter-spacing: 0.05em; /* Equivalent to tracking-wider */
+  text-transform: uppercase;
+  color: hsl(var(--text-primary));
+  background-color: hsl(var(--glass-bg) / 0.5); /* Slightly more opaque header background */
+  border-bottom: 2px solid hsl(var(--neon-cyan)); /* Neon accent for header bottom border */
+}
+
+/* Style for the first column (e.g., 'Feature', 'Purpose') */
+.prose td:first-child {
+  font-weight: 500; /* Equivalent to font-medium */
+  color: hsl(var(--text-accent)); /* Use accent color for feature names */
+  width: 30%; /* Give the first column a bit more defined width */
+}
+
+.prose td {
+  color: hsl(var(--text-secondary)); /* Text color for data cells */
+}
+
+/* Remove bottom border from the last row of the table body and header */
+.prose thead tr:last-child th,
+.prose tbody tr:last-child td {
+  border-bottom-width: 0;
+}
+
+/* Optional: Hover effect on table body rows */
+.prose tbody tr:hover {
+  background-color: hsl(var(--glass-bg) / 0.2); /* Subtle hover for dark mode */
+}
+
+.light .prose tbody tr:hover {
+  background-color: hsl(var(--glass-bg) / 0.4); /* Subtle hover for light mode */
+}
+
+/* Ensure light mode variables are picked up correctly for key elements */
+.light .prose th {
+  border-bottom-color: hsl(var(--text-accent)); /* Use text-accent for better contrast in light mode */
+}
+
+.light .prose td:first-child {
+  color: hsl(var(--text-accent)); /* Uses light mode --text-accent */
 }

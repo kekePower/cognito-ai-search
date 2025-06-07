@@ -1,4 +1,4 @@
-import { AlertTriangle, RefreshCw, Bot, Sparkles, Zap, Diamond, Download, Copy, Check } from "lucide-react"
+import { AlertTriangle, RefreshCw, Bot, Sparkles, Zap, Diamond, Download, Copy, Check, Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useState } from "react"
 import { MarkdownRenderer } from "@/lib/markdown-renderer"
@@ -92,8 +92,7 @@ export default function AIResponseCard({
             {/* Streaming header */}
             <div className="flex items-center gap-3 text-primary">
               <div className="relative">
-                <Bot className="h-5 w-5 light:text-purple-500" />
-                <div className="absolute inset-0 bg-primary/20 rounded-full blur-sm animate-pulse light:bg-purple-500/20"></div>
+                <Loader2 className="h-5 w-5 text-primary animate-spin light:text-purple-500" />
               </div>
               <div className="flex items-center gap-2">
                 <span className="text-sm font-medium light:text-purple-600">Analyzing your query</span>
@@ -136,7 +135,16 @@ export default function AIResponseCard({
           </div>
         ) : (
           <div className="relative">
-            <MarkdownRenderer content={response} />
+            {response === "AI is generating an optimized search query" ? (
+              <div className="flex items-center gap-3 text-primary">
+                <Loader2 className="h-5 w-5 animate-spin text-primary light:text-purple-500" />
+                <span className="text-sm font-medium text-foreground">
+                  AI is generating an optimized search query
+                </span>
+              </div>
+            ) : (
+              <MarkdownRenderer content={response} />
+            )}
             
             {/* Show pulsing cursor at the end when AI is loading */}
             {isAiLoading && (
