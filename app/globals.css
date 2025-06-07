@@ -110,11 +110,11 @@
     --glass-opacity: 0.85; /* Increased opacity for light mode glass for better readability */
     --glass-bg: hsl(280, 10%, 97%); /* Aiming for lighter/less saturated glass in Firefox, was lavender/pinkish glass background */
     --glass-border: 30 15% 75%;  /* Warm glass border */
-    --neon-cyan: hsl(280, 85%, 60%);  /* Purple for light mode (used in header text) */
-    --neon-magenta: hsl(330, 85%, 65%);  /* Pink/magenta (used in header text) */
+    --neon-cyan: 280 85% 60%;  /* Purple for light mode (v1.2.0 value) */
+    --neon-magenta: 330 85% 65%;  /* Pink/magenta (v1.2.0 value) */
     --neon-cyan-soft-bg: hsl(280, 40%, 70%); /* Softer purple for background gradient */
     --neon-magenta-soft-bg: hsl(330, 45%, 75%); /* Softer pink/magenta for background gradient */
-    --neon-blue: 270 70% 55%;  /* Purple-blue */
+    --neon-blue: 270 70% 55%;  /* Purple-blue (v1.2.0 value) */
     --shimmer-1: 280 85% 60%;
     --shimmer-2: 330 85% 65%;
 
@@ -1815,6 +1815,51 @@
 .dark div[class*="bg-red-50"][class*="dark:bg-red-900/20"] p[class*="text-red-800"] {
   color: #fecaca !important; /* red-200 */
 }
+
+
+/* ==========================================================================
+   How It Works Page - Purple Card ("Instant AI Analysis") Text Color Fixes
+   ========================================================================== */
+
+/* Firefox Light Mode: Make text darker for better contrast on purple background */
+@-moz-document url-prefix() {
+  /* Targets title (h3) within the purple card */
+  .how-it-works-purple-card h3[class*="text-purple-900"] {
+    color: hsl(277, 86%, 21%) !important; /* Tailwind purple-950 equivalent */
+  }
+  /* Targets paragraph (p) within the purple card */
+  .how-it-works-purple-card p[class*="text-purple-800"] {
+    color: hsl(274, 65%, 32%) !important; /* Tailwind purple-900 equivalent */
+  }
+
+  /* Targets paragraph (p) within the green card */
+  .how-it-works-green-card p[class*="text-green-800"] {
+    color: hsl(145, 70%, 21%) !important; /* Tailwind green-900 equivalent */
+  }
+
+  /* Targets paragraph (p) within the blue card */
+  .how-it-works-blue-card p[class*="text-blue-800"] {
+    color: hsl(221, 83%, 31%) !important; /* Tailwind blue-900 equivalent */
+  }
+
+  /* Targets list (ul) within the red-themed list section */
+  .how-it-works-red-list ul[class*="text-red-800"] {
+    color: hsl(0, 72%, 31%) !important; /* Tailwind red-900 equivalent */
+  }
+}
+
+/* Chrome Dark Mode: Make text lighter for better contrast on dark purple background */
+@media screen and (-webkit-min-device-pixel-ratio:0) and (min-resolution:.001dpcm) {
+  /* Targets title (h3) within the purple card in dark mode */
+  .dark .how-it-works-purple-card h3[class*="dark:text-purple-100"] {
+    color: hsl(250, 100%, 98%) !important; /* Tailwind purple-50 equivalent */
+  }
+  /* Targets paragraph (p) within the purple card in dark mode */
+  .dark .how-it-works-purple-card p[class*="dark:text-purple-200"] {
+    color: hsl(250, 83%, 96%) !important; /* Tailwind purple-100 equivalent */
+  }
+}
+
 
 /* Advanced Topics: Troubleshooting Card (Orange - div) */
 .dark div[class*="bg-orange-50"][class*="dark:bg-orange-900/20"] {

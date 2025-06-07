@@ -47,7 +47,7 @@ export function HowItWorksContent() {
           />
           
           <div className="grid gap-6 mb-8">
-            <div className="flex items-start gap-4 p-6 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
+            <div className="how-it-works-blue-card flex items-start gap-4 p-6 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
               <div className="flex-shrink-0 w-12 h-12 bg-blue-100 dark:bg-blue-900/40 rounded-full flex items-center justify-center">
                 <Search className="h-6 w-6 text-blue-600 dark:text-blue-400" />
               </div>
@@ -65,17 +65,17 @@ export function HowItWorksContent() {
               </div>
             </div>
 
-            <div className="flex items-start gap-4 p-6 bg-card rounded-lg border border-border">
-              <div className="flex-shrink-0 w-12 h-12 bg-card rounded-full flex items-center justify-center">
-                <Zap className="h-6 w-6 text-primary" />
+            <div className="how-it-works-purple-card flex items-start gap-4 p-6 bg-purple-50 dark:bg-purple-900/20 rounded-lg border border-purple-200 dark:border-purple-800">
+              <div className="flex-shrink-0 w-12 h-12 bg-purple-100 dark:bg-purple-900/40 rounded-full flex items-center justify-center">
+                <Zap className="h-6 w-6 text-purple-600 dark:text-purple-400" />
               </div>
               <div>
                 <SectionHeader
                   title="Instant AI Analysis"
                   size="md"
-                  className="mb-2 text-foreground"
+                  className="mb-2 text-purple-900 dark:text-purple-100"
                 />
-                <p className="text-muted-foreground">
+                <p className="text-purple-800 dark:text-purple-200">
                   Watch as our local AI analyzes your question with a subtle pulsing animation, optimizing your search query 
                   for maximum relevance. For example, "Paris" becomes "things to do in Paris travel guide" - all while 
                   maintaining complete privacy with smooth, professional visual feedback.
@@ -83,7 +83,7 @@ export function HowItWorksContent() {
               </div>
             </div>
 
-            <div className="flex items-start gap-4 p-6 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-800">
+            <div className="how-it-works-green-card flex items-start gap-4 p-6 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-800">
               <div className="flex-shrink-0 w-12 h-12 bg-green-100 dark:bg-green-900/40 rounded-full flex items-center justify-center">
                 <Globe className="h-6 w-6 text-green-600 dark:text-green-400" />
               </div>
@@ -209,7 +209,7 @@ export function HowItWorksContent() {
             Here's how we're different:
           </p>
           
-          <div className="bg-red-50 dark:bg-red-900/20 p-6 rounded-lg border border-red-200 dark:border-red-800 mb-4">
+          <div className="how-it-works-red-list bg-red-50 dark:bg-red-900/20 p-6 rounded-lg border border-red-200 dark:border-red-800 mb-4">
             <SectionHeader
               title="Traditional Search Engines:"
               size="md"
