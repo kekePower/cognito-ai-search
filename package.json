@@ -35,7 +35,7 @@
     "sonner": "^2.0.5",
     "tailwind-merge": "^3.3.0",
     "tailwindcss-animate": "^1.0.7",
-    "zod": "^3.25.48"
+    "zod": "^3.25.56"
   },
   "devDependencies": {
     "@tailwindcss/container-queries": "^0.1.1",
