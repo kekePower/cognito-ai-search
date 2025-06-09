@@ -84,8 +84,8 @@ importers:
         specifier: ^1.0.7
         version: 1.0.7(tailwindcss@4.1.8)
       zod:
-        specifier: ^3.25.48
-        version: 3.25.48
+        specifier: ^3.25.56
+        version: 3.25.56
     devDependencies:
       '@tailwindcss/container-queries':
         specifier: ^0.1.1
@@ -1571,8 +1571,8 @@ packages:
     resolution: {integrity: sha512-YgvUTfwqyc7UXVMrB+SImsVYSmTS8X/tSrtdNZMImM+n7+QTriRXyXim0mBrTXNeqzVF0KWGgHPeiyViFFrNDw==}
     engines: {node: '>=18'}
 
-  zod@3.25.48:
-    resolution: {integrity: sha512-0X1mz8FtgEIvaxGjdIImYpZEaZMrund9pGXm3M6vM7Reba0e2eI71KPjSCGXBfwKDPwPoywf6waUKc3/tFvX2Q==}
+  zod@3.25.56:
+    resolution: {integrity: sha512-rd6eEF3BTNvQnR2e2wwolfTmUTnp70aUTqr0oaGbHifzC3BKJsoV+Gat8vxUMR1hwOKBs6El+qWehrHbCpW6SQ==}
 
   zwitch@2.0.4:
     resolution: {integrity: sha512-bXE4cR/kVZhKZX/RjPEflHaKVhUVl85noU3v6b8apfQEc1x4A+zBxjZ4lN8LqGd6WZ3dl98pY4o717VFmoPp+A==}
@@ -3229,6 +3229,6 @@ snapshots:
 
   yallist@5.0.0: {}
 
-  zod@3.25.48: {}
+  zod@3.25.56: {}
 
   zwitch@2.0.4: {}
