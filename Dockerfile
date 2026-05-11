@@ -1,6 +1,6 @@
 # ---- Base Node Image ----
 # Use a specific version of Node.js. Alpine Linux is used for a smaller image size.
-FROM node:24-alpine AS builder
+FROM node:26-alpine AS builder
 WORKDIR /app
 
 # Install pnpm globally
@@ -40,7 +40,7 @@ RUN pnpm build
 
 # ---- Runner Stage ----
 # This stage creates the final, minimal image for running the application.
-FROM node:24-alpine AS runner
+FROM node:26-alpine AS runner
 WORKDIR /app
 
 ENV NODE_ENV production
